@@ -1,0 +1,11 @@
+{
+    "bot_token": "bot token here",
+    "clientid": "bot client id here", 
+    "clientsecret": "bot secret here",
+    "appid": "application id here",
+    "prefix": ">",
+    "owner": owner role id here,
+    "admin": admin role id here,
+    "mod": mod role id here, 
+    "deletetime": 15
+}
