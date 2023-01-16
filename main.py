@@ -27,6 +27,13 @@ import tasks
 from discord.ext.commands import Bot, guild_only
 from discord.ext import commands
 from roblox import Client
+import asyncio
+import random
+import discord
+from discord_slash.utils.manage_components import create_button, create_actionrow
+from discord_slash.model import ButtonStyle
+from async_timeout import timeout
+from discord.ext import commands
 #//////////////////////////////////////////////////////////////////////////
 client1 = Client()
 class Colours:
@@ -112,18 +119,25 @@ async def ruser(ctx, user423):
 async def h(ctx):
     await ctx.message.delete()
     guild = ctx.guild
-    embed=discord.Embed(title="Help commands", url="https://egg883.shop", description="This is help section of the bot", color=0x007bff)
-    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.add_field(name=f"[{prefix}] general", value="List of general commands", inline=False)
-    embed.add_field(name=f"[{prefix}] moderation", value="List of moderation commands", inline=False)
-    embed.add_field(name=f"[{prefix}] server", value="List of server commands", inline=False)
-    embed.add_field(name=f"[{prefix}] nsfw", value="List of nsfw commands", inline=False)
-    embed.add_field(name=f"[{prefix}] memes", value="List of memes commands", inline=False)
-    embed.add_field(name=f"[{prefix}] fun", value="List of fun commands", inline=False)
-    embed.add_field(name=f"[{prefix}] roblox", value="List of roblox commands", inline=False)
-    embed.add_field(name=f"[{prefix}] settings", value="List of settings commands", inline=False)
-    await ctx.send(embed=embed,delete_after=deletein)
+    buttons = [
+            create_button(
+                style=ButtonStyle.blue,
+                label="Fancy button (doesnt work yet...)"
+            ),
+          ]
+    action_row = create_actionrow(*buttons)
+    helpembed=discord.Embed(title="Help commands", url="https://egg883.shop", description="This is help section of the bot", color=0x007bff)
+    helpembed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    helpembed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    helpembed.add_field(name=f"[{prefix}] general", value="List of general commands", inline=False)
+    helpembed.add_field(name=f"[{prefix}] moderation", value="List of moderation commands", inline=False)
+    helpembed.add_field(name=f"[{prefix}] server", value="List of server commands", inline=False)
+    helpembed.add_field(name=f"[{prefix}] nsfw", value="List of nsfw commands", inline=False)
+    helpembed.add_field(name=f"[{prefix}] memes", value="List of memes commands", inline=False)
+    helpembed.add_field(name=f"[{prefix}] fun", value="List of fun commands", inline=False)
+    helpembed.add_field(name=f"[{prefix}] roblox", value="List of roblox commands", inline=False)
+    helpembed.add_field(name=f"[{prefix}] settings", value="List of settings commands", inline=False)
+    await ctx.send(embed=helpembed, components=[action_row], delete_after=deletein)
 
 @bot.command()
 async def memes(ctx):
@@ -727,5 +741,14 @@ async def nsfw(ctx,error):
     embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed, delete_after=deletein)
+
+@bot.command()
+async def example(ctx):
+    msg = await ctx.send("Hello")
+    reaction1 = '👋'
+    reaction2 = '🙂'
+    await msg.add_reaction(reaction1)
+    await msg.add_reaction(reaction2)
+
 #////////////////////////////////////////////////////////////////////////// 
 bot.run(bottoken)
