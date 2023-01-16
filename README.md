@@ -1,10 +1,10 @@
 # Egglington-Discord-bot
 This discord bot Is a multi purpose bot that can be used for moderation, server, games, and roblox 
 
-This bot is a **WORK IN PROGRESS** and will be updated frequently! So make sure to check back for updates so you don't miss anything major
-This bot is just a personal project that gives me something todo It is in early support and bugs and code r not optimized. I will be as active as i can
+This bot is a **WORK IN PROGRESS** and will be updated frequently! So make sure to check back for updates so you don't miss anything major,
+This bot is just a personal project that gives me something todo It is in early support and bugs and code r not optimized. I will be as active as i can.
 
-If you'd like to give feedback or maybe suggestions consider making a pull request or joining my discord link is down below.
+If you'd like to give feedback or maybe suggestions consider making a pull request or joining my discord link is down below,
 Egglington is Public to anyone to rewrite, use as their own bot As long as credit is given.
 
 # https://discord.gg/AUevumCwXj
