@@ -118,10 +118,27 @@ async def h(ctx):
     embed.add_field(name=f"[{prefix}] general", value="List of general commands", inline=False)
     embed.add_field(name=f"[{prefix}] moderation", value="List of moderation commands", inline=False)
     embed.add_field(name=f"[{prefix}] server", value="List of server commands", inline=False)
+    embed.add_field(name=f"[{prefix}] nsfw", value="List of nsfw commands", inline=False)
     embed.add_field(name=f"[{prefix}] memes", value="List of memes commands", inline=False)
     embed.add_field(name=f"[{prefix}] fun", value="List of fun commands", inline=False)
     embed.add_field(name=f"[{prefix}] roblox", value="List of roblox commands", inline=False)
     embed.add_field(name=f"[{prefix}] settings", value="List of settings commands", inline=False)
+    await ctx.send(embed=embed,delete_after=deletein)
+
+@bot.command()
+async def memes(ctx):
+    await ctx.message.delete()
+    embed=discord.Embed(title="Meme Commands", url="https://egg883.shop", description="This is Meme section of the bot", color=0x007bff)
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed.add_field(name=f"[{prefix}] ph", value=f"[{prefix}] ph (@user) (text)", inline=False)
+    embed.add_field(name=f"[{prefix}] jail", value=f"[{prefix}] jail (@user)", inline=False)
+    embed.add_field(name=f"[{prefix}] wasted", value=f"[{prefix}] wasted (@user)", inline=False)
+    embed.add_field(name=f"[{prefix}] horny", value=f"[{prefix}] horny (@user)", inline=False)
+    embed.add_field(name=f"[{prefix}] lolice", value=f"[{prefix}] lolice (@user)", inline=False)
+    embed.add_field(name=f"[{prefix}] pixel", value=f"[{prefix}] pixel (@user)", inline=False)
+    embed.add_field(name=f"[{prefix}] clyde", value=f"[{prefix}] clyde (text)", inline=False)
+    embed.add_field(name=f"[{prefix}] trump", value=f"[{prefix}] trump (text)", inline=False)
     await ctx.send(embed=embed,delete_after=deletein)
 
 @bot.command()
@@ -131,6 +148,15 @@ async def general(ctx):
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
     embed.add_field(name=f"[{prefix}] whois", value=f"[{prefix}] whois (@user)", inline=False)
+    await ctx.send(embed=embed,delete_after=deletein)
+
+@bot.command()
+async def fun(ctx):
+    await ctx.message.delete()
+    embed=discord.Embed(title="Fun commands", url="https://egg883.shop", description="This is fun section of the bot", color=0x007bff)
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed.add_field(name=f"[{prefix}] pp", value=f"[{prefix}] pp (@user)", inline=False)
     await ctx.send(embed=embed,delete_after=deletein)
 
 @bot.command()
@@ -174,6 +200,7 @@ async def settings(ctx):
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
     embed.add_field(name=f"[{prefix}] info", value=f"[{prefix}] info", inline=False)
     embed.add_field(name=f"[{prefix}] news", value=f"[{prefix}] news", inline=False)
+    embed.add_field(name=f"[{prefix}] support", value=f"[{prefix}] support (dms only)", inline=False)
     await ctx.send(embed=embed,delete_after=deletein)
 
 
@@ -263,6 +290,21 @@ async def deleterole(ctx, *, role: discord.Role = None):
         await ctx.send(embed=embed, delete_after=60)
 
 @bot.command()
+async def pp(ctx, *, user: discord.Member = None):
+    await ctx.message.delete()
+    if user is None:
+        user = ctx.author
+    size = random.randint(1, 15)
+    dong = ""
+    for _i in range(0, size):
+        dong += "="
+    embed = discord.Embed(title=F"PP command executed!", url="https://egg883.shop", colour=0x007bff)
+    embed.set_author(name=f"Egglington", url="https://egg883.shop", icon_url=f"https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.add_field(name=f"{user}'s PP size is: ", value=f"8{dong}D", inline=False)
+    embed.timestamp = datetime.datetime.utcnow()
+    await ctx.send(embed=embed, delete_after=deletein)
+
+@bot.command()
 async def clearconsole(ctx):
     await ctx.message.delete()
     Clear()
@@ -345,14 +387,24 @@ async def kick(ctx, member:discord.User, *, reason=None):
 @bot.command()
 async def news(ctx):
     await ctx.message.delete()
-    embed = discord.Embed(title="Update V1.4", description=f"This is the latest news about our bot Update", colour=0x007bff)
+    embed = discord.Embed(title="Update V1.5", description=f"This is the latest news about our bot Update", colour=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.add_field(name="Added new command", value="ruser (roblox)", inline=False)
-    embed.add_field(name="Clearing up the code", value="Fixed bugs and cleared the code up", inline=False)
+    embed.add_field(name="Added 20 New Commands", value="Added a bunch of new commands (NSFW included)", inline=False)
+    embed.add_field(name="Optimized the code a little", value="Made it alot faster lol", inline=False)
     embed.add_field(name="Updates coming soon", value="besure to check out https://egg883.shop", inline=False)
     await ctx.send(embed=embed)
 
+
+@commands.dm_only()
+@bot.command()
+async def support(ctx):
+    embed = discord.Embed(title="Support Panel", description=f"This is the support panel of our bot", colour=0x007bff)
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed.add_field(name="Need help? Join our discord: ", value="https://discord.gg/AUevumCwXj", inline=False)
+    embed.add_field(name="Or contact our email", value="egg@egg883.shop", inline=False)
+    await ctx.send(embed=embed)
 
 @bot.command()
 @commands.guild_only()
@@ -411,5 +463,269 @@ async def spfp(ctx):
     embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     await ctx.send(embed=embed, delete_after=deletein)
 
+@bot.command()
+async def jail(ctx, member=None):
+    await ctx.message.delete()
+    if member==None:
+        member = ctx.message.author
+    else:
+        member = ctx.message.mentions[0]
+        member = await bot.fetch_user(int(member.id))
+    async with aiohttp.ClientSession() as trigSession:
+        async with trigSession.get(f'https://some-random-api.ml/canvas/jail?avatar={member.avatar_url_as(format="png", size=1024)}') as trigImg:
+            imageData = io.BytesIO(await trigImg.read()) 
+            
+            await trigSession.close()
+            
+            await ctx.send(file=discord.File(imageData, 'eggui.gif'))
+
+@bot.command()
+async def wasted(ctx, member=None):
+    await ctx.message.delete()
+    if member==None:
+        member = ctx.message.author
+    else:
+        member = ctx.message.mentions[0]
+        member = await bot.fetch_user(int(member.id))
+        
+    async with aiohttp.ClientSession() as trigSession:
+        async with trigSession.get(f'https://some-random-api.ml/canvas/wasted?avatar={member.avatar_url_as(format="png", size=1024)}') as trigImg:
+            imageData = io.BytesIO(await trigImg.read()) 
+            
+            await trigSession.close()
+            
+            await ctx.send(file=discord.File(imageData, 'eggui.gif'))
+
+@bot.command()
+async def lolice(ctx, member=None):
+    await ctx.message.delete()
+    if member==None:
+        member = ctx.message.author
+    else:
+        member = ctx.message.mentions[0]
+        member = await bot.fetch_user(int(member.id))
+    async with aiohttp.ClientSession() as trigSession:
+        async with trigSession.get(f'https://some-random-api.ml/canvas/lolice?avatar={member.avatar_url_as(format="png", size=1024)}') as trigImg:
+            imageData = io.BytesIO(await trigImg.read()) 
+            
+            await trigSession.close()
+            
+            await ctx.send(file=discord.File(imageData, 'eggui.gif'))
+
+@bot.command()
+async def trump(ctx, *, msg):
+    await ctx.message.delete()
+    response = requests.get(f"https://nekobot.xyz/api/imagegen?type=trumptweet&text={msg}")
+    stuff = json.loads(response.text)
+    embed=discord.Embed(title="Meanwhile on twitter:", color=0x007bff, timestamp=ctx.message.created_at)
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_image(url = stuff['message'])
+    await ctx.send(embed=embed, delete_after = deletein)
+
+@bot.command()
+async def ph(ctx, member=None, *, msg):
+    if member==None:
+        member = ctx.message.author
+    else:
+        member = ctx.message.mentions[0]
+        member = await bot.fetch_user(int(member.id))
+    await ctx.message.delete()
+    url = member.avatar_url_as(format="png")
+    response = requests.get(f"https://nekobot.xyz/api/imagegen?type=phcomment&image={url}&username={member.display_name}&text={msg}")
+    stuff = json.loads(response.text)
+    embed=discord.Embed(title="Pornhub Comment Section:", color=0x007bff, timestamp=ctx.message.created_at)
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_image(url = stuff['message'])
+    embed.timestamp = datetime.datetime.utcnow()
+    await ctx.send(embed=embed, delete_after = deletein)
+
+
+@bot.command()
+async def horny(ctx, member=None):
+    await ctx.message.delete()
+    if member==None:
+        member = ctx.message.author
+    else:
+        member = ctx.message.mentions[0]
+        member = await bot.fetch_user(int(member.id))
+    async with aiohttp.ClientSession() as trigSession:
+        async with trigSession.get(f'https://some-random-api.ml/canvas/horny?avatar={member.avatar_url_as(format="png", size=1024)}') as trigImg:
+            imageData = io.BytesIO(await trigImg.read()) 
+            
+            await trigSession.close()
+            
+            await ctx.send(file=discord.File(imageData, 'eggui.gif'))
+
+@bot.command()
+async def clyde(ctx,*, msg):
+    await ctx.message.delete()
+    response = requests.get(f"https://nekobot.xyz/api/imagegen?type=clyde&text={msg}")
+    stuff = json.loads(response.text)
+    embed=discord.Embed(title="Clyde has a message for you", color=0x007bff, timestamp=ctx.message.created_at)
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_image(url = stuff['message'])
+    embed.timestamp = datetime.datetime.utcnow()
+    await ctx.send(embed=embed, delete_after = deletein)
+
+@bot.command()
+async def pixel(ctx, member=None):
+    await ctx.message.delete()
+    if member==None:
+        member = ctx.message.author
+    else:
+        member = ctx.message.mentions[0]
+        member = await bot.fetch_user(int(member.id))
+    async with aiohttp.ClientSession() as trigSession:
+        async with trigSession.get(f'https://some-random-api.ml/canvas/pixelate?avatar={member.avatar_url_as(format="png", size=1024)}') as trigImg:
+            imageData = io.BytesIO(await trigImg.read()) 
+            
+            await trigSession.close()
+            
+            await ctx.send(file=discord.File(imageData, 'eggui.gif'))
+
+@commands.is_nsfw()
+@bot.command()
+async def nsfw(ctx, category=None):
+    await ctx.message.delete()
+    if category is None:
+        embed=discord.Embed(title="NSFW Commands", description = "**THESE MUST BE SENT IN AN NSFW CHANNEL**", color=0x007bff, timestamp=ctx.message.created_at)
+        embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.add_field(name="NSFW Command Usage", value = f"[{prefix}] nsfw (catagory name)", inline=False)
+        embed.add_field(name="**NSFW Catagories**", value=f"tentacle\nhass\nhmidriff\npgif\n4k\nholo\nhboobs\npussy\nhthigh\nthigh", inline=True)
+        await ctx.send(embed=embed, delete_after=deletein)
+ 
+    elif str(category).lower() == "tentacle":    
+        r = requests.get(f'https://nekobot.xyz/api/image?type=tentacle')
+        res = r.json()
+        embed=discord.Embed(title="Tentacle", color=0x007bff, timestamp=ctx.message.created_at)
+        embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+ 
+        embed.set_image(url=res['message'])
+        await ctx.send(embed=embed, delete_after=deletein)
+
+    elif str(category).lower() == "hass":    
+        r = requests.get(f'https://nekobot.xyz/api/image?type=hass')
+        res = r.json()
+        embed=discord.Embed(title="Hentai Ass", color=0x007bff, timestamp=ctx.message.created_at)
+        embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+ 
+        embed.set_image(url=res['message'])
+        await ctx.send(embed=embed, delete_after=deletein)
+
+    elif str(category).lower() == "hmidriff":    
+        r = requests.get(f'https://nekobot.xyz/api/image?type=hmidriff')
+        res = r.json()
+        embed=discord.Embed(title="hmidriff", color=0x007bff, timestamp=ctx.message.created_at)
+        embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+ 
+        embed.set_image(url=res['message'])
+        await ctx.send(embed=embed, delete_after=deletein)
+
+    elif str(category).lower() == "pgif":    
+        r = requests.get(f'https://nekobot.xyz/api/image?type=pgif')
+        res = r.json()
+        embed=discord.Embed(title="pgif", color=0x007bff, timestamp=ctx.message.created_at)
+        embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+ 
+        embed.set_image(url=res['message'])
+        await ctx.send(embed=embed, delete_after=deletein)
+        
+    elif str(category).lower() == "4k":    
+        r = requests.get(f'https://nekobot.xyz/api/image?type=4k')
+        res = r.json()
+        embed=discord.Embed(title="4k", color=0x007bff, timestamp=ctx.message.created_at)
+        embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+ 
+        embed.set_image(url=res['message'])
+        await ctx.send(embed=embed, delete_after=deletein)
+
+    elif str(category).lower() == "hentai":    
+        r = requests.get(f'https://nekobot.xyz/api/image?type=hentai')
+        res = r.json()
+        embed=discord.Embed(title="hentai", color=0x007bff, timestamp=ctx.message.created_at)
+        embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+ 
+        embed.set_image(url=res['message'])
+        await ctx.send(embed=embed, delete_after=deletein)
+
+    elif str(category).lower() == "holo":    
+        r = requests.get(f'https://nekobot.xyz/api/image?type=holo')
+        res = r.json()
+        embed=discord.Embed(title="holo", color=0x007bff, timestamp=ctx.message.created_at)
+        embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+ 
+        embed.set_image(url=res['message'])
+        await ctx.send(embed=embed, delete_after=deletein)
+
+    elif str(category).lower() == "hboobs":    
+        r = requests.get(f'https://nekobot.xyz/api/image?type=hboobs')
+        res = r.json()
+        embed=discord.Embed(title="hboobs", color=0x007bff, timestamp=ctx.message.created_at)
+        embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+ 
+        embed.set_image(url=res['message'])
+        await ctx.send(embed=embed, delete_after=deletein)
+
+    elif str(category).lower() == "pussy":    
+        r = requests.get(f'https://nekobot.xyz/api/image?type=pussy')
+        res = r.json()
+        embed=discord.Embed(title="pussy", color=0x007bff, timestamp=ctx.message.created_at)
+        embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+ 
+        embed.set_image(url=res['message'])
+        await ctx.send(embed=embed, delete_after=deletein)
+
+    elif str(category).lower() == "hthigh":    
+        r = requests.get(f'https://nekobot.xyz/api/image?type=hthigh')
+        res = r.json()
+        embed=discord.Embed(title="hthigh", color=0x007bff, timestamp=ctx.message.created_at)
+        embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+ 
+        embed.set_image(url=res['message'])
+        await ctx.send(embed=embed, delete_after=deletein)
+
+    elif str(category).lower() == "thigh":    
+        r = requests.get(f'https://nekobot.xyz/api/image?type=thigh')
+        res = r.json()
+        embed=discord.Embed(title="thigh", color=0x007bff, timestamp=ctx.message.created_at)
+        embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+ 
+        embed.set_image(url=res['message'])
+        await ctx.send(embed=embed, delete_after=deletein)
+
+@support.error
+async def support(ctx,error):
+    embed=discord.Embed(title="SUPPORT COMMAND ERROR", color=0xFF0400)
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.add_field(name="This command is only enabled for dms", value=f"DM the bot to preview this command!", inline=True)
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1064570023437422743/1195445329999867155jean_victor_balin_cross.svg.thumb.png")
+    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.timestamp = datetime.datetime.utcnow()
+    await ctx.send(embed=embed, delete_after=deletein)
+
+@nsfw.error
+async def nsfw(ctx,error):
+    embed=discord.Embed(title="NSFW COMMAND ERROR", color=0xFF0400)
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.add_field(name="THIS IS NOT AN NSFW CHANNEL", value=f"This command is NSFW and will need to be sent in NSFW channel", inline=True)
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1064570023437422743/1195445329999867155jean_victor_balin_cross.svg.thumb.png")
+    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.timestamp = datetime.datetime.utcnow()
+    await ctx.send(embed=embed, delete_after=deletein)
 #////////////////////////////////////////////////////////////////////////// 
 bot.run(bottoken)
