@@ -27,7 +27,6 @@ import tasks
 from discord.ext.commands import Bot, guild_only
 from discord.ext import commands
 from roblox import Client
-import discord_slash
 #//////////////////////////////////////////////////////////////////////////
 client1 = Client()
 class Colours:
@@ -47,9 +46,10 @@ mod = config['mod']
 bot = commands.Bot(command_prefix= prefix)
 cmds = {len(bot.commands)}
 intents = discord.Intents.all()
-version = 1.2
+version = 1.4
+intents = discord.Intents.default()
+client = discord.Client(intents=intents)
 intents.members = True
-slash = discord_slash.SlashCommand(bot, sync_commands=True)  
 #//////////////////////////////////////////////////////////////////////////
 def new_splash():
     print(f'{Colours.Magenta}Egglington is now Listening to {len(bot.guilds)} servers')
@@ -108,9 +108,6 @@ async def ruser(ctx, user423):
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed,delete_after=60)
 
-
-
-@bot.slash_command(name = "help", description = "This is the help panel")
 @bot.command()
 async def h(ctx):
     await ctx.message.delete()
@@ -348,11 +345,11 @@ async def kick(ctx, member:discord.User, *, reason=None):
 @bot.command()
 async def news(ctx):
     await ctx.message.delete()
-    embed = discord.Embed(title="Update V1.3", description=f"This is the latest news about our bot Update", colour=0x007bff)
+    embed = discord.Embed(title="Update V1.4", description=f"This is the latest news about our bot Update", colour=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.add_field(name="Added new commands", value="Including ban, kick etc", inline=False)
-    embed.add_field(name="Added new Ids to config", value="Owner ids mod ids etc", inline=False)
+    embed.add_field(name="Added new command", value="ruser (roblox)", inline=False)
+    embed.add_field(name="Clearing up the code", value="Fixed bugs and cleared the code up", inline=False)
     embed.add_field(name="Updates coming soon", value="besure to check out https://egg883.shop", inline=False)
     await ctx.send(embed=embed)
 
