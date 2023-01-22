@@ -3,7 +3,7 @@
     "clientid": "bot client id here", 
     "clientsecret": "bot secret here",
     "appid": "application id here",
-    "prefix": ">",
+    "prefix": "BOT PREFIX HERE",
     "owner": owner role id here,
     "admin": admin role id here,
     "mod": mod role id here, 
