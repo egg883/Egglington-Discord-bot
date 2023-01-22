@@ -7,7 +7,7 @@ This bot is just a personal project that gives me something todo It is in early 
 If you'd like to give feedback or maybe suggestions consider making a pull request or joining my discord link is down below,
 Egglington is Public to anyone to rewrite, use as their own bot As long as credit is given.
 
-bot invite: 
+# Bot invite: 
 https://discord.com/api/oauth2/authorize?client_id=1063758752160960573&permissions=8&scope=applications.commands%20bot
 
 # Tutorial on how to install:
