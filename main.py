@@ -28,7 +28,6 @@ prefix = config['prefix']
 deletein = config['deletetime']
 owner = config['owner']
 admin = config['admin']
-botowner = config['botowner']
 mod = config['mod']
 playingstatus = config['status']
 playingstatus2 = config['status2']
@@ -194,7 +193,7 @@ async def settings(ctx):
 
 
 @bot.command(pass_context=True)
-@commands.has_any_role(owner, mod, admin, botowner) 
+@commands.has_any_role(owner, mod, admin) 
 async def purge(ctx, limit: int):
     await ctx.message.delete()
     await ctx.channel.purge(limit=limit)
@@ -205,7 +204,7 @@ async def purge(ctx, limit: int):
 
 @bot.command()
 @commands.has_permissions(manage_messages=True)
-@commands.has_any_role(owner, mod, admin, botowner) 
+@commands.has_any_role(owner, mod, admin) 
 async def mute(ctx, member: discord.Member, *, reason=None):
     await ctx.message.delete()
     guild = ctx.guild
@@ -222,7 +221,7 @@ async def mute(ctx, member: discord.Member, *, reason=None):
     await member.send(f" you have been muted from: {guild.name} reason: {reason}")
 
 @bot.command()
-@commands.has_any_role(owner, mod, admin, botowner)
+@commands.has_any_role(owner, mod, admin)
 async def unmute(ctx,member: discord.Member, *, reason=None):
         await ctx.message.delete()
         guild = ctx.guild
@@ -248,7 +247,7 @@ async def whois(ctx,*,member: discord.Member):
         await ctx.send(embed=embed,delete_after=60)
 
 @bot.command()
-@commands.has_any_role(owner, mod, admin, botowner) 
+@commands.has_any_role(owner, mod, admin) 
 @commands.has_permissions(manage_messages=True)
 async def role(ctx,member: discord.Member,*, rname):
     await ctx.message.delete()
@@ -265,7 +264,7 @@ async def role(ctx,member: discord.Member,*, rname):
         await ctx.send(embed=embed, delete_after=60)
 
 @bot.command()
-@commands.has_any_role(owner, mod, admin, botowner) 
+@commands.has_any_role(owner, mod, admin) 
 async def deleterole(ctx, *, role: discord.Role = None):
     await ctx.message.delete()
     if ctx.author.guild_permissions.administrator and role:
@@ -300,7 +299,7 @@ async def clearconsole(ctx):
     new_splash()
 
 @bot.command()
-@commands.has_any_role(owner, admin, botowner) 
+@commands.has_any_role(owner, admin) 
 async def unban(ctx, member:discord.User, *, reason=None):
     await ctx.message.delete()
     if reason == None:
@@ -324,7 +323,7 @@ async def unban(ctx, member:discord.User, *, reason=None):
     print("Command Executed")
 
 @bot.command()
-@commands.has_any_role(owner, admin, botowner) 
+@commands.has_any_role(owner, admin) 
 async def ban(ctx, member:discord.User, *, reason=None):
     await ctx.message.delete()
     if reason == None:
@@ -350,7 +349,7 @@ async def ban(ctx, member:discord.User, *, reason=None):
     print("Command Executed")
 
 @bot.command()
-@commands.has_any_role(owner, mod, admin, botowner) 
+@commands.has_any_role(owner, mod, admin) 
 async def kick(ctx, member:discord.User, *, reason=None):
     await ctx.message.delete()
     guild = ctx.guild
