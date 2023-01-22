@@ -7,5 +7,7 @@
     "owner": owner role id here,
     "admin": admin role id here,
     "mod": mod role id here, 
+    "status": "test bot 1",
+    "status2": "test bot 2",
     "deletetime": 15
 }
