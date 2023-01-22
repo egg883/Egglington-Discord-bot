@@ -1,38 +1,18 @@
-from asyncio.windows_events import NULL
 import asyncio
 import aiohttp
-import re
-from win10toast import ToastNotifier
-from requests.utils import CaseInsensitiveDict
-from itertools import cycle
-from colour import Color
 import datetime
 import time
 import datetime, io, random
-from colorama import Fore, init
-import sys
 import json
-import urllib
 import os
 import discord
-from discord import embeds, guild, message, user
 import ctypes
-from pypresence import Presence, presence
-from discord.embeds import Embed
-import requests, wmi
-from discord.ext.commands import MissingPermissions
-import psutil
-from gtts import gTTS
-import tasks
-from discord.ext.commands import Bot, guild_only
+import requests
 from discord.ext import commands
 from roblox import Client
 import asyncio
 import random
 import discord
-from discord_slash.utils.manage_components import create_button, create_actionrow
-from discord_slash.model import ButtonStyle
-from async_timeout import timeout
 from discord.ext import commands
 #//////////////////////////////////////////////////////////////////////////
 client1 = Client()
@@ -50,7 +30,7 @@ owner = config['owner']
 admin = config['admin']
 botowner = config['botowner']
 mod = config['mod']
-bot = commands.Bot(command_prefix= prefix)
+bot = commands.Bot(command_prefix = prefix)
 cmds = {len(bot.commands)}
 intents = discord.Intents.all()
 version = 1.4
@@ -119,13 +99,6 @@ async def ruser(ctx, user423):
 async def h(ctx):
     await ctx.message.delete()
     guild = ctx.guild
-    buttons = [
-            create_button(
-                style=ButtonStyle.blue,
-                label="Fancy button (doesnt work yet...)"
-            ),
-          ]
-    action_row = create_actionrow(*buttons)
     embed=discord.Embed(title="Help commands", url="https://egg883.shop", description="This is help section of the bot", color=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
@@ -137,7 +110,7 @@ async def h(ctx):
     embed.add_field(name=f"[{prefix}] fun", value="List of fun commands", inline=False)
     embed.add_field(name=f"[{prefix}] roblox", value="List of roblox commands", inline=False)
     embed.add_field(name=f"[{prefix}] settings", value="List of settings commands", inline=False)
-    await ctx.send(embed=embed, components=[action_row], delete_after=deletein)
+    await ctx.send(embed=embed, delete_after=deletein)
 
 @bot.command()
 async def memes(ctx):
@@ -749,6 +722,7 @@ async def example(ctx):
     reaction2 = '🙂'
     await msg.add_reaction(reaction1)
     await msg.add_reaction(reaction2)
+
 
 #////////////////////////////////////////////////////////////////////////// 
 bot.run(bottoken)
