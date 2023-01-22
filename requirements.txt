@@ -1,8 +1,8 @@
-aiohttp==3.8.3
-async_timeout==4.0.2
+aiohttp==3.7.4.post0
+async_timeout==3.0.1
 colorama==0.4.6
 colour==0.1.5
-discord.py==1.7.3
+discord.py==2.1.0
 discord_py_interactions==4.3.4
 discord_py_slash_command==3.0.3
 gTTS==2.3.0
