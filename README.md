@@ -10,6 +10,9 @@ Egglington is Public to anyone to rewrite, use as their own bot As long as credi
 bot invite: 
 https://discord.com/api/oauth2/authorize?client_id=1063758752160960573&permissions=8&scope=applications.commands%20bot
 
+Tutorial on how to install:
+https://www.youtube.com/watch?v=oZbzgoXlAuI
+
 # https://discord.gg/AUevumCwXj
 
 <h2><strong> Discord Tag -->  </strong></h2>
