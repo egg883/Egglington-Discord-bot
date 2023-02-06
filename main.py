@@ -193,6 +193,7 @@ async def settings(ctx):
     embed.add_field(name=f"[{prefix}] info", value=f"[{prefix}] info", inline=False)
     embed.add_field(name=f"[{prefix}] news", value=f"[{prefix}] news", inline=False)
     embed.add_field(name=f"[{prefix}] support", value=f"[{prefix}] support (dms only)", inline=False)
+    embed.add_field(name=f"[{prefix}] restart", value=f"[{prefix}] restart (owner role only)", inline=False)
     await ctx.send(embed=embed,delete_after=deletein)
 
 
