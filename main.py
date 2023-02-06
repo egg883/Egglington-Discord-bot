@@ -8,6 +8,7 @@ import os
 import discord
 import ctypes
 import requests
+import sys
 from discord.ext import commands
 from roblox import Client
 import asyncio
@@ -26,9 +27,9 @@ clientid = config['clientid']
 bottoken = config['bot_token']
 prefix = config['prefix']
 deletein = config['deletetime']
-owner = config['owner']
-admin = config['admin']
-mod = config['mod']
+ownerrole = config['owner']
+adminrole = config['admin']
+modrole = config['mod']
 playingstatus = config['status']
 playingstatus2 = config['status2']
 bot = commands.Bot(command_prefix = prefix)
@@ -38,6 +39,9 @@ version = 1.4
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 intents.members = True
+def restart_bot(): 
+  #os.execv(sys.executable, ['python'] + sys.argv)
+  os.execv(sys.executable,sys.argv)
 #//////////////////////////////////////////////////////////////////////////
 def new_splash():
     print(f'{Colours.Magenta}Egglington is now Listening to {len(bot.guilds)} servers')
@@ -193,7 +197,7 @@ async def settings(ctx):
 
 
 @bot.command(pass_context=True)
-@commands.has_any_role(owner, mod, admin) 
+@commands.has_any_role(ownerrole, modrole, adminrole) 
 async def purge(ctx, limit: int):
     await ctx.message.delete()
     await ctx.channel.purge(limit=limit)
@@ -204,7 +208,7 @@ async def purge(ctx, limit: int):
 
 @bot.command()
 @commands.has_permissions(manage_messages=True)
-@commands.has_any_role(owner, mod, admin) 
+@commands.has_any_role(ownerrole, modrole, adminrole) 
 async def mute(ctx, member: discord.Member, *, reason=None):
     await ctx.message.delete()
     guild = ctx.guild
@@ -221,7 +225,7 @@ async def mute(ctx, member: discord.Member, *, reason=None):
     await member.send(f" you have been muted from: {guild.name} reason: {reason}")
 
 @bot.command()
-@commands.has_any_role(owner, mod, admin)
+@commands.has_any_role(ownerrole, modrole, adminrole)
 async def unmute(ctx,member: discord.Member, *, reason=None):
         await ctx.message.delete()
         guild = ctx.guild
@@ -247,7 +251,7 @@ async def whois(ctx,*,member: discord.Member):
         await ctx.send(embed=embed,delete_after=60)
 
 @bot.command()
-@commands.has_any_role(owner, mod, admin) 
+@commands.has_any_role(ownerrole, modrole, adminrole) 
 @commands.has_permissions(manage_messages=True)
 async def role(ctx,member: discord.Member,*, rname):
     await ctx.message.delete()
@@ -264,7 +268,7 @@ async def role(ctx,member: discord.Member,*, rname):
         await ctx.send(embed=embed, delete_after=60)
 
 @bot.command()
-@commands.has_any_role(owner, mod, admin) 
+@commands.has_any_role(ownerrole, modrole, adminrole) 
 async def deleterole(ctx, *, role: discord.Role = None):
     await ctx.message.delete()
     if ctx.author.guild_permissions.administrator and role:
@@ -299,7 +303,7 @@ async def clearconsole(ctx):
     new_splash()
 
 @bot.command()
-@commands.has_any_role(owner, admin) 
+@commands.has_any_role(ownerrole, adminrole) 
 async def unban(ctx, member:discord.User, *, reason=None):
     await ctx.message.delete()
     if reason == None:
@@ -323,7 +327,7 @@ async def unban(ctx, member:discord.User, *, reason=None):
     print("Command Executed")
 
 @bot.command()
-@commands.has_any_role(owner, admin) 
+@commands.has_any_role(ownerrole, adminrole) 
 async def ban(ctx, member:discord.User, *, reason=None):
     await ctx.message.delete()
     if reason == None:
@@ -349,7 +353,7 @@ async def ban(ctx, member:discord.User, *, reason=None):
     print("Command Executed")
 
 @bot.command()
-@commands.has_any_role(owner, mod, admin) 
+@commands.has_any_role(ownerrole, modrole, adminrole) 
 async def kick(ctx, member:discord.User, *, reason=None):
     await ctx.message.delete()
     guild = ctx.guild
@@ -371,6 +375,19 @@ async def kick(ctx, member:discord.User, *, reason=None):
     await ctx.send(embed=embed11, delete_after=15)
     logchannel = bot.get_channel(1063815239059124264)
     await logchannel.send(embed=embed)
+
+@bot.command()
+@commands.has_any_role(ownerrole) 
+async def restart(ctx):
+    await ctx.message.delete()
+    embed=discord.Embed(title="Command Executed", colour=0x007bff)
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1072208453323460790/giphy.gif")
+    embed.add_field(name="**Please Wait**", value="Bot Is Restarting.", inline=False)
+    await ctx.send(embed=embed, delete_after=600)
+    print("restarting bot")
+    restart_bot()
+
 
 @bot.command()
 async def news(ctx):
@@ -716,14 +733,15 @@ async def nsfw(ctx,error):
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed, delete_after=deletein)
 
-@bot.command()
-async def example(ctx):
-    msg = await ctx.send("Hello")
-    reaction1 = '👋'
-    reaction2 = '🙂'
-    await msg.add_reaction(reaction1)
-    await msg.add_reaction(reaction2)
-
+@restart.error
+async def restart(ctx,error):
+    embed=discord.Embed(title="RESTART COMMAND ERROR", color=0xFF0400)
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.add_field(name="Owner Only Command", value=f"You must be the owner of the server to use command.", inline=True)
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1064570023437422743/1195445329999867155jean_victor_balin_cross.svg.thumb.png")
+    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.timestamp = datetime.datetime.utcnow()
+    await ctx.send(embed=embed, delete_after=deletein)
 
 #////////////////////////////////////////////////////////////////////////// 
 bot.run(bottoken)
