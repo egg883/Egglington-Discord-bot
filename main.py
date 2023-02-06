@@ -35,7 +35,7 @@ playingstatus2 = config['status2']
 bot = commands.Bot(command_prefix = prefix)
 cmds = {len(bot.commands)}
 intents = discord.Intents.all()
-version = 1.4
+version = 1.5
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 intents.members = True
@@ -393,7 +393,7 @@ async def restart(ctx):
 @bot.command()
 async def news(ctx):
     await ctx.message.delete()
-    embed = discord.Embed(title="Update V1.5", description=f"This is the latest news about our bot Update", colour=0x007bff)
+    embed = discord.Embed(title=f"Update V{version}", description=f"This is the latest news about our bot Update", colour=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
     embed.add_field(name="Added 20 New Commands", value="Added a bunch of new commands (NSFW included)", inline=False)
