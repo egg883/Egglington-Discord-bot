@@ -59,7 +59,7 @@ def Clear():
 #//////////////////////////////////////////////////////////////////////////
 async def ch_pr():
  await bot.wait_until_ready()
- statuses = [f"{playingstatus} || {playingstatus2}", f"listening on {len(bot.guilds)} server's", f"Still need help? do {prefix}h for more help!"]
+ statuses = [f"{playingstatus} || {playingstatus2}", f"listening on {len(bot.guilds)} servers", f"Still need help? do {prefix}h for more help!"]
  while not bot.is_closed():
    status = random.choice(statuses)
    await bot.change_presence(activity=discord.Game(name=status))
