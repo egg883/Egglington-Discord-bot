@@ -66,6 +66,12 @@ async def ch_pr():
    await asyncio.sleep(10)
 bot.loop.create_task(ch_pr())
 
+@bot.command()
+async def clearconsole(ctx):
+    await ctx.message.delete()
+    Clear()
+    new_splash()
+
 @bot.event
 async def on_message(message):
 	if message.content == "test#24921":
@@ -76,10 +82,8 @@ async def on_message(message):
 async def ping(ctx):
 	await ctx.channel.send("pong",delete_after=config['deletetime'])
 
-
 @bot.command()
 async def ruser(ctx, user423):
-    await ctx.message.delete()
     user = await client1.get_user_by_username(user423)
     user_thumbnails = await client1.thumbnails.get_user_avatar_thumbnails(
         users=[user],
@@ -98,7 +102,7 @@ async def ruser(ctx, user423):
         embed.add_field(name=f"Description:", value=f"{user.description}", inline=False)
         embed.set_footer(text=f"{user423}'s Information", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
         embed.timestamp = datetime.datetime.utcnow()
-        await ctx.send(embed=embed,delete_after=60)
+        await ctx.send(embed=embed)
 
 @bot.command()
 async def h(ctx):
@@ -180,7 +184,7 @@ async def roblox(ctx):
     await ctx.message.delete()
     embed=discord.Embed(title="Roblox Commands", url="https://egg883.shop", description="This is roblox section of the bot", color=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
     embed.add_field(name=f"[{prefix}] ruser", value=f"[{prefix}] ruser (robloxusername)", inline=False)
     await ctx.send(embed=embed,delete_after=deletein)
 
@@ -296,12 +300,6 @@ async def pp(ctx, *, user: discord.Member = None):
     embed.add_field(name=f"{user}'s PP size is: ", value=f"8{dong}D", inline=False)
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed, delete_after=deletein)
-
-@bot.command()
-async def clearconsole(ctx):
-    await ctx.message.delete()
-    Clear()
-    new_splash()
 
 @bot.command()
 @commands.has_any_role(ownerrole, adminrole) 
