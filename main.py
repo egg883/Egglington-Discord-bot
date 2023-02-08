@@ -15,6 +15,7 @@ import asyncio
 import random
 import discord
 from discord.ext import commands
+from discord.utils import find
 #//////////////////////////////////////////////////////////////////////////
 client1 = Client()
 class Colours:
@@ -29,10 +30,11 @@ prefix = config['prefix']
 deletein = config['deletetime']
 ownerrole = config['owner']
 adminrole = config['admin']
+welcome = config['welcomechan']
 modrole = config['mod']
 playingstatus = config['status']
 playingstatus2 = config['status2']
-bot = commands.Bot(command_prefix = prefix)
+bot = commands.Bot(command_prefix = prefix, help_command=None)
 cmds = {len(bot.commands)}
 intents = discord.Intents.all()
 version = 1.5
@@ -45,7 +47,7 @@ def restart_bot():
 def new_splash():
     print(f'{Colours.Magenta}Egglington is now Listening to {len(bot.guilds)} servers')
     print(f"{Colours.Magenta}Egglington's Prefix is {prefix}")
-    print(f"{Colours.Magenta}Do {prefix}h for the help commands")
+    print(f"{Colours.Magenta}Do {prefix}help for the help commands")
 
 @bot.event
 async def on_connect():
@@ -60,7 +62,7 @@ def Clear():
 #//////////////////////////////////////////////////////////////////////////
 async def ch_pr():
  await bot.wait_until_ready()
- statuses = [f"{playingstatus} || {playingstatus2}", f"listening on {len(bot.guilds)} servers", f"Still need help? do {prefix}h for more help!"]
+ statuses = [f"{playingstatus} || {playingstatus2}", f"listening on {len(bot.guilds)} servers", f"Still need help? do {prefix}help for more help!"]
  while not bot.is_closed():
    status = random.choice(statuses)
    await bot.change_presence(activity=discord.Game(name=status))
@@ -73,41 +75,8 @@ async def clearconsole(ctx):
     Clear()
     new_splash()
 
-@bot.event
-async def on_message(message):
-	if message.content == "test#24921":
-		await message.channel.send("Hello this is a test message")
-	await bot.process_commands(message)
-
 @bot.command()
-async def ping(ctx):
-	await ctx.channel.send("pong",delete_after=config['deletetime'])
-
-@bot.command()
-async def ruser(ctx, user423):
-    user = await client1.get_user_by_username(user423)
-    user_thumbnails = await client1.thumbnails.get_user_avatar_thumbnails(
-        users=[user],
-        size=(420, 420)
-    )
-    if len(user_thumbnails) > 0:
-        user_thumbnail = user_thumbnails[0]
-        embed=discord.Embed(title=f"Found Info for {user.name} ", url=f"https://www.roblox.com/users/{user.id}/profile", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.set_thumbnail(url=f"{user_thumbnail.image_url}")
-        embed.add_field(name=f"Username:", value=f"{user.name}", inline=False)
-        embed.add_field(name=f"Display name:", value=f"{user.display_name}", inline=False)
-        embed.add_field(name=f"User ID:", value=f"{user.id}", inline=False)
-        embed.add_field(name=f"Creation Date:", value=f"{user.created.strftime('%d/%m/%Y')}", inline=False)
-        embed.add_field(name=f"Is banned:", value=f"{user.is_banned}", inline=False)
-        embed.add_field(name=f"Description:", value=f"{user.description}", inline=False)
-        embed.set_footer(text=f"{user423}'s Information", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
-        embed.timestamp = datetime.datetime.utcnow()
-        await ctx.send(embed=embed)
-
-@bot.command()
-async def h(ctx):
-    await ctx.message.delete()
+async def help(ctx):
     guild = ctx.guild
     embed=discord.Embed(title="Help commands", url="https://egg883.shop", description="This is help section of the bot", color=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
@@ -124,7 +93,6 @@ async def h(ctx):
 
 @bot.command()
 async def memes(ctx):
-    await ctx.message.delete()
     embed=discord.Embed(title="Meme Commands", url="https://egg883.shop", description="This is Meme section of the bot", color=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
@@ -140,7 +108,6 @@ async def memes(ctx):
 
 @bot.command()
 async def general(ctx):
-    await ctx.message.delete()
     embed=discord.Embed(title="General commands", url="https://egg883.shop", description="This is general section of the bot", color=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
@@ -149,7 +116,7 @@ async def general(ctx):
 
 @bot.command()
 async def fun(ctx):
-    await ctx.message.delete()
+
     embed=discord.Embed(title="Fun commands", url="https://egg883.shop", description="This is fun section of the bot", color=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
@@ -158,7 +125,6 @@ async def fun(ctx):
 
 @bot.command()
 async def server(ctx):
-    await ctx.message.delete()
     embed=discord.Embed(title="Server commands", url="https://egg883.shop", color=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
@@ -182,16 +148,15 @@ async def moderation(ctx):
 
 @bot.command()
 async def roblox(ctx):
-    await ctx.message.delete()
     embed=discord.Embed(title="Roblox Commands", url="https://egg883.shop", description="This is roblox section of the bot", color=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
     embed.add_field(name=f"[{prefix}] ruser", value=f"[{prefix}] ruser (robloxusername)", inline=False)
+    embed.add_field(name=f"[{prefix}] routfit", value=f"[{prefix}] routfit (robloxusername)", inline=False)
     await ctx.send(embed=embed,delete_after=deletein)
 
 @bot.command()
 async def settings(ctx):
-    await ctx.message.delete()
     embed=discord.Embed(title="moderation commands", url="https://egg883.shop", color=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
@@ -483,6 +448,46 @@ async def jail(ctx, member=None):
             await trigSession.close()
             
             await ctx.send(file=discord.File(imageData, 'eggui.gif'))
+
+
+@bot.command()
+async def ruser(ctx, user423):
+    user = await client1.get_user_by_username(user423)
+    user_thumbnails = await client1.thumbnails.get_user_avatar_thumbnails(
+        users=[user],
+        size=(420, 420)
+    )
+    if len(user_thumbnails) > 0:
+        user_thumbnail = user_thumbnails[0]
+        embed=discord.Embed(title=f"Found Info for {user.name} ", url=f"https://www.roblox.com/users/{user.id}/profile", color=0x007bff)
+        embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.set_thumbnail(url=f"{user_thumbnail.image_url}")
+        embed.add_field(name=f"Username:", value=f"{user.name}", inline=False)
+        embed.add_field(name=f"Display name:", value=f"{user.display_name}", inline=False)
+        embed.add_field(name=f"User ID:", value=f"{user.id}", inline=False)
+        embed.add_field(name=f"Creation Date:", value=f"{user.created.strftime('%d/%m/%Y')}", inline=False)
+        embed.add_field(name=f"Is banned:", value=f"{user.is_banned}", inline=False)
+        embed.add_field(name=f"Description:", value=f"{user.description}", inline=False)
+        embed.set_footer(text=f"{user423}'s Information", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
+        embed.timestamp = datetime.datetime.utcnow()
+        await ctx.send(embed=embed)
+
+@bot.command()
+async def routfit(ctx, user423):
+    user = await client1.get_user_by_username(user423)
+    user_thumbnails = await client1.thumbnails.get_user_avatar_thumbnails(
+        users=[user],
+        size=(420, 420)
+    )
+    if len(user_thumbnails) > 0:
+        user_thumbnail = user_thumbnails[0]
+        embed=discord.Embed(title=f"Found current outfit for {user.name} ", url=f"https://www.roblox.com/users/{user.id}/profile", color=0x007bff)
+        embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.add_field(name=f"Username:", value=f"{user.name}", inline=False)
+        embed.set_image(url = f"{user_thumbnail.image_url}")
+        embed.set_footer(text=f"{user423}'s current outfit", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
+        embed.timestamp = datetime.datetime.utcnow()
+        await ctx.send(embed=embed)
 
 @bot.command()
 async def wasted(ctx, member=None):
