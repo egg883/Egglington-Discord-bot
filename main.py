@@ -40,11 +40,12 @@ intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 intents.members = True
 def restart_bot(): 
-  #os.execv(sys.executable, ['python'] + sys.argv)
   os.execv(sys.executable,sys.argv)
 #//////////////////////////////////////////////////////////////////////////
 def new_splash():
     print(f'{Colours.Magenta}Egglington is now Listening to {len(bot.guilds)} servers')
+    print(f"{Colours.Magenta}Egglington's Prefix is {prefix}")
+    print(f"{Colours.Magenta}Do {prefix}h for the help commands")
 
 @bot.event
 async def on_connect():
