@@ -30,17 +30,17 @@ prefix = config['prefix']
 deletein = config['deletetime']
 ownerrole = config['owner']
 adminrole = config['admin']
-welcome = config['welcomechan']
 modrole = config['mod']
 playingstatus = config['status']
 playingstatus2 = config['status2']
 bot = commands.Bot(command_prefix = prefix, help_command=None)
 cmds = {len(bot.commands)}
 intents = discord.Intents.all()
-version = 1.5
+version = 1.6
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 intents.members = True
+githuburl = "https://github.com/egg883/Egglington-Discord-bot"
 def restart_bot(): 
   os.execv(sys.executable,sys.argv)
 #//////////////////////////////////////////////////////////////////////////
@@ -357,11 +357,12 @@ async def restart(ctx):
 @bot.command()
 async def news(ctx):
     await ctx.message.delete()
-    embed = discord.Embed(title=f"Update V{version}", description=f"This is the latest news about our bot Update", colour=0x007bff)
+    embed = discord.Embed(title=f"Update V{version}", description=f"This is the latest news about our bot Update", url=f"{githuburl}", colour=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.add_field(name="Added 20 New Commands", value="Added a bunch of new commands (NSFW included)", inline=False)
-    embed.add_field(name="Optimized the code a little", value="Made it alot faster lol", inline=False)
+    embed.add_field(name="Added 10 New Commands", value="Added a bunch of new commands (more roblox)", inline=False)
+    embed.add_field(name="Optimized the code a little", value="cleared stuff i dont need", inline=False)
+    embed.add_field(name="Fixed the regular help command", value=f"Made the help command {prefix}help", inline=False)
     embed.add_field(name="Updates coming soon", value="besure to check out https://egg883.shop", inline=False)
     await ctx.send(embed=embed)
 
