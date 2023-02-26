@@ -16,6 +16,7 @@ import random
 import discord
 from discord.ext import commands
 from discord.utils import find
+import rolimons
 #//////////////////////////////////////////////////////////////////////////
 client1 = Client()
 class Colours:
@@ -454,6 +455,8 @@ async def jail(ctx, member=None):
 @bot.command()
 async def ruser(ctx, user423):
     user = await client1.get_user_by_username(user423)
+    userid = user.id
+    listofusers = requests.get(f'https://www.rolimons.com/playerapi/player/{userid}').json()
     user_thumbnails = await client1.thumbnails.get_user_avatar_thumbnails(
         users=[user],
         size=(420, 420)
@@ -467,6 +470,7 @@ async def ruser(ctx, user423):
         embed.add_field(name=f"Display name:", value=f"{user.display_name}", inline=False)
         embed.add_field(name=f"User ID:", value=f"{user.id}", inline=False)
         embed.add_field(name=f"Creation Date:", value=f"{user.created.strftime('%d/%m/%Y')}", inline=False)
+        embed.add_field(name=f"Premium:", value=f"{listofusers['premium']}", inline=False)
         embed.add_field(name=f"Is banned:", value=f"{user.is_banned}", inline=False)
         embed.add_field(name=f"Description:", value=f"{user.description}", inline=False)
         embed.set_footer(text=f"{user423}'s Information", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
@@ -738,7 +742,31 @@ async def ruserhis(ctx,user423):
         embed.set_footer(text=f"{user423}'s Past Usernames", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
-    
+
+@bot.command() 
+async def rvalue(ctx,username):
+    user = await client1.get_user_by_username(username)
+    userid = user.id
+    listofusers1 = requests.get(f'https://www.rolimons.com/playerapi/player/{userid}').json()
+    user_thumbnails = await client1.thumbnails.get_user_avatar_thumbnails(
+        users=[user],
+        size=(420, 420)
+    )
+    if len(user_thumbnails) > 0:
+        user_thumbnail = user_thumbnails[0]
+    embed=discord.Embed(title=f"Rolimons Info for {user.name} ", url=f"https://www.rolimons.com/player/{userid}", color=0x007bff)
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_thumbnail(url=f"{user_thumbnail.image_url}")
+    embed.add_field(name=f"Username:", value=f"{listofusers1['name']}", inline=False)
+    embed.add_field(name=f"Rank:", value=f"{listofusers1['rank']}", inline=False)
+    embed.add_field(name=f"RAP:", value=f"{listofusers1['rap']}", inline=False)
+    embed.add_field(name=f"Value:", value=f"{listofusers1['value']}", inline=False)
+    embed.add_field(name=f"Premium:", value=f"{listofusers1['premium']}", inline=False)
+    embed.add_field(name=f"Terminated:", value=f"{listofusers1['terminated']}", inline=False)
+    embed.add_field(name=f"Last Location:", value=f"{listofusers1['last_location']}", inline=False)
+    embed.set_footer(text=f"{username}'s rolimons", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1079482029776842812/JCiYruAM_400x400.png")
+    await ctx.send(embed=embed)
+
 @support.error
 async def support(ctx,error):
     embed=discord.Embed(title="SUPPORT COMMAND ERROR", color=0xFF0400)
