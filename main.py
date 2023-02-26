@@ -36,7 +36,7 @@ playingstatus2 = config['status2']
 bot = commands.Bot(command_prefix = prefix, help_command=None)
 cmds = {len(bot.commands)}
 intents = discord.Intents.all()
-version = 1.6
+version = 1.7
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 intents.members = True
@@ -153,6 +153,7 @@ async def roblox(ctx):
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
     embed.add_field(name=f"[{prefix}] ruser", value=f"[{prefix}] ruser (robloxusername)", inline=False)
     embed.add_field(name=f"[{prefix}] routfit", value=f"[{prefix}] routfit (robloxusername)", inline=False)
+    embed.add_field(name=f"[{prefix}] ruserhis", value=f"[{prefix}] ruserhis (robloxusername)", inline=False)
     await ctx.send(embed=embed,delete_after=deletein)
 
 @bot.command()
@@ -360,9 +361,8 @@ async def news(ctx):
     embed = discord.Embed(title=f"Update V{version}", description=f"This is the latest news about our bot Update", url=f"{githuburl}", colour=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.add_field(name="Added 10 New Commands", value="Added a bunch of new commands (more roblox)", inline=False)
+    embed.add_field(name="Added New Commands", value="Added a bunch of new commands (more roblox)", inline=False)
     embed.add_field(name="Optimized the code a little", value="cleared stuff i dont need", inline=False)
-    embed.add_field(name="Fixed the regular help command", value=f"Made the help command {prefix}help", inline=False)
     embed.add_field(name="Updates coming soon", value="besure to check out https://egg883.shop", inline=False)
     await ctx.send(embed=embed)
 
@@ -719,6 +719,26 @@ async def nsfw(ctx, category=None):
         embed.set_image(url=res['message'])
         await ctx.send(embed=embed, delete_after=deletein)
 
+@bot.command() # THANKS TO PAW
+async def ruserhis(ctx,user423):
+    user = await client1.get_user_by_username(user423)
+    userid = user.id
+    listofusers = requests.get(f'https://users.roblox.com/v1/users/{userid}/username-history?limit=50&sortOrder=Desc').json()
+    uwu =("\n".join([a['name'] for a in listofusers['data']]))
+    user_thumbnails = await client1.thumbnails.get_user_avatar_thumbnails(
+        users=[user],
+        size=(420, 420)
+    )
+    if len(user_thumbnails) > 0:
+        user_thumbnail = user_thumbnails[0]
+        embed=discord.Embed(title=f"Past usernames for {user.name} ", url=f"https://www.roblox.com/users/{user.id}/profile", color=0x007bff)
+        embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.set_thumbnail(url=f"{user_thumbnail.image_url}")
+        embed.add_field(name=f"Past usernames", value=f"{uwu}", inline=False)
+        embed.set_footer(text=f"{user423}'s Past Usernames", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
+        embed.timestamp = datetime.datetime.utcnow()
+        await ctx.send(embed=embed)
+    
 @support.error
 async def support(ctx,error):
     embed=discord.Embed(title="SUPPORT COMMAND ERROR", color=0xFF0400)
