@@ -12,6 +12,10 @@ import sys
 from discord.ext import commands
 from roblox import Client
 import asyncio
+import requests
+from bs4 import BeautifulSoup
+import re
+import json
 import random
 import discord
 from discord.ext import commands
@@ -59,6 +63,7 @@ async def on_connect():
 
 def Clear():
     os.system('cls')
+
 
 #//////////////////////////////////////////////////////////////////////////
 async def ch_pr():
@@ -558,6 +563,8 @@ async def ph(ctx, member=None, *, msg):
     await ctx.send(embed=embed, delete_after = deletein)
 
 
+
+
 @bot.command()
 async def horny(ctx, member=None):
     await ctx.message.delete()
@@ -755,6 +762,14 @@ async def rvalue(ctx,username):
     )
     if len(user_thumbnails) > 0:
         user_thumbnail = user_thumbnails[0]
+        URL = f"https://www.rolimons.com/player/{userid}"
+    requestURL = requests.get(URL)
+    content = requestURL.content
+    soup = BeautifulSoup(content, "html.parser")
+ 
+    testA = sum([len(x) for x in json.loads(str(soup.findAll('script')[-2]).split('var scanned_player_assets = ')[-1].split(';\n')[0]).values()])
+    testA
+    [x for x in json.loads(str(soup.findAll('script')[-2]).split('var scanned_player_assets = ')[-1].split(';\n')[0])]
     embed=discord.Embed(title=f"Rolimons Info for {user.name} ", url=f"https://www.rolimons.com/player/{userid}", color=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url=f"{user_thumbnail.image_url}")
@@ -762,6 +777,7 @@ async def rvalue(ctx,username):
     embed.add_field(name=f"Rank:", value=f"{listofusers1['rank']}", inline=False)
     embed.add_field(name=f"RAP:", value=f"{listofusers1['rap']}", inline=False)
     embed.add_field(name=f"Value:", value=f"{listofusers1['value']}", inline=False)
+    embed.add_field(name=f"Collectibles:", value=f"{testA}", inline=False)
     embed.add_field(name=f"Premium:", value=f"{listofusers1['premium']}", inline=False)
     embed.add_field(name=f"Terminated:", value=f"{listofusers1['terminated']}", inline=False)
     embed.add_field(name=f"Last Location:", value=f"{listofusers1['last_location']}", inline=False)
