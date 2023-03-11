@@ -59,6 +59,8 @@ async def on_connect():
 
 def Clear():
     os.system('cls')
+
+
 #//////////////////////////////////////////////////////////////////////////
 async def ch_pr():
  await bot.wait_until_ready()
@@ -899,7 +901,7 @@ async def on_command_error(ctx, error:commands.CommandError):
             embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
             embed.timestamp = datetime.datetime.utcnow()
             print(Fore.RED+f"[ERR] The Command {cmd} Does not exist"+Fore.RESET)
-            await ctx.send(embed=embed, delete_after=deletein)
+            await ctx.send(embed=embed, delete_after=30)
 
 #////////////////////////////////////////////////////////////////////////// 
 def Init():
