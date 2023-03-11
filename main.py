@@ -20,7 +20,7 @@ import random
 import discord
 from discord.ext import commands
 from discord.utils import find
-import rolimons
+from bs4 import BeautifulSoup
 #//////////////////////////////////////////////////////////////////////////
 client1 = Client()
 class Colours:
@@ -41,7 +41,7 @@ playingstatus2 = config['status2']
 bot = commands.Bot(command_prefix = prefix, help_command=None)
 cmds = {len(bot.commands)}
 intents = discord.Intents.all()
-version = 1.7
+version = 1.8
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 intents.members = True
@@ -161,6 +161,8 @@ async def roblox(ctx):
     embed.add_field(name=f"[{prefix}] routfit", value=f"[{prefix}] routfit (robloxusername)", inline=False)
     embed.add_field(name=f"[{prefix}] ruserhis", value=f"[{prefix}] ruserhis (robloxusername)", inline=False)
     embed.add_field(name=f"[{prefix}] rvalue", value=f"[{prefix}] rvalue (robloxusername)", inline=False)
+    embed.add_field(name=f"[{prefix}] ritem", value=f"[{prefix}] ritem (item url)", inline=False)
+    embed.add_field(name=f"[{prefix}] rgame", value=f"[{prefix}] rgame (game url)", inline=False)
     await ctx.send(embed=embed,delete_after=deletein)
 
 @bot.command()
@@ -368,8 +370,8 @@ async def news(ctx):
     embed = discord.Embed(title=f"Update V{version}", description=f"This is the latest news about our bot Update", url=f"{githuburl}", colour=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.add_field(name="Added New Commands", value="Added a bunch of new commands (more roblox)", inline=False)
-    embed.add_field(name="Optimized the code a little", value="cleared stuff i dont need", inline=False)
+    embed.add_field(name="Added New Roblox cmds", value="rgame and ritem have been added", inline=False)
+    embed.add_field(name="Upgraded visually", value="some embeds looked awful", inline=False)
     embed.add_field(name="Updates coming soon", value="besure to check out https://egg883.shop", inline=False)
     await ctx.send(embed=embed)
 
@@ -766,23 +768,86 @@ async def rvalue(ctx,username):
     requestURL = requests.get(URL)
     content = requestURL.content
     soup = BeautifulSoup(content, "html.parser")
- 
+    URL3 = f"https://www.rolimons.com/player/{userid}"
+    requestURL = requests.get(URL3)
+    content = requestURL.content
+    soup1 = BeautifulSoup(content, "html.parser")
+    trade = soup1.find('span',class_="card-title mb-1 text-light stat-data text-nowrap").text
     testA = sum([len(x) for x in json.loads(str(soup.findAll('script')[-2]).split('var scanned_player_assets = ')[-1].split(';\n')[0]).values()])
     testA
     [x for x in json.loads(str(soup.findAll('script')[-2]).split('var scanned_player_assets = ')[-1].split(';\n')[0])]
     embed=discord.Embed(title=f"Rolimons Info for {user.name} ", url=f"https://www.rolimons.com/player/{userid}", color=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url=f"{user_thumbnail.image_url}")
-    embed.add_field(name=f"Username:", value=f"{listofusers1['name']}", inline=True)
-    embed.add_field(name=f"Rank:", value=f"{listofusers1['rank']}", inline=True)
-    embed.add_field(name=f"RAP:", value=f"{listofusers1['rap']}", inline=True)
-    embed.add_field(name=f"Value:", value=f"{listofusers1['value']}", inline=True)
-    embed.add_field(name=f"Collectibles:", value=f"{testA}", inline=True)
-    embed.add_field(name=f"Premium:", value=f"{listofusers1['premium']}", inline=True)
-    embed.add_field(name=f"Terminated:", value=f"{listofusers1['terminated']}", inline=True)
-    embed.add_field(name=f"Private:", value=f"{listofusers1['privacy_enabled']}", inline=True)
-    embed.add_field(name=f"Last Location:", value=f"{listofusers1['last_location']}", inline=True)
+    embed.add_field(name=f"Username:", value=f"```{listofusers1['name']}```", inline=True)
+    embed.add_field(name=f"Rank:", value=f"```{listofusers1['rank']}```", inline=True)
+    embed.add_field(name=f"RAP:", value=f"```{listofusers1['rap']}```", inline=True)
+    embed.add_field(name=f"Value:", value=f"```{listofusers1['value']}```", inline=True)
+    embed.add_field(name=f"Collectibles:", value=f"```{testA}```", inline=True)
+    embed.add_field(name=f"Trade ads:", value=f"```{trade}```", inline=True)
+    embed.add_field(name=f"Premium:", value=f"```{listofusers1['premium']}```", inline=True)
+    embed.add_field(name=f"Terminated:", value=f"```{listofusers1['terminated']}```", inline=True)
+    embed.add_field(name=f"Private:", value=f"```{listofusers1['privacy_enabled']}```", inline=True)
+    embed.add_field(name=f"Last Location:", value=f"```{listofusers1['last_location']}```", inline=True)
     embed.set_footer(text=f"{username}'s rolimons", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1079482029776842812/JCiYruAM_400x400.png")
+    await ctx.send(embed=embed)
+
+# @bot.command()
+# async def rgroup(ctx, url):
+#     URL3 = "https://www.roblox.com/groups/15732878/Parkour-Style-Games#!/about"
+#     requestURL = requests.get(URL3)
+#     content = requestURL.content
+#     soup = BeautifulSoup(content, "html.parser")
+#     count = [x for x in soup.find_all('meta')[3]][1]['content'].split(' ')[-3]
+
+@bot.command()
+async def rgame(ctx, url):
+    await ctx.message.delete()
+    url1 = f"{url}"
+    requestURL = requests.get(url1)
+    content = requestURL.content
+    soup = BeautifulSoup(content, "html.parser")
+    player = soup.find('p', class_="text-lead font-caption-body wait-for-i18n-format-render").text
+    visit = (soup.find('p', id='game-visit-count')['title'])
+    fav = soup.find('span', class_="game-favorite-count").text
+    name = soup.find('h1').text
+    created = soup.find('p',class_="text-lead font-caption-body").text
+    updated = soup.find_all('p', class_='text-lead font-caption-body')[1].text
+    size = soup.find_all('p',class_="text-lead font-caption-body wait-for-i18n-format-render")[3].text
+    embed=discord.Embed(title=f"Game info for {name} ", url=f"{url}", color=0x007bff)
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_thumbnail(url=f"https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
+    embed.add_field(name=f"visits:", value=f"```{visit}```", inline=True)
+    embed.add_field(name=f"favorites:", value=f"```{fav}```", inline=True)
+    embed.add_field(name=f"player count:", value=f"```{player}```", inline=True)
+    embed.add_field(name=f"Server Size:", value=f"```{size}```", inline=True)
+    embed.add_field(name=f"Created:", value=f"```{created}```", inline=True)
+    embed.add_field(name=f"Last Updated:", value=f"```{updated}```", inline=True)
+    embed.set_footer(text=f"{name}'s Info", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
+    await ctx.send(embed=embed)
+
+@bot.command()
+async def ritem(ctx,url):
+    await ctx.message.delete()
+    URL3 = f"{url}"
+    requestURL = requests.get(URL3)
+    content = requestURL.content
+    soup = BeautifulSoup(content, "html.parser")
+    price = soup.find('span',class_="text-robux-lg wait-for-i18n-format-render").text
+    name = soup.find('h1').text
+    desc = soup.find('p',class_="description-content font-body text wait-for-i18n-format-render").text
+    author = soup.find('a',  class_="text-name").text
+    cata = soup.find_all('span')[14].text
+    fav = soup.find_all('span')[18].text
+    embed=discord.Embed(title=f"Item info for {name}", url=f"{url}", color=0x007bff)
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_thumbnail(url=f"https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
+    embed.add_field(name=f"Author:", value=f"```{author}```", inline=True)
+    embed.add_field(name=f"Price:", value=f"```R${price}```", inline=True)
+    embed.add_field(name=f"Favorites:", value=f"```{fav}```", inline=True)
+    embed.add_field(name=f"Catagory:", value=f"```{cata}```", inline=True)
+    embed.add_field(name=f"description:", value=f"```{desc}```", inline=False)
+    embed.set_footer(text=f"{name}'s Info", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
     await ctx.send(embed=embed)
 
 @support.error
