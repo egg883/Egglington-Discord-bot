@@ -1,26 +1,22 @@
-import asyncio
 import aiohttp
 import datetime
 import time
-import datetime, io, random
+import io
 import json
 import os
 import discord
+from colorama import Fore
 import ctypes
-import requests
+import re
 import sys
 from discord.ext import commands
 from roblox import Client
 import asyncio
 import requests
 from bs4 import BeautifulSoup
-import re
-import json
 import random
-import discord
-from discord.ext import commands
+import urllib
 from discord.utils import find
-from bs4 import BeautifulSoup
 #//////////////////////////////////////////////////////////////////////////
 client1 = Client()
 class Colours:
@@ -118,6 +114,7 @@ async def general(ctx):
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
     embed.add_field(name=f"[{prefix}] whois", value=f"[{prefix}] whois (@user)", inline=False)
+    embed.add_field(name=f"[{prefix}] yt", value=f"[{prefix}] yt (name of yt video)", inline=False)
     await ctx.send(embed=embed,delete_after=deletein)
 
 @bot.command()
@@ -519,6 +516,17 @@ async def wasted(ctx, member=None):
             
             await ctx.send(file=discord.File(imageData, 'eggui.gif'))
 
+@bot.command(aliases=['youtube','yt'])
+async def _youtube(ctx, *, search):
+    await ctx.message.delete()
+    author=ctx.message.author
+    guild=ctx.guild
+    query_string = urllib.parse.urlencode({'search_query': search})
+    html_content = urllib.request.urlopen('http://www.youtube.com/results?' + query_string)
+    search_content= html_content.read().decode()
+    search_results = re.findall(r'\/watch\?v=\w+', search_content)
+    await ctx.send(f'{author.mention} result:\n https://www.youtube.com' + search_results[0])
+
 @bot.command()
 async def lolice(ctx, member=None):
     await ctx.message.delete()
@@ -880,5 +888,31 @@ async def restart(ctx,error):
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed, delete_after=deletein)
 
+@bot.event
+async def on_command_error(ctx, error:commands.CommandError):
+        if isinstance(error, commands.CommandNotFound):
+            await ctx.message.delete()
+            cmd = ctx.message.content.split()[0]
+            cmd = cmd.lstrip(prefix)
+            embed=discord.Embed(title="COMMAND ERROR", color=0xFF0400)
+            embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+            embed.add_field(name="COMMAND NOT FOUND", value=f"The command {cmd} does not exist", inline=True)
+            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1064570023437422743/1195445329999867155jean_victor_balin_cross.svg.thumb.png")
+            embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+            embed.timestamp = datetime.datetime.utcnow()
+            print(Fore.RED+f"[ERR] The Command {cmd} Does not exist"+Fore.RESET)
+            await ctx.send(embed=embed, delete_after=deletein)
+
 #////////////////////////////////////////////////////////////////////////// 
-bot.run(bottoken)
+def Init():
+    with open('config.json', encoding="utf-8") as f:
+        config = json.load(f)
+    token = config.get('bottoken')
+    try:
+        bot.run(bottoken)
+    except discord.errors.LoginFailure:
+        input(f"{Fore.RED}[SYSTEM] BOT TOKEN IS INVALID CHECK CONFIG"+Colours.White)
+        sys.exit
+        python = sys.executable
+        os.execl(python, python, * sys.argv)
+Init()
