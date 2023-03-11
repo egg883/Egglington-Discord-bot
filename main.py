@@ -59,8 +59,6 @@ async def on_connect():
 
 def Clear():
     os.system('cls')
-
-
 #//////////////////////////////////////////////////////////////////////////
 async def ch_pr():
  await bot.wait_until_ready()
