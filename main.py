@@ -73,7 +73,7 @@ bot.loop.create_task(ch_pr())
 
 @bot.command()
 async def clearconsole(ctx):
-    await ctx.message.delete()
+    ctx.message.delete()
     Clear()
     new_splash()
 
@@ -405,14 +405,13 @@ async def sinfo(ctx):
 
 @bot.command()
 async def info(ctx):
-    await ctx.message.delete()
     embed = discord.Embed(title="Info", description=f"This is a information page about my bot", colour=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.add_field(name="Total Commands", value = f"{len(bot.commands)}", inline=False)
-    embed.add_field(name="Prefix", value=f"{prefix}", inline=False)
-    embed.add_field(name="Version", value=f"{version}", inline=False)
-    embed.add_field(name="Creator", value="This bot was made by eggs#6666 this is a little project i wanted todo", inline=False)
+    embed.add_field(name="Total Commands:", value = f"```{len(bot.commands)}```", inline=True)
+    embed.add_field(name="Prefix:", value=f"```{prefix}```", inline=True)
+    embed.add_field(name="Version:", value=f"```{version}```", inline=True)
+    embed.add_field(name="Creator:", value="```This bot was made by eggs#6666 this is a little project i wanted todo```", inline=False)
     embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
@@ -890,8 +889,7 @@ async def restart(ctx,error):
 
 @bot.event
 async def on_command_error(ctx, error:commands.CommandError):
-        if isinstance(error, commands.CommandNotFound):
-            await ctx.message.delete()
+    if isinstance(error, commands.CommandNotFound):
             cmd = ctx.message.content.split()[0]
             cmd = cmd.lstrip(prefix)
             embed=discord.Embed(title="COMMAND ERROR", color=0xFF0400)
@@ -907,7 +905,7 @@ async def on_command_error(ctx, error:commands.CommandError):
 def Init():
     with open('config.json', encoding="utf-8") as f:
         config = json.load(f)
-    token = config.get('bottoken')
+    config.get('bottoken')
     try:
         bot.run(bottoken)
     except discord.errors.LoginFailure:
