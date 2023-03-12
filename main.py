@@ -59,8 +59,6 @@ async def on_connect():
 
 def Clear():
     os.system('cls')
-
-
 #//////////////////////////////////////////////////////////////////////////
 async def ch_pr():
  await bot.wait_until_ready()
@@ -119,7 +117,6 @@ async def general(ctx):
 
 @bot.command()
 async def fun(ctx):
-
     embed=discord.Embed(title="Fun commands", url="https://egg883.shop", description="This is fun section of the bot", color=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
@@ -218,14 +215,14 @@ async def unmute(ctx,member: discord.Member, *, reason=None):
 @bot.command()
 async def whois(ctx,*,member: discord.Member):
         await ctx.message.delete()
-        embed = discord.Embed(title=f"Info about {member.display_name}", colour=0x007bff)
+        embed = discord.Embed(title=f"Info about **{member.display_name}**", colour=0x007bff)
         embed.set_thumbnail(url=f"{member.avatar_url}")
         embed.set_author(name=f"Egglington", url="https://egg883.shop", icon_url=f"https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.add_field(name="User ID:", value=f"{member.id}", inline=False)
-        embed.add_field(name="Users Discriminator:", value=f"{member.discriminator}", inline=False)
-        embed.add_field(name="Creation Date:", value=f"{member.created_at.strftime('%d/%m/%Y')}", inline=False)
-        embed.add_field(name="Server Join Date:", value=f"{member.joined_at.strftime('%d/%m/%Y')}", inline=False)
-        embed.add_field(name="Is a bot:", value=f"{member.bot}", inline=False)
+        embed.add_field(name="User ID:", value=f"```{member.id}```", inline=False)
+        embed.add_field(name="Users Discriminator:", value=f"```#{member.discriminator}```", inline=True)
+        embed.add_field(name="Creation Date:", value=f"```{member.created_at.strftime('%d/%m/%Y')}```", inline=True)
+        embed.add_field(name="Server Join Date:", value=f"```{member.joined_at.strftime('%d/%m/%Y')}```", inline=True)
+        embed.add_field(name="Is a bot:", value=f"```{member.bot}```", inline=True)
         await ctx.send(embed=embed,delete_after=60)
 
 @bot.command()
@@ -393,14 +390,14 @@ async def sinfo(ctx):
     categories = len(ctx.guild.categories)
     member_count = len(ctx.guild.members)
     channels = text_channels + voice_channels
-    embed = discord.Embed(title="Server Info", description=f"This is info about {guild.name}", colour=0x007bff)
+    embed = discord.Embed(title="Server Info", description=f"This is info about **{guild.name}**", colour=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url=f"{guild.icon_url}")
-    embed.add_field(name="Server ID", value=f"{ctx.guild.id}", inline=False)
-    embed.add_field(name="Server Owner", value=f"{ctx.guild.owner}", inline=False)
-    embed.add_field(name="Member Count", value=f"{member_count}", inline=False)
-    embed.add_field(name="Channel Count", value=f"{channels} Channels {text_channels} Text, {voice_channels} Voice, {categories}", inline=False)
-    embed.add_field(name="Server Verification", value=f"{str(ctx.guild.verification_level).upper()}", inline=False)
+    embed.add_field(name="Server ID", value=f"```{ctx.guild.id}```", inline=False)
+    embed.add_field(name="Channel Count", value=f"```{channels} Channels {text_channels} Text, {voice_channels} Voice, {categories}```", inline=False)
+    embed.add_field(name="Server Owner", value=f"```{ctx.guild.owner}```", inline=True)
+    embed.add_field(name="Member Count", value=f"```{member_count}```", inline=True)
+    embed.add_field(name="Server Verification", value=f"```{str(ctx.guild.verification_level).upper()}```", inline=False)
     await ctx.send(embed=embed)
 
 @bot.command()
@@ -460,6 +457,10 @@ async def jail(ctx, member=None):
 async def ruser(ctx, user423):
     user = await client1.get_user_by_username(user423)
     userid = user.id
+    URL3 = f"https://www.roblox.com/users/{userid}/profile"
+    requestURL = requests.get(URL3)
+    content = requestURL.content
+    soup = BeautifulSoup(content, "html.parser")
     listofusers = requests.get(f'https://www.rolimons.com/playerapi/player/{userid}').json()
     user_thumbnails = await client1.thumbnails.get_user_avatar_thumbnails(
         users=[user],
@@ -467,16 +468,23 @@ async def ruser(ctx, user423):
     )
     if len(user_thumbnails) > 0:
         user_thumbnail = user_thumbnails[0]
+        followers = soup.find('div', class_="hidden")["data-followerscount"]
+        following = soup.find('div', class_="hidden")["data-followingscount"]
+        friends = soup.find('div', class_="hidden")["data-friendscount"]
+        placevisits = soup.find('div', class_="text-lead text-overflow slide-item-my-rank games").text
         embed=discord.Embed(title=f"Found Info for {user.name} ", url=f"https://www.roblox.com/users/{user.id}/profile", color=0x007bff)
         embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
         embed.set_thumbnail(url=f"{user_thumbnail.image_url}")
-        embed.add_field(name=f"Username:", value=f"{user.name}", inline=False)
-        embed.add_field(name=f"Display name:", value=f"{user.display_name}", inline=False)
-        embed.add_field(name=f"User ID:", value=f"{user.id}", inline=False)
-        embed.add_field(name=f"Creation Date:", value=f"{user.created.strftime('%d/%m/%Y')}", inline=False)
-        embed.add_field(name=f"Premium:", value=f"{listofusers['premium']}", inline=False)
-        embed.add_field(name=f"Is banned:", value=f"{user.is_banned}", inline=False)
-        embed.add_field(name=f"Description:", value=f"{user.description}", inline=False)
+        embed.add_field(name=f"Display name:", value=f"```{user.display_name}```", inline=False)
+        embed.add_field(name=f"User ID:", value=f"```{user.id}```", inline=True)
+        embed.add_field(name=f"Friends:", value=f"```{friends}```", inline=True)
+        embed.add_field(name=f"Followers:", value=f"```{followers}```", inline=True)
+        embed.add_field(name=f"Following:", value=f"```{following}```", inline=True)
+        embed.add_field(name=f"Place Visits:", value=f"```{placevisits}```", inline=True)
+        embed.add_field(name=f"Creation Date:", value=f"```{user.created.strftime('%Y')}```", inline=True)
+        embed.add_field(name=f"Premium:", value=f"```{listofusers['premium']}```", inline=True)
+        embed.add_field(name=f"Is banned:", value=f"```{user.is_banned}```", inline=True)
+        embed.add_field(name=f"Description:", value=f"```{user.description}```", inline=False)
         embed.set_footer(text=f"{user423}'s Information", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
@@ -524,7 +532,7 @@ async def _youtube(ctx, *, search):
     html_content = urllib.request.urlopen('http://www.youtube.com/results?' + query_string)
     search_content= html_content.read().decode()
     search_results = re.findall(r'\/watch\?v=\w+', search_content)
-    await ctx.send(f'{author.mention} result:\n https://www.youtube.com' + search_results[0])
+    await ctx.send(f'{author.mention} result for {search}:\n https://www.youtube.com' + search_results[0])
 
 @bot.command()
 async def lolice(ctx, member=None):
@@ -744,24 +752,27 @@ async def nsfw(ctx, category=None):
 async def ruserhis(ctx,user423):
     user = await client1.get_user_by_username(user423)
     userid = user.id
-    listofusers = requests.get(f'https://users.roblox.com/v1/users/{userid}/username-history?limit=50&sortOrder=Desc').json()
-    uwu =("\n".join([a['name'] for a in listofusers['data']]))
+    URL3 = f"https://www.roblox.com/users/{userid}/profile"
+    requestURL = requests.get(URL3)
+    content = requestURL.content
+    soup = BeautifulSoup(content, "html.parser")
     user_thumbnails = await client1.thumbnails.get_user_avatar_thumbnails(
         users=[user],
         size=(420, 420)
     )
     if len(user_thumbnails) > 0:
         user_thumbnail = user_thumbnails[0]
+        users = soup.find('span',  class_="tooltip-pastnames")['title']
         embed=discord.Embed(title=f"Past usernames for {user.name} ", url=f"https://www.roblox.com/users/{user.id}/profile", color=0x007bff)
         embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
         embed.set_thumbnail(url=f"{user_thumbnail.image_url}")
-        embed.add_field(name=f"Past usernames", value=f"{uwu}", inline=False)
+        embed.add_field(name=f"Past usernames", value=f"```{users}```", inline=False)
         embed.set_footer(text=f"{user423}'s Past Usernames", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
 @bot.command() 
-async def rvalue(ctx,username):
+async def rvalue1(ctx,username):
     user = await client1.get_user_by_username(username)
     userid = user.id
     listofusers1 = requests.get(f'https://www.rolimons.com/playerapi/player/{userid}').json()
@@ -783,6 +794,7 @@ async def rvalue(ctx,username):
     testA = sum([len(x) for x in json.loads(str(soup.findAll('script')[-2]).split('var scanned_player_assets = ')[-1].split(';\n')[0]).values()])
     testA
     [x for x in json.loads(str(soup.findAll('script')[-2]).split('var scanned_player_assets = ')[-1].split(';\n')[0])]
+    collec = soup.find_all('body')[-1].text
     embed=discord.Embed(title=f"Rolimons Info for {user.name} ", url=f"https://www.rolimons.com/player/{userid}", color=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url=f"{user_thumbnail.image_url}")
@@ -796,16 +808,9 @@ async def rvalue(ctx,username):
     embed.add_field(name=f"Terminated:", value=f"```{listofusers1['terminated']}```", inline=True)
     embed.add_field(name=f"Private:", value=f"```{listofusers1['privacy_enabled']}```", inline=True)
     embed.add_field(name=f"Last Location:", value=f"```{listofusers1['last_location']}```", inline=True)
+    embed.add_field(name=f"Last Seen:", value=f"```{listofusers1['last_location']}```", inline=True)
     embed.set_footer(text=f"{username}'s rolimons", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1079482029776842812/JCiYruAM_400x400.png")
     await ctx.send(embed=embed)
-
-# @bot.command()
-# async def rgroup(ctx, url):
-#     URL3 = "https://www.roblox.com/groups/15732878/Parkour-Style-Games#!/about"
-#     requestURL = requests.get(URL3)
-#     content = requestURL.content
-#     soup = BeautifulSoup(content, "html.parser")
-#     count = [x for x in soup.find_all('meta')[3]][1]['content'].split(' ')[-3]
 
 @bot.command()
 async def rgame(ctx, url):
@@ -849,10 +854,10 @@ async def ritem(ctx,url):
     embed=discord.Embed(title=f"Item info for {name}", url=f"{url}", color=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url=f"https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
-    embed.add_field(name=f"Author:", value=f"```{author}```", inline=True)
+    embed.add_field(name=f"Author:", value=f"```{author}```", inline=False)
+    embed.add_field(name=f"Catagory:", value=f"```{cata}```", inline=False)
     embed.add_field(name=f"Price:", value=f"```R${price}```", inline=True)
     embed.add_field(name=f"Favorites:", value=f"```{fav}```", inline=True)
-    embed.add_field(name=f"Catagory:", value=f"```{cata}```", inline=True)
     embed.add_field(name=f"description:", value=f"```{desc}```", inline=False)
     embed.set_footer(text=f"{name}'s Info", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
     await ctx.send(embed=embed)
