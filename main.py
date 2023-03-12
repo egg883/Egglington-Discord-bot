@@ -772,7 +772,7 @@ async def ruserhis(ctx,user423):
         await ctx.send(embed=embed)
 
 @bot.command() 
-async def rvalue1(ctx,username):
+async def rvalue(ctx,username):
     user = await client1.get_user_by_username(username)
     userid = user.id
     listofusers1 = requests.get(f'https://www.rolimons.com/playerapi/player/{userid}').json()
