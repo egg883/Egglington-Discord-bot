@@ -17,4 +17,7 @@ https://www.youtube.com/watch?v=oZbzgoXlAuI
  https://discord.gg/AUevumCwXj
  
 <h2><strong> Discord Tag -->  </strong></h2>
-<a href="https://discord.com/users/184841558661529600"><img align="left" src="https://discord.c99.nl/widget/theme-1/184841558661529600.png"a>
+<p align="left">
+    <img width="50%" src="https://lanyard-profile-readme.vercel.app/api/184841558661529600" />
+</p>
+
