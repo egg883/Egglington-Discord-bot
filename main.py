@@ -37,7 +37,7 @@ playingstatus2 = config['status2']
 bot = commands.Bot(command_prefix = prefix, help_command=None)
 cmds = {len(bot.commands)}
 intents = discord.Intents.all()
-version = 1.8
+version = "1.0.9"
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 intents.members = True
@@ -364,9 +364,9 @@ async def news(ctx):
     embed = discord.Embed(title=f"Update V{version}", description=f"This is the latest news about our bot Update", url=f"{githuburl}", colour=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.add_field(name="Added New Roblox cmds", value="rgame and ritem have been added", inline=False)
-    embed.add_field(name="Upgraded visually", value="some embeds looked awful", inline=False)
-    embed.add_field(name="Updates coming soon", value="besure to check out https://egg883.shop", inline=False)
+    embed.add_field(name="Added New Roblox cmds", value="```More stuff displays in roblox cmds```", inline=False)
+    embed.add_field(name="Upgraded visually", value="```massively made some embeds look good```", inline=False)
+    embed.add_field(name="Our Website", value="```https://egg883.shop```", inline=False)
     await ctx.send(embed=embed)
 
 
