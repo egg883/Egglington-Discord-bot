@@ -580,8 +580,6 @@ async def ph(ctx, member=None, *, msg):
     await ctx.send(embed=embed, delete_after = deletein)
 
 
-
-
 @bot.command()
 async def horny(ctx, member=None):
     await ctx.message.delete()
@@ -790,11 +788,12 @@ async def rvalue(ctx,username):
     requestURL = requests.get(URL3)
     content = requestURL.content
     soup1 = BeautifulSoup(content, "html.parser")
+    URL3 = f"https://rblx.trade/u/{username}"
+    requestURL = requests.get(URL3)
+    content = requestURL.content
+    soup = BeautifulSoup(content, "html.parser")
+    cum = max([x['roblox_itemcount'] for x in json.loads(soup.find('script', id="__NEXT_DATA__").string)['props']['pageProps']['inventoryHistory']])
     trade = soup1.find('span',class_="card-title mb-1 text-light stat-data text-nowrap").text
-    testA = sum([len(x) for x in json.loads(str(soup.findAll('script')[-2]).split('var scanned_player_assets = ')[-1].split(';\n')[0]).values()])
-    testA
-    [x for x in json.loads(str(soup.findAll('script')[-2]).split('var scanned_player_assets = ')[-1].split(';\n')[0])]
-    collec = soup.find_all('body')[-1].text
     embed=discord.Embed(title=f"Rolimons Info for {user.name} ", url=f"https://www.rolimons.com/player/{userid}", color=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url=f"{user_thumbnail.image_url}")
@@ -802,7 +801,7 @@ async def rvalue(ctx,username):
     embed.add_field(name=f"Rank:", value=f"```{listofusers1['rank']}```", inline=True)
     embed.add_field(name=f"RAP:", value=f"```{listofusers1['rap']}```", inline=True)
     embed.add_field(name=f"Value:", value=f"```{listofusers1['value']}```", inline=True)
-    embed.add_field(name=f"Collectibles:", value=f"```{testA}```", inline=True)
+    embed.add_field(name=f"Collectibles:", value=f"```{cum}```", inline=True)
     embed.add_field(name=f"Trade ads:", value=f"```{trade}```", inline=True)
     embed.add_field(name=f"Premium:", value=f"```{listofusers1['premium']}```", inline=True)
     embed.add_field(name=f"Terminated:", value=f"```{listofusers1['terminated']}```", inline=True)
@@ -892,19 +891,19 @@ async def restart(ctx,error):
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed, delete_after=deletein)
 
-@bot.event
-async def on_command_error(ctx, error:commands.CommandError):
-    if isinstance(error, commands.CommandNotFound):
-            cmd = ctx.message.content.split()[0]
-            cmd = cmd.lstrip(prefix)
-            embed=discord.Embed(title="COMMAND ERROR", color=0xFF0400)
-            embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-            embed.add_field(name="COMMAND NOT FOUND", value=f"The command {cmd} does not exist", inline=True)
-            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1064570023437422743/1195445329999867155jean_victor_balin_cross.svg.thumb.png")
-            embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-            embed.timestamp = datetime.datetime.utcnow()
-            print(Fore.RED+f"[ERR] The Command {cmd} Does not exist"+Fore.RESET)
-            await ctx.send(embed=embed, delete_after=30)
+# @bot.event
+# async def on_command_error(ctx, error:commands.CommandError):
+#     if isinstance(error, commands.CommandNotFound):
+#             cmd = ctx.message.content.split()[0]
+#             cmd = cmd.lstrip(prefix)
+#             embed=discord.Embed(title="COMMAND ERROR", color=0xFF0400)
+#             embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+#             embed.add_field(name="COMMAND NOT FOUND", value=f"The command {cmd} does not exist", inline=True)
+#             embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1064570023437422743/1195445329999867155jean_victor_balin_cross.svg.thumb.png")
+#             embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+#             embed.timestamp = datetime.datetime.utcnow()
+#             print(Fore.RED+f"[ERR] The Command {cmd} Does not exist"+Fore.RESET)
+#             await ctx.send(embed=embed, delete_after=30)
 
 #////////////////////////////////////////////////////////////////////////// 
 def Init():
