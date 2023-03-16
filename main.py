@@ -791,8 +791,9 @@ async def rvalue(ctx,username):
     URL3 = f"https://rblx.trade/u/{username}"
     requestURL = requests.get(URL3)
     content = requestURL.content
-    soup = BeautifulSoup(content, "html.parser")
-    cum = max([x['roblox_itemcount'] for x in json.loads(soup.find('script', id="__NEXT_DATA__").string)['props']['pageProps']['inventoryHistory']])
+    soup = BeautifulSoup(content, "html.parser")  
+    test_json = json.loads(soup.find('script', id="__NEXT_DATA__").string)
+    collect = format(max([x['roblox_itemcount'] for x in test_json['props']['pageProps']['inventoryHistory'] if x['roblox_itemcount'] < 15000]), ",")
     trade = soup1.find('span',class_="card-title mb-1 text-light stat-data text-nowrap").text
     embed=discord.Embed(title=f"Rolimons Info for {user.name} ", url=f"https://www.rolimons.com/player/{userid}", color=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
@@ -801,7 +802,7 @@ async def rvalue(ctx,username):
     embed.add_field(name=f"Rank:", value=f"```{listofusers1['rank']}```", inline=True)
     embed.add_field(name=f"RAP:", value=f"```{listofusers1['rap']}```", inline=True)
     embed.add_field(name=f"Value:", value=f"```{listofusers1['value']}```", inline=True)
-    embed.add_field(name=f"Collectibles:", value=f"```{cum}```", inline=True)
+    embed.add_field(name=f"Collectibles:", value=f"```{collect}```", inline=True)
     embed.add_field(name=f"Trade ads:", value=f"```{trade}```", inline=True)
     embed.add_field(name=f"Premium:", value=f"```{listofusers1['premium']}```", inline=True)
     embed.add_field(name=f"Terminated:", value=f"```{listofusers1['terminated']}```", inline=True)
