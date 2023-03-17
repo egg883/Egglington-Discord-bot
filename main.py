@@ -37,7 +37,7 @@ playingstatus2 = config['status2']
 bot = commands.Bot(command_prefix = prefix, help_command=None)
 cmds = {len(bot.commands)}
 intents = discord.Intents.all()
-version = "1.0.9"
+version = "1.1.0"
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 intents.members = True
@@ -52,7 +52,7 @@ def new_splash():
 
 @bot.event
 async def on_connect():
-    title = ctypes.windll.kernel32.SetConsoleTitleW(f"Egglington Client | Version: [{version}]  | Commands: [{len(bot.commands)}]") 
+    title = ctypes.windll.kernel32.SetConsoleTitleW(f"Egglington Client | Version: [v{version}]  | Commands: [{len(bot.commands)}]") 
     time.sleep(1)
     title
     new_splash()
@@ -87,8 +87,11 @@ async def help(ctx):
     embed.add_field(name=f"[{prefix}] nsfw", value="List of nsfw commands", inline=False)
     embed.add_field(name=f"[{prefix}] memes", value="List of memes commands", inline=False)
     embed.add_field(name=f"[{prefix}] fun", value="List of fun commands", inline=False)
+    embed.add_field(name=f"[{prefix}] crypto", value="List of crypto commands", inline=False)
     embed.add_field(name=f"[{prefix}] roblox", value="List of roblox commands", inline=False)
     embed.add_field(name=f"[{prefix}] settings", value="List of settings commands", inline=False)
+    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed, delete_after=deletein)
 
 @bot.command()
@@ -104,6 +107,8 @@ async def memes(ctx):
     embed.add_field(name=f"[{prefix}] pixel", value=f"[{prefix}] pixel (@user)", inline=False)
     embed.add_field(name=f"[{prefix}] clyde", value=f"[{prefix}] clyde (text)", inline=False)
     embed.add_field(name=f"[{prefix}] trump", value=f"[{prefix}] trump (text)", inline=False)
+    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed,delete_after=deletein)
 
 @bot.command()
@@ -113,6 +118,8 @@ async def general(ctx):
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
     embed.add_field(name=f"[{prefix}] whois", value=f"[{prefix}] whois (@user)", inline=False)
     embed.add_field(name=f"[{prefix}] yt", value=f"[{prefix}] yt (name of yt video)", inline=False)
+    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed,delete_after=deletein)
 
 @bot.command()
@@ -121,6 +128,8 @@ async def fun(ctx):
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
     embed.add_field(name=f"[{prefix}] pp", value=f"[{prefix}] pp (@user)", inline=False)
+    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed,delete_after=deletein)
 
 @bot.command()
@@ -132,7 +141,24 @@ async def server(ctx):
     embed.add_field(name=f"[{prefix}] deleterole", value=f"[{prefix}] deleterole (rolename)", inline=False)
     embed.add_field(name=f"[{prefix}] first", value=f"[{prefix}] first", inline=False)
     embed.add_field(name=f"[{prefix}] spfp", value=f"[{prefix}] spfp", inline=False)
+    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed,delete_after=deletein)
+
+@bot.command()
+async def crypto(ctx):
+    embed=discord.Embed(title="Crypto commands", url="https://egg883.shop", color=0x007bff)
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed.add_field(name=f"[{prefix}] btc", value=f"Displays current btc price", inline=False)
+    embed.add_field(name=f"[{prefix}] sol", value=f"Displays current sol price", inline=False)
+    embed.add_field(name=f"[{prefix}] eth", value=f"Displays current eth price", inline=False)
+    embed.add_field(name=f"[{prefix}] usdt", value=f"Displays current usdt price", inline=False)
+    embed.add_field(name=f"[{prefix}] ltc", value=f"Displays current ltc price", inline=False)
+    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.timestamp = datetime.datetime.utcnow()
+    await ctx.send(embed=embed,delete_after=deletein)
+
 
 @bot.command()
 async def moderation(ctx):
@@ -144,6 +170,8 @@ async def moderation(ctx):
     embed.add_field(name=f"[{prefix}] purge", value=f"[{prefix}] purge (amount)", inline=False)
     embed.add_field(name=f"[{prefix}] ban", value=f"[{prefix}] ban (@user, reason) | {prefix} unban (@user, reason)", inline=False)
     embed.add_field(name=f"[{prefix}] kick", value=f"[{prefix}] kick (@user, reason)", inline=False)
+    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed,delete_after=deletein)
 
 @bot.command()
@@ -157,6 +185,8 @@ async def roblox(ctx):
     embed.add_field(name=f"[{prefix}] rvalue", value=f"[{prefix}] rvalue (robloxusername)", inline=False)
     # embed.add_field(name=f"[{prefix}] ritem", value=f"[{prefix}] ritem (item url)", inline=False)
     embed.add_field(name=f"[{prefix}] rgame", value=f"[{prefix}] rgame (game url)", inline=False)
+    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed,delete_after=deletein)
 
 @bot.command()
@@ -168,6 +198,8 @@ async def settings(ctx):
     embed.add_field(name=f"[{prefix}] news", value=f"[{prefix}] news", inline=False)
     embed.add_field(name=f"[{prefix}] support", value=f"[{prefix}] support (dms only)", inline=False)
     embed.add_field(name=f"[{prefix}] restart", value=f"[{prefix}] restart (owner role only)", inline=False)
+    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed,delete_after=deletein)
 
 
@@ -364,8 +396,8 @@ async def news(ctx):
     embed = discord.Embed(title=f"Update V{version}", description=f"This is the latest news about our bot Update", url=f"{githuburl}", colour=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.add_field(name="Added New Roblox cmds", value="```More stuff displays in roblox cmds```", inline=False)
-    embed.add_field(name="Upgraded visually", value="```massively made some embeds look good```", inline=False)
+    embed.add_field(name="Added Crypto catagory", value="```added crypto prices```", inline=False)
+    embed.add_field(name="stupid gay ritem broke", value="```Removed ritem due to issues```", inline=False)
     embed.add_field(name="Our Website", value="```https://egg883.shop```", inline=False)
     await ctx.send(embed=embed)
 
@@ -812,6 +844,188 @@ async def rvalue(ctx,username):
     embed.set_footer(text=f"{username}'s rolimons", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1079482029776842812/JCiYruAM_400x400.png")
     await ctx.send(embed=embed)
 
+@bot.command(aliases=['btc','bitcoin', '#1'])
+async def _btc(ctx):
+    URL3 = f"https://coinmarketcap.com/currencies/bitcoin/"
+    requestURL = requests.get(URL3)
+    content = requestURL.content
+    soup = BeautifulSoup(content, "html.parser")
+    URL4 = "https://www.coindesk.com/price/bitcoin/"
+    requestURL = requests.get(URL4)
+    content = requestURL.content
+    soup1 = BeautifulSoup(content, "html.parser")
+    acronym = soup.find('small').text
+    price = soup.find('div', class_="priceValue").text
+    rank = soup.find('div', class_="namePill namePillPrimary").text
+    market = soup.find('div', class_="statsValue").text
+    vol = soup.find_all('div', class_="statsValue")[2].text
+    percent = soup1.find('h6', class_="typography__StyledTypography-owin6q-0 hZxwDe").text
+    highest = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[4].text
+    Rytd = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[5].text
+    fee = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[11].text
+    embed=discord.Embed(title=f"Information about Bitcoin", url=f"https://coinmarketcap.com/currencies/bitcoin/", color=0x007bff)
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.add_field(name=f"Name:", value=f"```Bitcoin```", inline=True)
+    embed.add_field(name=f"Acronym:", value=f"```{acronym}```", inline=True)
+    embed.add_field(name=f"Market Rank:", value=f"```{rank}```", inline=True)
+    embed.add_field(name=f"Price:", value=f"```{price}```", inline=True)
+    embed.add_field(name=f"Market Cap:", value=f"```{market}```", inline=True)
+    embed.add_field(name=f"Volume [24hrs]:", value=f"```{vol}```", inline=True)
+    embed.add_field(name=f"Percent [24hrs]:", value=f"```{percent}```", inline=True)
+    embed.add_field(name=f"Highest AllTime:", value=f"```{highest}```", inline=True)
+    embed.add_field(name=f"Return YTD:", value=f"```{Rytd}```", inline=True)
+    embed.add_field(name=f"Average Fee [24hrs]:", value=f"```{fee}```", inline=True)
+    embed.set_footer(text=f"bitcoin's info", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1086238157693001788/bitcoin-logo-5234.png")
+    await ctx.send(embed=embed)
+
+@bot.command(aliases=['eth','ethereum', '#2'])
+async def _eth(ctx):
+    URL3 = f"https://coinmarketcap.com/currencies/Ethereum/"
+    requestURL = requests.get(URL3)
+    content = requestURL.content
+    soup = BeautifulSoup(content, "html.parser")
+    URL4 = "https://www.coindesk.com/price/Ethereum/"
+    requestURL = requests.get(URL4)
+    content = requestURL.content
+    soup1 = BeautifulSoup(content, "html.parser")
+    acronym = soup.find('small').text
+    price = soup.find('div', class_="priceValue").text
+    rank = soup.find('div', class_="namePill namePillPrimary").text
+    market = soup.find('div', class_="statsValue").text
+    vol = soup.find_all('div', class_="statsValue")[2].text
+    percent = soup1.find('h6', class_="typography__StyledTypography-owin6q-0 hZxwDe").text
+    highest = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[4].text
+    Rytd = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[5].text
+    fee = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[11].text
+    name = soup.find('span', class_="sc-1d5226ca-1 fLa-dNu").text
+    embed=discord.Embed(title=f"Information about {name}", url=f"https://coinmarketcap.com/currencies/bitcoin/", color=0x007bff)
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.add_field(name=f"Name:", value=f"```{name}```", inline=True)
+    embed.add_field(name=f"Acronym:", value=f"```{acronym}```", inline=True)
+    embed.add_field(name=f"Market Rank:", value=f"```{rank}```", inline=True)
+    embed.add_field(name=f"Price:", value=f"```{price}```", inline=True)
+    embed.add_field(name=f"Market Cap:", value=f"```{market}```", inline=True)
+    embed.add_field(name=f"Volume [24hrs]:", value=f"```{vol}```", inline=True)
+    embed.add_field(name=f"Percent [24hrs]:", value=f"```{percent}```", inline=True)
+    embed.add_field(name=f"Highest AllTime:", value=f"```{highest}```", inline=True)
+    embed.add_field(name=f"Return YTD:", value=f"```{Rytd}```", inline=True)
+    embed.add_field(name=f"Average Fee [24hrs]:", value=f"```{fee}```", inline=True)
+    embed.set_footer(text=f"{name}'s info", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    await ctx.send(embed=embed)
+
+@bot.command(aliases=['sol','solana', '#11'])
+async def _sol(ctx):
+    URL3 = f"https://coinmarketcap.com/currencies/solana/"
+    requestURL = requests.get(URL3)
+    content = requestURL.content
+    soup = BeautifulSoup(content, "html.parser")
+    URL4 = "https://www.coindesk.com/price/solana/"
+    requestURL = requests.get(URL4)
+    content = requestURL.content
+    soup1 = BeautifulSoup(content, "html.parser")
+    acronym = soup.find('small').text
+    price = soup.find('div', class_="priceValue").text
+    rank = soup.find('div', class_="namePill namePillPrimary").text
+    market = soup.find('div', class_="statsValue").text
+    vol = soup.find_all('div', class_="statsValue")[2].text
+    percent = soup1.find('h6', class_="typography__StyledTypography-owin6q-0 hZxwDe").text
+    highest = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[4].text
+    Rytd = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[5].text
+    fee = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[11].text
+    name = soup.find('span', class_="sc-1d5226ca-1 fLa-dNu").text
+    embed=discord.Embed(title=f"Information about {name}", url=f"https://coinmarketcap.com/currencies/bitcoin/", color=0x007bff)
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.add_field(name=f"Name:", value=f"```{name}```", inline=True)
+    embed.add_field(name=f"Acronym:", value=f"```{acronym}```", inline=True)
+    embed.add_field(name=f"Market Rank:", value=f"```{rank}```", inline=True)
+    embed.add_field(name=f"Price:", value=f"```{price}```", inline=True)
+    embed.add_field(name=f"Market Cap:", value=f"```{market}```", inline=True)
+    embed.add_field(name=f"Volume [24hrs]:", value=f"```{vol}```", inline=True)
+    embed.add_field(name=f"Percent [24hrs]:", value=f"```{percent}```", inline=True)
+    embed.add_field(name=f"Highest AllTime:", value=f"```{highest}```", inline=True)
+    embed.add_field(name=f"Return YTD:", value=f"```{Rytd}```", inline=True)
+    embed.add_field(name=f"Average Fee [24hrs]:", value=f"```{fee}```", inline=True)
+    embed.set_footer(text=f"{name}'s info", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    await ctx.send(embed=embed)
+
+@bot.command(aliases=['tether','usdt', '#3'])
+async def _tether(ctx):
+    URL3 = f"https://coinmarketcap.com/currencies/tether/"
+    requestURL = requests.get(URL3)
+    content = requestURL.content
+    soup = BeautifulSoup(content, "html.parser")
+    URL4 = "https://www.coindesk.com/price/tether/"
+    requestURL = requests.get(URL4)
+    content = requestURL.content
+    soup1 = BeautifulSoup(content, "html.parser")
+    acronym = soup.find('small').text
+    price = soup.find('div', class_="priceValue").text
+    rank = soup.find('div', class_="namePill namePillPrimary").text
+    market = soup.find('div', class_="statsValue").text
+    vol = soup.find_all('div', class_="statsValue")[2].text
+    percent = soup1.find('h6', class_="typography__StyledTypography-owin6q-0 hZxwDe").text
+    highest = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[4].text
+    Rytd = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[5].text
+    fee = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[11].text
+    name = soup.find('span', class_="sc-1d5226ca-1 fLa-dNu").text
+    embed=discord.Embed(title=f"Information about {name}", url=f"https://coinmarketcap.com/currencies/bitcoin/", color=0x007bff)
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.add_field(name=f"Name:", value=f"```{name}```", inline=True)
+    embed.add_field(name=f"Acronym:", value=f"```{acronym}```", inline=True)
+    embed.add_field(name=f"Market Rank:", value=f"```{rank}```", inline=True)
+    embed.add_field(name=f"Price:", value=f"```{price}```", inline=True)
+    embed.add_field(name=f"Market Cap:", value=f"```{market}```", inline=True)
+    embed.add_field(name=f"Volume [24hrs]:", value=f"```{vol}```", inline=True)
+    embed.add_field(name=f"Percent [24hrs]:", value=f"```{percent}```", inline=True)
+    embed.add_field(name=f"Highest AllTime:", value=f"```{highest}```", inline=True)
+    embed.add_field(name=f"Return YTD:", value=f"```{Rytd}```", inline=True)
+    embed.add_field(name=f"Average Fee [24hrs]:", value=f"```{fee}```", inline=True)
+    embed.set_footer(text=f"{name}'s info", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    await ctx.send(embed=embed)
+
+@bot.command(aliases=['litecoin','ltc', '#15'])
+async def _litecoin(ctx):
+    URL3 = f"https://coinmarketcap.com/currencies/litecoin/"
+    requestURL = requests.get(URL3)
+    content = requestURL.content
+    soup = BeautifulSoup(content, "html.parser")
+    URL4 = "https://www.coindesk.com/price/litecoin/"
+    requestURL = requests.get(URL4)
+    content = requestURL.content
+    soup1 = BeautifulSoup(content, "html.parser")
+    acronym = soup.find('small').text
+    price = soup.find('div', class_="priceValue").text
+    rank = soup.find('div', class_="namePill namePillPrimary").text
+    market = soup.find('div', class_="statsValue").text
+    vol = soup.find_all('div', class_="statsValue")[2].text
+    percent = soup1.find('h6', class_="typography__StyledTypography-owin6q-0 hZxwDe").text
+    highest = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[4].text
+    Rytd = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[5].text
+    fee = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[11].text
+    name = soup.find('span', class_="sc-1d5226ca-1 fLa-dNu").text
+    embed=discord.Embed(title=f"Information about {name}", url=f"https://coinmarketcap.com/currencies/bitcoin/", color=0x007bff)
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.add_field(name=f"Name:", value=f"```{name}```", inline=True)
+    embed.add_field(name=f"Acronym:", value=f"```{acronym}```", inline=True)
+    embed.add_field(name=f"Market Rank:", value=f"```{rank}```", inline=True)
+    embed.add_field(name=f"Price:", value=f"```{price}```", inline=True)
+    embed.add_field(name=f"Market Cap:", value=f"```{market}```", inline=True)
+    embed.add_field(name=f"Volume [24hrs]:", value=f"```{vol}```", inline=True)
+    embed.add_field(name=f"Percent [24hrs]:", value=f"```{percent}```", inline=True)
+    embed.add_field(name=f"Highest AllTime:", value=f"```{highest}```", inline=True)
+    embed.add_field(name=f"Return YTD:", value=f"```{Rytd}```", inline=True)
+    embed.add_field(name=f"Average Fee [24hrs]:", value=f"```{fee}```", inline=True)
+    embed.set_footer(text=f"{name}'s info", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    await ctx.send(embed=embed)
+
+# COMING SOON IG
+# @bot.command(aliases=['addy','btcaddy', 'wallet'])
+# async def _addy(ctx):
+#     URL3 = f"https://coinmarketcap.com/currencies/bitcoin/"   
+#     requestURL = requests.get(URL3)
+#     content = requestURL.content
+#     soup = BeautifulSoup(content, "html.parser")
+
 @bot.command()
 async def rgame(ctx, url):
     await ctx.message.delete()
@@ -868,19 +1082,19 @@ async def restart(ctx,error):
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed, delete_after=deletein)
 
-@bot.event
-async def on_command_error(ctx, error:commands.CommandError):
-    if isinstance(error, commands.CommandNotFound):
-            cmd = ctx.message.content.split()[0]
-            cmd = cmd.lstrip(prefix)
-            embed=discord.Embed(title="COMMAND ERROR", color=0xFF0400)
-            embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-            embed.add_field(name="COMMAND NOT FOUND", value=f"The command {cmd} does not exist", inline=True)
-            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1064570023437422743/1195445329999867155jean_victor_balin_cross.svg.thumb.png")
-            embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-            embed.timestamp = datetime.datetime.utcnow()
-            print(Fore.RED+f"[ERR] The Command {cmd} Does not exist"+Fore.RESET)
-            await ctx.send(embed=embed, delete_after=30)
+# @bot.event
+# async def on_command_error(ctx, error:commands.CommandError):
+#     if isinstance(error, commands.CommandNotFound):
+#             cmd = ctx.message.content.split()[0]
+#             cmd = cmd.lstrip(prefix)
+#             embed=discord.Embed(title="COMMAND ERROR", color=0xFF0400)
+#             embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+#             embed.add_field(name="COMMAND NOT FOUND", value=f"The command {cmd} does not exist", inline=True)
+#             embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1064570023437422743/1195445329999867155jean_victor_balin_cross.svg.thumb.png")
+#             embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+#             embed.timestamp = datetime.datetime.utcnow()
+#             print(Fore.RED+f"[ERR] The Command {cmd} Does not exist"+Fore.RESET)
+#             await ctx.send(embed=embed, delete_after=30)
 
 #////////////////////////////////////////////////////////////////////////// 
 def Init():
