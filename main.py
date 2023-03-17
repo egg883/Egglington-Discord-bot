@@ -1082,19 +1082,19 @@ async def restart(ctx,error):
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed, delete_after=deletein)
 
-# @bot.event
-# async def on_command_error(ctx, error:commands.CommandError):
-#     if isinstance(error, commands.CommandNotFound):
-#             cmd = ctx.message.content.split()[0]
-#             cmd = cmd.lstrip(prefix)
-#             embed=discord.Embed(title="COMMAND ERROR", color=0xFF0400)
-#             embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-#             embed.add_field(name="COMMAND NOT FOUND", value=f"The command {cmd} does not exist", inline=True)
-#             embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1064570023437422743/1195445329999867155jean_victor_balin_cross.svg.thumb.png")
-#             embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-#             embed.timestamp = datetime.datetime.utcnow()
-#             print(Fore.RED+f"[ERR] The Command {cmd} Does not exist"+Fore.RESET)
-#             await ctx.send(embed=embed, delete_after=30)
+@bot.event
+async def on_command_error(ctx, error:commands.CommandError):
+    if isinstance(error, commands.CommandNotFound):
+            cmd = ctx.message.content.split()[0]
+            cmd = cmd.lstrip(prefix)
+            embed=discord.Embed(title="COMMAND ERROR", color=0xFF0400)
+            embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+            embed.add_field(name="COMMAND NOT FOUND", value=f"The command {cmd} does not exist", inline=True)
+            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1064570023437422743/1195445329999867155jean_victor_balin_cross.svg.thumb.png")
+            embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+            embed.timestamp = datetime.datetime.utcnow()
+            print(Fore.RED+f"[ERR] The Command {cmd} Does not exist"+Fore.RESET)
+            await ctx.send(embed=embed, delete_after=30)
 
 #////////////////////////////////////////////////////////////////////////// 
 def Init():
