@@ -850,6 +850,7 @@ async def rvalue(ctx,username):
     embed.add_field(name=f"Last Location:", value=f"```{listofusers1['last_location']}```", inline=True)
     embed.add_field(name=f"Last Seen:", value=f"```{listofusers1['last_location']}```", inline=True)
     embed.set_footer(text=f"{username}'s rolimons", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1079482029776842812/JCiYruAM_400x400.png")
+    embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
 
 @bot.command(aliases=['btc','bitcoin', '#1'])
@@ -1030,30 +1031,6 @@ async def _litecoin(ctx):
     embed.set_footer(text=f"{name}'s info", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
-
-@bot.command(aliases=['addy','btcaddy', 'wallet'])
-async def _addy(ctx, address):
-    await ctx.send("Please wait a few seconds whilst we process this request.")
-    urlpage = f'https://www.blockchain.com/explorer/addresses/btc/{address}'
-    driver = webdriver.Firefox()
-    driver.get(urlpage)
-    time.sleep(0.5)
-    balance = driver.find_element(By.XPATH, '/html/body/div/div[2]/div[2]/main/div/div/div/div[2]/div/div[3]/div/div[2]/span/span[1]')
-    usd = driver.find_element(By.XPATH, '/html/body/div/div[2]/div[2]/main/div/div/div/div[2]/div/div[3]/div/div[2]/span/span[3]')
-    sent = driver.find_element(By.XPATH, '/html/body/div/div[2]/div[2]/main/div/div/div/div[4]/div/div[1]/div[2]/div[2]/div[2]/div[2]')
-    usd1 = driver.find_element(By.XPATH, '/html/body/div/div[2]/div[2]/main/div/div/div/div[4]/div/div[1]/div[2]/div[2]/div[2]/div[3]')
-    trans = driver.find_element(By.XPATH, '/html/body/div/div[2]/div[2]/main/div/div/div/div[4]/div/div[1]/div[2]/div[2]/div[4]/div[2]')    
-    embed=discord.Embed(title=f"{address}", url=f"https://www.blockchain.com/explorer/addresses/btc/{address}", color=0x007bff)
-    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.add_field(name="Balance:", value=f"```{balance.text} BTC ({usd.text})```", inline=False)
-    embed.add_field(name="Total Sent:", value=f"```{sent.text} ({usd1.text})```", inline=False)
-    embed.add_field(name="Transactions made:", value=f"```{trans.text}```", inline=True)
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1086238157693001788/bitcoin-logo-5234.png")
-    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.timestamp = datetime.datetime.utcnow()
-    await ctx.send(embed=embed, delete_after=deletein)
-    driver.close()
-
 
 @bot.command()
 async def rgame(ctx, url):
