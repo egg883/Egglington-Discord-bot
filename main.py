@@ -155,7 +155,7 @@ async def roblox(ctx):
     embed.add_field(name=f"[{prefix}] routfit", value=f"[{prefix}] routfit (robloxusername)", inline=False)
     embed.add_field(name=f"[{prefix}] ruserhis", value=f"[{prefix}] ruserhis (robloxusername)", inline=False)
     embed.add_field(name=f"[{prefix}] rvalue", value=f"[{prefix}] rvalue (robloxusername)", inline=False)
-    embed.add_field(name=f"[{prefix}] ritem", value=f"[{prefix}] ritem (item url)", inline=False)
+    # embed.add_field(name=f"[{prefix}] ritem", value=f"[{prefix}] ritem (item url)", inline=False)
     embed.add_field(name=f"[{prefix}] rgame", value=f"[{prefix}] rgame (game url)", inline=False)
     await ctx.send(embed=embed,delete_after=deletein)
 
@@ -835,30 +835,6 @@ async def rgame(ctx, url):
     embed.add_field(name=f"Server Size:", value=f"```{size}```", inline=True)
     embed.add_field(name=f"Created:", value=f"```{created}```", inline=True)
     embed.add_field(name=f"Last Updated:", value=f"```{updated}```", inline=True)
-    embed.set_footer(text=f"{name}'s Info", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
-    await ctx.send(embed=embed)
-
-@bot.command()
-async def ritem(ctx,url):
-    await ctx.message.delete()
-    URL3 = f"{url}"
-    requestURL = requests.get(URL3)
-    content = requestURL.content
-    soup = BeautifulSoup(content, "html.parser")
-    price = soup.find('span',class_="text-robux-lg wait-for-i18n-format-render").text
-    name = soup.find('h1').text
-    desc = soup.find('p',class_="description-content font-body text wait-for-i18n-format-render").text
-    author = soup.find('a',  class_="text-name").text
-    cata = soup.find_all('span')[14].text
-    fav = soup.find_all('span')[18].text
-    embed=discord.Embed(title=f"Item info for {name}", url=f"{url}", color=0x007bff)
-    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url=f"https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
-    embed.add_field(name=f"Author:", value=f"```{author}```", inline=False)
-    embed.add_field(name=f"Catagory:", value=f"```{cata}```", inline=False)
-    embed.add_field(name=f"Price:", value=f"```R${price}```", inline=True)
-    embed.add_field(name=f"Favorites:", value=f"```{fav}```", inline=True)
-    embed.add_field(name=f"description:", value=f"```{desc}```", inline=False)
     embed.set_footer(text=f"{name}'s Info", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
     await ctx.send(embed=embed)
 
