@@ -162,7 +162,6 @@ async def crypto(ctx):
     embed.add_field(name=f"[{prefix}] eth", value=f"Displays current eth price", inline=False)
     embed.add_field(name=f"[{prefix}] usdt", value=f"Displays current usdt price", inline=False)
     embed.add_field(name=f"[{prefix}] ltc", value=f"Displays current ltc price", inline=False)
-    embed.add_field(name=f"[{prefix}] wallet", value=f"[{prefix}] wallet (bitcoin address)", inline=False)
     embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed,delete_after=deletein)
