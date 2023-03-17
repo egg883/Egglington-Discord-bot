@@ -17,6 +17,13 @@ from bs4 import BeautifulSoup
 import random
 import urllib
 from discord.utils import find
+import urllib.request
+from selenium import webdriver
+import time
+import pandas as pd
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+import time
 #//////////////////////////////////////////////////////////////////////////
 client1 = Client()
 class Colours:
@@ -155,6 +162,7 @@ async def crypto(ctx):
     embed.add_field(name=f"[{prefix}] eth", value=f"Displays current eth price", inline=False)
     embed.add_field(name=f"[{prefix}] usdt", value=f"Displays current usdt price", inline=False)
     embed.add_field(name=f"[{prefix}] ltc", value=f"Displays current ltc price", inline=False)
+    embed.add_field(name=f"[{prefix}] wallet", value=f"[{prefix}] wallet (bitcoin address)", inline=False)
     embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed,delete_after=deletein)
@@ -876,6 +884,7 @@ async def _btc(ctx):
     embed.add_field(name=f"Return YTD:", value=f"```{Rytd}```", inline=True)
     embed.add_field(name=f"Average Fee [24hrs]:", value=f"```{fee}```", inline=True)
     embed.set_footer(text=f"bitcoin's info", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1086238157693001788/bitcoin-logo-5234.png")
+    embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
 
 @bot.command(aliases=['eth','ethereum', '#2'])
@@ -898,7 +907,7 @@ async def _eth(ctx):
     Rytd = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[5].text
     fee = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[11].text
     name = soup.find('span', class_="sc-1d5226ca-1 fLa-dNu").text
-    embed=discord.Embed(title=f"Information about {name}", url=f"https://coinmarketcap.com/currencies/bitcoin/", color=0x007bff)
+    embed=discord.Embed(title=f"Information about {name}", url=f"https://coinmarketcap.com/currencies/Ethereum/", color=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.add_field(name=f"Name:", value=f"```{name}```", inline=True)
     embed.add_field(name=f"Acronym:", value=f"```{acronym}```", inline=True)
@@ -911,6 +920,7 @@ async def _eth(ctx):
     embed.add_field(name=f"Return YTD:", value=f"```{Rytd}```", inline=True)
     embed.add_field(name=f"Average Fee [24hrs]:", value=f"```{fee}```", inline=True)
     embed.set_footer(text=f"{name}'s info", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
 
 @bot.command(aliases=['sol','solana', '#11'])
@@ -933,7 +943,7 @@ async def _sol(ctx):
     Rytd = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[5].text
     fee = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[11].text
     name = soup.find('span', class_="sc-1d5226ca-1 fLa-dNu").text
-    embed=discord.Embed(title=f"Information about {name}", url=f"https://coinmarketcap.com/currencies/bitcoin/", color=0x007bff)
+    embed=discord.Embed(title=f"Information about {name}", url=f"https://coinmarketcap.com/currencies/solana/", color=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.add_field(name=f"Name:", value=f"```{name}```", inline=True)
     embed.add_field(name=f"Acronym:", value=f"```{acronym}```", inline=True)
@@ -946,6 +956,7 @@ async def _sol(ctx):
     embed.add_field(name=f"Return YTD:", value=f"```{Rytd}```", inline=True)
     embed.add_field(name=f"Average Fee [24hrs]:", value=f"```{fee}```", inline=True)
     embed.set_footer(text=f"{name}'s info", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
 
 @bot.command(aliases=['tether','usdt', '#3'])
@@ -968,7 +979,7 @@ async def _tether(ctx):
     Rytd = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[5].text
     fee = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[11].text
     name = soup.find('span', class_="sc-1d5226ca-1 fLa-dNu").text
-    embed=discord.Embed(title=f"Information about {name}", url=f"https://coinmarketcap.com/currencies/bitcoin/", color=0x007bff)
+    embed=discord.Embed(title=f"Information about {name}", url=f"https://coinmarketcap.com/currencies/tether/", color=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.add_field(name=f"Name:", value=f"```{name}```", inline=True)
     embed.add_field(name=f"Acronym:", value=f"```{acronym}```", inline=True)
@@ -981,6 +992,7 @@ async def _tether(ctx):
     embed.add_field(name=f"Return YTD:", value=f"```{Rytd}```", inline=True)
     embed.add_field(name=f"Average Fee [24hrs]:", value=f"```{fee}```", inline=True)
     embed.set_footer(text=f"{name}'s info", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
 
 @bot.command(aliases=['litecoin','ltc', '#15'])
@@ -1003,7 +1015,7 @@ async def _litecoin(ctx):
     Rytd = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[5].text
     fee = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[11].text
     name = soup.find('span', class_="sc-1d5226ca-1 fLa-dNu").text
-    embed=discord.Embed(title=f"Information about {name}", url=f"https://coinmarketcap.com/currencies/bitcoin/", color=0x007bff)
+    embed=discord.Embed(title=f"Information about {name}", url=f"https://coinmarketcap.com/currencies/litecoin/", color=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.add_field(name=f"Name:", value=f"```{name}```", inline=True)
     embed.add_field(name=f"Acronym:", value=f"```{acronym}```", inline=True)
@@ -1016,15 +1028,32 @@ async def _litecoin(ctx):
     embed.add_field(name=f"Return YTD:", value=f"```{Rytd}```", inline=True)
     embed.add_field(name=f"Average Fee [24hrs]:", value=f"```{fee}```", inline=True)
     embed.set_footer(text=f"{name}'s info", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
 
-# COMING SOON IG
-# @bot.command(aliases=['addy','btcaddy', 'wallet'])
-# async def _addy(ctx):
-#     URL3 = f"https://coinmarketcap.com/currencies/bitcoin/"   
-#     requestURL = requests.get(URL3)
-#     content = requestURL.content
-#     soup = BeautifulSoup(content, "html.parser")
+@bot.command(aliases=['addy','btcaddy', 'wallet'])
+async def _addy(ctx, address):
+    await ctx.send("Please wait a few seconds whilst we process this request.")
+    urlpage = f'https://www.blockchain.com/explorer/addresses/btc/{address}'
+    driver = webdriver.Firefox()
+    driver.get(urlpage)
+    time.sleep(0.5)
+    balance = driver.find_element(By.XPATH, '/html/body/div/div[2]/div[2]/main/div/div/div/div[2]/div/div[3]/div/div[2]/span/span[1]')
+    usd = driver.find_element(By.XPATH, '/html/body/div/div[2]/div[2]/main/div/div/div/div[2]/div/div[3]/div/div[2]/span/span[3]')
+    sent = driver.find_element(By.XPATH, '/html/body/div/div[2]/div[2]/main/div/div/div/div[4]/div/div[1]/div[2]/div[2]/div[2]/div[2]')
+    usd1 = driver.find_element(By.XPATH, '/html/body/div/div[2]/div[2]/main/div/div/div/div[4]/div/div[1]/div[2]/div[2]/div[2]/div[3]')
+    trans = driver.find_element(By.XPATH, '/html/body/div/div[2]/div[2]/main/div/div/div/div[4]/div/div[1]/div[2]/div[2]/div[4]/div[2]')    
+    embed=discord.Embed(title=f"{address}", url=f"https://www.blockchain.com/explorer/addresses/btc/{address}", color=0x007bff)
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.add_field(name="Balance:", value=f"```{balance.text} BTC ({usd.text})```", inline=False)
+    embed.add_field(name="Total Sent:", value=f"```{sent.text} ({usd1.text})```", inline=False)
+    embed.add_field(name="Transactions made:", value=f"```{trans.text}```", inline=True)
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1086238157693001788/bitcoin-logo-5234.png")
+    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.timestamp = datetime.datetime.utcnow()
+    await ctx.send(embed=embed, delete_after=deletein)
+    driver.close()
+
 
 @bot.command()
 async def rgame(ctx, url):
@@ -1050,6 +1079,7 @@ async def rgame(ctx, url):
     embed.add_field(name=f"Created:", value=f"```{created}```", inline=True)
     embed.add_field(name=f"Last Updated:", value=f"```{updated}```", inline=True)
     embed.set_footer(text=f"{name}'s Info", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
+    embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
 
 @support.error
