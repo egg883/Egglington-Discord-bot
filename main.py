@@ -18,11 +18,6 @@ import random
 import urllib
 from discord.utils import find
 import urllib.request
-from selenium import webdriver
-import time
-import pandas as pd
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
 import time
 #//////////////////////////////////////////////////////////////////////////
 client1 = Client()
@@ -125,6 +120,7 @@ async def general(ctx):
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
     embed.add_field(name=f"[{prefix}] whois", value=f"[{prefix}] whois (@user)", inline=False)
     embed.add_field(name=f"[{prefix}] yt", value=f"[{prefix}] yt (name of yt video)", inline=False)
+    embed.add_field(name=f"[{prefix}] vote", value=f"Vote for egglington", inline=False)
     embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed,delete_after=deletein)
@@ -408,6 +404,16 @@ async def news(ctx):
     embed.add_field(name="Our Website", value="```https://egg883.shop```", inline=False)
     await ctx.send(embed=embed)
 
+@bot.command()
+async def vote(ctx):
+    await ctx.message.delete()
+    embed = discord.Embed(title=f"Vote for Egglington", url=f"https://top.gg/bot/1063758752160960573", colour=0x007bff)
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed.add_field(name="Vote for us", value="https://top.gg/bot/1063758752160960573", inline=False)
+    embed.timestamp = datetime.datetime.utcnow()
+    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    await ctx.send(embed=embed)
 
 @commands.dm_only()
 @bot.command()
@@ -847,7 +853,6 @@ async def rvalue(ctx,username):
     embed.add_field(name=f"Terminated:", value=f"```{listofusers1['terminated']}```", inline=True)
     embed.add_field(name=f"Private:", value=f"```{listofusers1['privacy_enabled']}```", inline=True)
     embed.add_field(name=f"Last Location:", value=f"```{listofusers1['last_location']}```", inline=True)
-    embed.add_field(name=f"Last Seen:", value=f"```{listofusers1['last_location']}```", inline=True)
     embed.set_footer(text=f"{username}'s rolimons", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1079482029776842812/JCiYruAM_400x400.png")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
