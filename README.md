@@ -19,6 +19,6 @@ https://www.youtube.com/watch?v=oZbzgoXlAuI
  
 <h2><strong> Discord Tag -->  </strong></h2>
 <p align="left">
-    <img width="39%" src="https://lanyard-profile-readme.vercel.app/api/184841558661529600" />
+    <img width="40%" src="https://lanyard-profile-readme.vercel.app/api/184841558661529600" />
 </p>
 
