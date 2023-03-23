@@ -6,18 +6,29 @@ import json
 import os
 import discord
 from colorama import Fore
+import random
+import string
 import ctypes
 import re
 import sys
+from discord_interactions import *
 from discord.ext import commands
+from discord_slash import SlashCommand, SlashContext
+from discord_slash.utils.manage_components import create_button, create_actionrow
+from discord_slash.model import ButtonStyle
+from discord_slash.utils.manage_components import create_select, create_select_option
+from discord_components import DiscordComponents
 from roblox import Client
 import asyncio
 import requests
 from bs4 import BeautifulSoup
 import random
+from discord_components import Button, Select, SelectOption, ComponentsBot, interaction
+from discord_components.component import ButtonStyle
 import urllib
 from discord.utils import find
 import urllib.request
+from typing import Dict
 import time
 #//////////////////////////////////////////////////////////////////////////
 client1 = Client()
@@ -34,12 +45,18 @@ deletein = config['deletetime']
 ownerrole = config['owner']
 adminrole = config['admin']
 modrole = config['mod']
+botcmds = config['botcmds']
+logs = config['logs']
 playingstatus = config['status']
 playingstatus2 = config['status2']
-bot = commands.Bot(command_prefix = prefix, help_command=None)
+embed_color = 0xfcd005
+intents = discord.Intents.default()
+intents.members = True
+bot = commands.Bot(command_prefix = prefix, intents=intents, help_command=None)
 cmds = {len(bot.commands)}
-intents = discord.Intents.all()
 version = "1.1.0"
+slash = SlashCommand(bot, sync_commands=True)
+DiscordComponents(bot)
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 intents.members = True
@@ -144,6 +161,8 @@ async def server(ctx):
     embed.add_field(name=f"[{prefix}] deleterole", value=f"[{prefix}] deleterole (rolename)", inline=False)
     embed.add_field(name=f"[{prefix}] first", value=f"[{prefix}] first", inline=False)
     embed.add_field(name=f"[{prefix}] spfp", value=f"[{prefix}] spfp", inline=False)
+    embed.add_field(name=f"[/] newticket", value=f"Creates a ticket for help (Must be in botcmds)", inline=False)
+    embed.add_field(name=f"[/] closeticket", value=f"Closes ticket", inline=False)
     embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed,delete_after=deletein)
@@ -161,7 +180,6 @@ async def crypto(ctx):
     embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed,delete_after=deletein)
-
 
 @bot.command()
 async def moderation(ctx):
@@ -325,7 +343,7 @@ async def unban(ctx, member:discord.User, *, reason=None):
     embed.set_thumbnail(url=member.avatar_url)
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed11, delete_after=15)
-    logchannel = bot.get_channel(1063815239059124264)
+    logchannel = config['logs']
     await logchannel.send(embed=embed)
     await ctx.message.delete()
     print("Command Executed")
@@ -351,7 +369,7 @@ async def ban(ctx, member:discord.User, *, reason=None):
     embed.set_thumbnail(url=member.avatar_url)
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed11, delete_after=15)
-    logchannel = bot.get_channel(1063815239059124264)
+    logchannel = config['logs']
     await logchannel.send(embed=embed)
     await ctx.message.delete()
     print("Command Executed")
@@ -377,7 +395,7 @@ async def kick(ctx, member:discord.User, *, reason=None):
     embed.set_thumbnail(url=member.avatar_url)
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed11, delete_after=15)
-    logchannel = bot.get_channel(1063815239059124264)
+    logchannel = config['logs']
     await logchannel.send(embed=embed)
 
 @bot.command()
@@ -1106,6 +1124,45 @@ async def on_command_error(ctx, error:commands.CommandError):
             embed.timestamp = datetime.datetime.utcnow()
             print(Fore.RED+f"[ERR] The Command {cmd} Does not exist"+Fore.RESET)
             await ctx.send(embed=embed, delete_after=30)
+open_tickets = {}
+
+@slash.slash(name="newticket", description="Create a new ticket.")
+async def new_ticket(ctx: SlashContext):
+    if ctx.channel.id != config['botcmds']:
+        await ctx.send(f"This command can only be used in <#{config['botcmds']}>.", delete_after= 15)
+        return
+    if ctx.author.id in open_tickets:
+        await ctx.send("You already have a ticket open.", delete_after=15)
+        return
+    category_name = "Tickets"
+    category = discord.utils.get(ctx.guild.categories, name=category_name)
+    if not category:
+        category = await ctx.guild.create_category(category_name)
+    ticket_name = "Ticket-" + ''.join(random.choices(string.ascii_letters + string.digits, k=8))
+    ticket_channel = await ctx.guild.create_text_channel(ticket_name, category=category)
+    await ticket_channel.set_permissions(ctx.guild.default_role, read_messages=False)
+    await ticket_channel.set_permissions(ctx.author, read_messages=True, send_messages=True)
+    embed = discord.Embed(title="Ticket Created", description=f"Ticket created in {ticket_channel.mention}", color=discord.Color.green())
+    await ctx.send(embed=embed)
+    embed = discord.Embed(title="Welcome to Your Ticket", description=f"Thank you for contacting support, {ctx.author.mention}. We will assist you as soon as possible.", color=discord.Color.blue())
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.timestamp = datetime.datetime.utcnow()
+    await ticket_channel.send(embed=embed)
+    open_tickets[ctx.author.id] = ticket_channel
+
+@slash.slash(name="closeticket", description="Close your ticket.")
+async def close_ticket(ctx: SlashContext):
+    if ctx.author.id not in open_tickets:
+        await ctx.send("You don't have any tickets open.")
+        return
+    ticket_channel = open_tickets[ctx.author.id]
+    await ctx.send("I hope we could help. Closing your ticket in 3 seconds...")
+    for i in range(3, 0, -1):
+        await asyncio.sleep(1)
+        await ctx.message.edit(content=f"I hope we could help. Closing your ticket in {i} seconds...")
+    await ticket_channel.delete()
+    del open_tickets[ctx.author.id]
 
 #////////////////////////////////////////////////////////////////////////// 
 def Init():
