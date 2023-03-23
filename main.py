@@ -54,7 +54,7 @@ intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix = prefix, intents=intents, help_command=None)
 cmds = {len(bot.commands)}
-version = "1.1.0"
+version = "1.1.1"
 slash = SlashCommand(bot, sync_commands=True)
 DiscordComponents(bot)
 intents = discord.Intents.default()
@@ -1142,6 +1142,11 @@ async def new_ticket(ctx: SlashContext):
     ticket_channel = await ctx.guild.create_text_channel(ticket_name, category=category)
     await ticket_channel.set_permissions(ctx.guild.default_role, read_messages=False)
     await ticket_channel.set_permissions(ctx.author, read_messages=True, send_messages=True)
+    allowed_roles = [config['mod'], config['owner'], config['admin']]
+    for role_id in allowed_roles:
+        role = ctx.guild.get_role(role_id)
+        if role is not None:
+            await ticket_channel.set_permissions(role, read_messages=True, send_messages=True)
     embed = discord.Embed(title="Ticket Created", description=f"Ticket created in {ticket_channel.mention}", color=discord.Color.green())
     await ctx.send(embed=embed)
     embed = discord.Embed(title="Welcome to Your Ticket", description=f"Thank you for contacting support, {ctx.author.mention}. We will assist you as soon as possible.", color=discord.Color.blue())
