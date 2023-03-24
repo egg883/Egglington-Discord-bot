@@ -14,7 +14,7 @@ import re
 import sys
 from discord_interactions import *
 from discord.ext import commands
-from discord_slash import SlashCommand, SlashContext
+from discord_slash import SlashCommand, SlashContext, ComponentContext
 from discord_slash.utils.manage_components import create_button, create_actionrow
 from discord_slash.model import ButtonStyle
 from discord_slash.utils.manage_components import create_select, create_select_option
