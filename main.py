@@ -76,66 +76,30 @@ def new_splash():
 CHANNEL_ID = config['logs']
 allowed_guild_ids = [config['serverid']]
 
-@bot.event
-async def on_member_ban(guild, user):
-    if guild.id not in allowed_guild_ids:
-        return
-    
-    embed = discord.Embed(title="User Banned", color=discord.Color.red())
-    embed.add_field(name="User", value="{0} ({1})".format(user.name, user.id))
-    embed.add_field(name="Guild", value="{0.name} ({0.id})".format(guild))
-    embed.add_field(name="Reason", value="No reason provided", inline=False)
-    audit_logs = await guild.audit_logs(limit=1, action=discord.AuditLogAction.ban).flatten()
-    if audit_logs:
-        audit_log = audit_logs[0]
-        if audit_log.target == user:
-            if audit_log.reason:
-                embed.set_field_at(2, name="Reason", value=audit_log.reason, inline=False)
+async def log(embed):
     channel = bot.get_channel(CHANNEL_ID)
     await channel.send(embed=embed)
 
 @bot.event
-async def on_member_remove(member):
-    if member.guild.id not in allowed_guild_ids:
+async def on_member_update(before, after):
+    if before.guild.id not in allowed_guild_ids:
         return
-    
-    embed = discord.Embed(title="User Kicked", color=discord.Color.dark_gold())
-    embed.add_field(name="User", value="{0.name} ({0.id})".format(member))
-    embed.add_field(name="Guild", value="{0.name} ({0.id})".format(member.guild))
-    embed.add_field(name="Reason", value="No reason provided", inline=False)
-    audit_logs = await member.guild.audit_logs(limit=1, action=discord.AuditLogAction.kick).flatten()
-    if audit_logs:
-        audit_log = audit_logs[0]
-        if audit_log.target == member:
-            if audit_log.reason:
-                embed.set_field_at(2, name="Reason", value=audit_log.reason, inline=False)
-    channel = bot.get_channel(CHANNEL_ID)
-    await channel.send(embed=embed)
 
-@bot.event
-async def on_message_delete(message):
-    if message.guild.id not in allowed_guild_ids:
-        return
-    
-    embed = discord.Embed(title="Message Deleted", color=discord.Color.dark_blue())
-    embed.add_field(name="Channel", value="{0.channel.name} ({0.channel.id})".format(message))
-    embed.add_field(name="Guild", value="{0.guild.name} ({0.guild.id})".format(message))
-    if message.content:
-        embed.add_field(name="Content", value=message.content)
-    channel = bot.get_channel(CHANNEL_ID)
-    await channel.send(embed=embed)
+    roles_before = set(before.roles)
+    roles_after = set(after.roles)
 
+    added_roles = roles_after - roles_before
+    removed_roles = roles_before - roles_after
 
-@bot.event
-async def on_guild_channel_delete(channel):
-    if channel.guild.id not in allowed_guild_ids:
-        return
-    
-    embed = discord.Embed(title="Channel Deleted", color=discord.Color.dark_orange())
-    embed.add_field(name="Channel", value="{0.name} ({0.id})".format(channel))
-    embed.add_field(name="Guild", value="{0.guild.name} ({0.guild.id})".format(channel))
-    channel = bot.get_channel(CHANNEL_ID)
-    await channel.send(embed=embed)
+    if added_roles:
+        added_roles_str = ", ".join(role.name for role in added_roles)
+        embed = discord.Embed(title="Role Update", description=f"{after.mention} was given the following roles: {added_roles_str}", color=discord.Color.green())
+        await log(embed)
+
+    if removed_roles:
+        removed_roles_str = ", ".join(role.name for role in removed_roles)
+        embed = discord.Embed(title="Role Update", description=f"{after.mention} had the following roles removed: {removed_roles_str}", color=discord.Color.red())
+        await log(embed)
 
 @bot.event
 async def on_member_join(member):
