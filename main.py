@@ -4,6 +4,7 @@ import time
 import io
 import json
 import os
+import openai
 import discord
 from colorama import Fore
 import random
@@ -49,6 +50,7 @@ botcmds = config['botcmds']
 logs = config['logs']
 playingstatus = config['status']
 playingstatus2 = config['status2']
+welc = config['welcome']
 embed_color = 0xfcd005
 intents = discord.Intents.default()
 intents.members = True
@@ -60,6 +62,7 @@ DiscordComponents(bot)
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 intents.members = True
+openai.api_key = "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"
 githuburl = "https://github.com/egg883/Egglington-Discord-bot"
 def restart_bot(): 
   os.execv(sys.executable,sys.argv)
@@ -68,6 +71,16 @@ def new_splash():
     print(f'{Colours.Magenta}Egglington is now Listening to {len(bot.guilds)} servers')
     print(f"{Colours.Magenta}Egglington's Prefix is {prefix}")
     print(f"{Colours.Magenta}Do {prefix}help for the help commands")
+
+@bot.event
+async def on_member_join(member):
+    channel = bot.get_channel(welc)
+    if not channel:
+        return
+    if not channel.permissions_for(member.guild.me).send_messages:
+        return
+    message = f"Welcome to the server, {member.mention}!"
+    await channel.send(message)
 
 @bot.event
 async def on_connect():
