@@ -47,6 +47,7 @@ ownerrole = config['owner']
 adminrole = config['admin']
 modrole = config['mod']
 botcmds = config['botcmds']
+server = config['serverid']
 logs = config['logs']
 playingstatus = config['status']
 playingstatus2 = config['status2']
@@ -73,9 +74,13 @@ def new_splash():
     print(f"{Colours.Magenta}Do {prefix}help for the help commands")
 
 CHANNEL_ID = config['logs']
+allowed_guild_ids = [config['serverid']]
 
 @bot.event
 async def on_member_ban(guild, user):
+    if guild.id not in allowed_guild_ids:
+        return
+    
     embed = discord.Embed(title="User Banned", color=discord.Color.red())
     embed.add_field(name="User", value="{0} ({1})".format(user.name, user.id))
     embed.add_field(name="Guild", value="{0.name} ({0.id})".format(guild))
@@ -91,6 +96,9 @@ async def on_member_ban(guild, user):
 
 @bot.event
 async def on_member_remove(member):
+    if member.guild.id not in allowed_guild_ids:
+        return
+    
     embed = discord.Embed(title="User Kicked", color=discord.Color.dark_gold())
     embed.add_field(name="User", value="{0.name} ({0.id})".format(member))
     embed.add_field(name="Guild", value="{0.name} ({0.id})".format(member.guild))
@@ -106,6 +114,9 @@ async def on_member_remove(member):
 
 @bot.event
 async def on_message_delete(message):
+    if message.guild.id not in allowed_guild_ids:
+        return
+    
     embed = discord.Embed(title="Message Deleted", color=discord.Color.dark_blue())
     embed.add_field(name="Channel", value="{0.channel.name} ({0.channel.id})".format(message))
     embed.add_field(name="Guild", value="{0.guild.name} ({0.guild.id})".format(message))
@@ -117,6 +128,9 @@ async def on_message_delete(message):
 
 @bot.event
 async def on_guild_channel_delete(channel):
+    if channel.guild.id not in allowed_guild_ids:
+        return
+    
     embed = discord.Embed(title="Channel Deleted", color=discord.Color.dark_orange())
     embed.add_field(name="Channel", value="{0.name} ({0.id})".format(channel))
     embed.add_field(name="Guild", value="{0.guild.name} ({0.guild.id})".format(channel))
