@@ -38,8 +38,6 @@ class Colours:
     Magenta = "\x1b[38;2;255;94;255m"
 os.system("color")
 config = json.load(open('config.json', 'rb'))
-clientsec = config['clientsecret']
-clientid = config['clientid']
 bottoken = config['bot_token']
 prefix = config['prefix']
 deletein = config['deletetime']
