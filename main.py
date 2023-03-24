@@ -72,6 +72,57 @@ def new_splash():
     print(f"{Colours.Magenta}Egglington's Prefix is {prefix}")
     print(f"{Colours.Magenta}Do {prefix}help for the help commands")
 
+CHANNEL_ID = config['logs']
+
+@bot.event
+async def on_member_ban(guild, user):
+    embed = discord.Embed(title="User Banned", color=discord.Color.red())
+    embed.add_field(name="User", value="{0} ({1})".format(user.name, user.id))
+    embed.add_field(name="Guild", value="{0.name} ({0.id})".format(guild))
+    embed.add_field(name="Reason", value="No reason provided", inline=False)
+    audit_logs = await guild.audit_logs(limit=1, action=discord.AuditLogAction.ban).flatten()
+    if audit_logs:
+        audit_log = audit_logs[0]
+        if audit_log.target == user:
+            if audit_log.reason:
+                embed.set_field_at(2, name="Reason", value=audit_log.reason, inline=False)
+    channel = bot.get_channel(CHANNEL_ID)
+    await channel.send(embed=embed)
+
+@bot.event
+async def on_member_remove(member):
+    embed = discord.Embed(title="User Kicked", color=discord.Color.dark_gold())
+    embed.add_field(name="User", value="{0.name} ({0.id})".format(member))
+    embed.add_field(name="Guild", value="{0.name} ({0.id})".format(member.guild))
+    embed.add_field(name="Reason", value="No reason provided", inline=False)
+    audit_logs = await member.guild.audit_logs(limit=1, action=discord.AuditLogAction.kick).flatten()
+    if audit_logs:
+        audit_log = audit_logs[0]
+        if audit_log.target == member:
+            if audit_log.reason:
+                embed.set_field_at(2, name="Reason", value=audit_log.reason, inline=False)
+    channel = bot.get_channel(CHANNEL_ID)
+    await channel.send(embed=embed)
+
+@bot.event
+async def on_message_delete(message):
+    embed = discord.Embed(title="Message Deleted", color=discord.Color.dark_blue())
+    embed.add_field(name="Channel", value="{0.channel.name} ({0.channel.id})".format(message))
+    embed.add_field(name="Guild", value="{0.guild.name} ({0.guild.id})".format(message))
+    if message.content:
+        embed.add_field(name="Content", value=message.content)
+    channel = bot.get_channel(CHANNEL_ID)
+    await channel.send(embed=embed)
+
+
+@bot.event
+async def on_guild_channel_delete(channel):
+    embed = discord.Embed(title="Channel Deleted", color=discord.Color.dark_orange())
+    embed.add_field(name="Channel", value="{0.name} ({0.id})".format(channel))
+    embed.add_field(name="Guild", value="{0.guild.name} ({0.guild.id})".format(channel))
+    channel = bot.get_channel(CHANNEL_ID)
+    await channel.send(embed=embed)
+
 @bot.event
 async def on_member_join(member):
     channel = bot.get_channel(welc)
@@ -79,8 +130,10 @@ async def on_member_join(member):
         return
     if not channel.permissions_for(member.guild.me).send_messages:
         return
-    message = f"Welcome to the server, {member.mention}!"
+    message = f"Welcome to the server, {member.mention}, Please visit <#1048221792147341342> If you are looking to verify you can do so by going to <#1048222728588636210>"
     await channel.send(message)
+
+
 
 @bot.event
 async def on_connect():
