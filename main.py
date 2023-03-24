@@ -55,7 +55,7 @@ intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix = prefix, intents=intents, help_command=None)
 cmds = {len(bot.commands)}
-version = "1.1.1"
+version = "1.1.2"
 slash = SlashCommand(bot, sync_commands=True)
 DiscordComponents(bot)
 intents = discord.Intents.default()
@@ -459,7 +459,7 @@ async def news(ctx):
     embed = discord.Embed(title=f"Update V{version}", description=f"This is the latest news about our bot Update", url=f"{githuburl}", colour=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.add_field(name="Added Crypto catagory", value="```added crypto prices```", inline=False)
+    embed.add_field(name="Added Slash commands", value="```added ticket slash command```", inline=False)
     embed.add_field(name="stupid gay ritem broke", value="```Removed ritem due to issues```", inline=False)
     embed.add_field(name="Our Website", value="```https://egg883.shop```", inline=False)
     await ctx.send(embed=embed)
