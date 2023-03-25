@@ -15,9 +15,11 @@ import sys
 from googletrans import Translator
 from discord_interactions import *
 from discord.ext import commands
-from discord_slash import SlashCommand, SlashContext, ComponentContext
+from discord_slash import SlashCommand, SlashContext, ComponentContext, SlashCommandOptionType
 from discord_slash.utils.manage_components import create_button, create_actionrow
 from discord_slash.model import ButtonStyle
+from discord_slash.utils.manage_commands import create_option, create_choice
+from discord_slash.utils.manage_commands import create_option
 from discord_slash.utils.manage_components import create_select, create_select_option
 from discord_components import DiscordComponents
 from roblox import Client
@@ -32,17 +34,22 @@ from discord.utils import find
 import urllib.request
 from typing import Dict
 import time
+import typing
+from typing import Union
+from typing import Optional
 #////////////////////////////////////////////////////////////////////////// COLOR DEFINING
 client1 = Client()
 class Colours:
     White = "\x1b[38;2;250;250;250m"
     Magenta = "\x1b[38;2;255;94;255m"
 os.system("color")
-#////////////////////////////////////////////////////////////////////////// CONFIG DEFINING
-config = json.load(open('config.json', 'rb'))
+#////////////////////////////////////////////////////////////////////////// CONFIG DEFINING#
+with open('config.json', 'r') as f:
+    config = json.load(f)
 bottoken = config['bot_token']
 prefix = config['prefix']
 deletein = config['deletetime']
+botowner = config['ownerid']
 ownerrole = config['owner']
 adminrole = config['admin']
 modrole = config['mod']
@@ -52,13 +59,14 @@ logs = config['logs']
 playingstatus = config['status']
 playingstatus2 = config['status2']
 welc = config['welcome']
+nsfwonoroff = config['nsfw_enabled']
 #////////////////////////////////////////////////////////////////////////// GENERIC SH*T 
 embed_color = 0xfcd005
 intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix = prefix, intents=intents, help_command=None)
 cmds = {len(bot.commands)}
-version = "1.1.2"
+version = "1.1.3"
 slash = SlashCommand(bot, sync_commands=True)
 DiscordComponents(bot)
 intents = discord.Intents.default()
@@ -66,7 +74,6 @@ client = discord.Client(intents=intents)
 intents.members = True
 openai.api_key = "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"
 githuburl = "https://github.com/egg883/Egglington-Discord-bot"
-s = "/"
 CHANNEL_ID = config['logs']
 allowed_guild_ids = [config['serverid']]
 def restart_bot(): 
@@ -74,8 +81,8 @@ def restart_bot():
 #////////////////////////////////////////////////////////////////////////// EVENT STUFF
 def new_splash():
     print(f'{Colours.Magenta}Egglington is now Listening to {len(bot.guilds)} servers')
-    print(f"{Colours.Magenta}Egglington's Prefix is {prefix}")
-    print(f"{Colours.Magenta}Do {prefix}help for the help commands")
+    print(f"{Colours.Magenta}Egglington's Prefix is /")
+    print(f"{Colours.Magenta}Do /help for the help commands")
 
 async def log(embed):
     channel = bot.get_channel(CHANNEL_ID)
@@ -124,7 +131,7 @@ def Clear():
 #//////////////////////////////////////////////////////////////////////////
 async def ch_pr():
  await bot.wait_until_ready()
- statuses = [f"{playingstatus} || {playingstatus2}", f"listening on {len(bot.guilds)} servers", f"Still need help? do {prefix}help for more help!"]
+ statuses = [f"{playingstatus} || {playingstatus2}", f"listening on {len(bot.guilds)} servers", f"Still need help? do /help for more help!"]
  while not bot.is_closed():
    status = random.choice(statuses)
    await bot.change_presence(activity=discord.Game(name=status))
@@ -133,168 +140,138 @@ bot.loop.create_task(ch_pr())
 
 @bot.command()
 async def clearconsole(ctx):
+    allowed_userids = [config['ownerid']]
+    if not any (role.id in allowed_userids for role in ctx.author.roles):
+        await ctx.send("You are not authorized to use this command.")
+        return
     ctx.message.delete()
     Clear()
     new_splash()
 
-@bot.command()
-async def help(ctx):
-    embed=discord.Embed(title="Help commands", url="https://egg883.shop", description="This is help section of the bot", color=0x007bff)
+@slash.slash(name="help", description="Shows this message.")
+async def help(ctx: SlashContext):
+    nsfw_enabled = config.get('nsfw_enabled', False)
+    if not nsfw_enabled:
+        embed = discord.Embed(title="Help Panel", description="This is the Help Panel Below will be commands:", color=discord.Color.blue())
+        embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+        embed.timestamp = datetime.datetime.utcnow()
+        embed.add_field(name="General", value="`/whois`, `/yt`, `/vote`, `/choose`, `/poll`", inline=False)
+        embed.add_field(name="Fun", value="`/coinflip`, `/rps`, `/dice`, `/choose`, `/poll`,`/pp`", inline=False)
+        embed.add_field(name="Moderation", value=f"`/kick`, `/ban`, `/unban`, `/purge`, `/mute`, `/unmute`, `/lock`, `/unlock`, `/slowmode`", inline=False)
+        embed.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`", inline=False)
+        embed.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`,`/newticket`,`/closeticket`,`/support`", inline=False)
+        embed.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`", inline=False)
+        embed.add_field(name="Roblox", value="`/rgame`, `/ruser`, `/routfit`, `/rvalue`, `/ruserhis`", inline=False)
+        embed.add_field(name="Crypto", value="`/btc`, `/eth`, `/sol`, `/ltc`, `/usdt`", inline=False)
+        await ctx.send(embed=embed)
+        return
+    nsfw_enabled1 = config.get('nsfw_enabled', True)
+    if nsfw_enabled1:
+        embed1 = discord.Embed(title="Help", description="This is the Help Panel Below will be commands:", color=discord.Color.blue())
+        embed1.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed1.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed1.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+        embed1.timestamp = datetime.datetime.utcnow()
+        embed1.add_field(name="General", value="`/whois`, `/yt`, `/vote`, `/choose`, `/poll`", inline=False)
+        embed1.add_field(name="Fun", value="`/coinflip`, `/rps`, `/dice`, `/choose`, `/poll`,`/pp`", inline=False)
+        embed1.add_field(name="Moderation", value=f"`/kick`, `/ban`, `/unban`, `/purge`, `/mute`, `/unmute`, `/lock`, `/unlock`, `/slowmode`", inline=False)
+        embed1.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`", inline=False)
+        embed1.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`,`/newticket`,`/closeticket`,`/support`", inline=False)
+        embed1.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`", inline=False)
+        embed1.add_field(name="Roblox", value="`/rgame`, `/ruser`, `/routfit`, `/rvalue`, `/ruserhis`", inline=False)
+        embed1.add_field(name="Crypto", value="`/btc`, `/eth`, `/sol`, `/ltc`, `/usdt`", inline=False)
+        embed1.add_field(name="nsfw", value="`/tentacle`,`/hass`,`/hmidriff`,`/pgif`,`/4k`,`/holo`,`/hboobs`,`/pussy`,`/hthigh`,`/thigh`, `/hentai`", inline=False)
+        await ctx.send(embed=embed1)
+
+@slash.slash(name="slowmode", description="Set the slowmode of the channel.")
+async def slowmode(ctx: SlashContext, seconds: int):
+    allowed_roles = [ownerrole, modrole, adminrole]
+    allowed_userids = [botowner]
+    if not any(role.id in allowed_roles for role in ctx.author.roles) and ctx.author.id not in allowed_userids:
+        await ctx.send("You are not authorized to use this command.")
+        return
+    if seconds > 21600:
+        await ctx.send("You can't set the slowmode to more than 21600 seconds.")
+        return
+    await ctx.channel.edit(slowmode_delay=seconds)
+    embed=discord.Embed(title="Slowmode command", url="https://egg883.shop", color=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.add_field(name=f"[{prefix}] general", value="List of general commands", inline=False)
-    embed.add_field(name=f"[{prefix}] moderation", value="List of moderation commands", inline=False)
-    embed.add_field(name=f"[{prefix}] server", value="List of server commands", inline=False)
-    embed.add_field(name=f"[{prefix}] nsfw", value="List of nsfw commands", inline=False)
-    embed.add_field(name=f"[{prefix}] memes", value="List of memes commands", inline=False)
-    embed.add_field(name=f"[{prefix}] fun", value="List of fun commands", inline=False)
-    embed.add_field(name=f"[{prefix}] crypto", value="List of crypto commands", inline=False)
-    embed.add_field(name=f"[{prefix}] roblox", value="List of roblox commands", inline=False)
-    embed.add_field(name=f"[{prefix}] slashcmds", value="List of slash commands", inline=False)
-    embed.add_field(name=f"[{prefix}] settings", value="List of settings commands", inline=False)
+    embed.add_field(name="Slowmode set to:", value=f"{seconds} seconds", inline=False)
     embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed, delete_after=deletein)
 
-@bot.command()
-async def memes(ctx):
-    embed=discord.Embed(title="Meme Commands", url="https://egg883.shop", description="This is Meme section of the bot", color=0x007bff)
+@slash.slash(name="lock", description="Lock the channel.")
+@commands.has_permissions(manage_channels=True)
+async def lock(ctx: SlashContext):
+    allowed_ids = [botowner]
+    allowed_roles = [ownerrole, modrole, adminrole]
+    if ctx.author.id not in allowed_ids and not any(role.id in [r.id for r in ctx.author.roles] for role in allowed_roles):
+        await ctx.send("You are not allowed to use this command.")
+        return
+    await ctx.channel.set_permissions(ctx.guild.default_role, send_messages=False)
+    embed=discord.Embed(title="Lock command", url="https://egg883.shop", color=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.add_field(name=f"[{prefix}] ph", value=f"[{prefix}] ph (@user) (text)", inline=False)
-    embed.add_field(name=f"[{prefix}] jail", value=f"[{prefix}] jail (@user)", inline=False)
-    embed.add_field(name=f"[{prefix}] wasted", value=f"[{prefix}] wasted (@user)", inline=False)
-    embed.add_field(name=f"[{prefix}] horny", value=f"[{prefix}] horny (@user)", inline=False)
-    embed.add_field(name=f"[{prefix}] lolice", value=f"[{prefix}] lolice (@user)", inline=False)
-    embed.add_field(name=f"[{prefix}] pixel", value=f"[{prefix}] pixel (@user)", inline=False)
-    embed.add_field(name=f"[{prefix}] clyde", value=f"[{prefix}] clyde (text)", inline=False)
-    embed.add_field(name=f"[{prefix}] trump", value=f"[{prefix}] trump (text)", inline=False)
+    embed.add_field(name="Channel locked", value=f"{ctx.channel.mention}", inline=False)
     embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.timestamp = datetime.datetime.utcnow()
-    await ctx.send(embed=embed,delete_after=deletein)
+    await ctx.send(embed=embed, delete_after=deletein)
 
-@bot.command()
-async def slashcmds(ctx):
-    embed=discord.Embed(title="Slash commands", url="https://egg883.shop", description="This is slash cmds section of the bot", color=0x007bff)
+@slash.slash(name="unlock", description="Unlock the channel.")
+@commands.has_permissions(manage_channels=True)
+async def unlock(ctx: SlashContext):
+    allowed_ids = [botowner]
+    allowed_roles = [ownerrole, modrole, adminrole]
+    if ctx.author.id not in allowed_ids and not any(role.id in [r.id for r in ctx.author.roles] for role in allowed_roles):
+        await ctx.send("You are not allowed to use this command.")
+        return
+    await ctx.channel.set_permissions(ctx.guild.default_role, send_messages=True)
+    embed=discord.Embed(title="Unlock command", url="https://egg883.shop", color=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.add_field(name=f"[{s}] invite", value=f"Gives you the bots invite link", inline=False)
-    embed.add_field(name=f"[{s}] newticket", value=f"opens a new ticket", inline=False)
-    embed.add_field(name=f"[{s}] closeticket", value=f"closes an open ticket", inline=False)
-    embed.add_field(name=f"[{s}] ping", value=f"tells you the bots ping", inline=False)
-    embed.add_field(name=f"[{s}] support", value=f"tells you the bots ping", inline=False)
-    embed.add_field(name=f"[{s}] vote", value=f"vote for egglington bot", inline=False)
+    embed.add_field(name="Channel unlocked", value=f"{ctx.channel.mention}", inline=False)
     embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.timestamp = datetime.datetime.utcnow()
-    await ctx.send(embed=embed,delete_after=deletein)
+    await ctx.send(embed=embed, delete_after=deletein)
 
-@bot.command()
-async def general(ctx):
-    embed=discord.Embed(title="General commands", url="https://egg883.shop", description="This is general section of the bot", color=0x007bff)
-    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.add_field(name=f"[{prefix}] whois", value=f"[{prefix}] whois (@user)", inline=False)
-    embed.add_field(name=f"[{prefix}] yt", value=f"[{prefix}] yt (name of yt video)", inline=False)
-    embed.add_field(name=f"[{prefix}] vote", value=f"Vote for egglington", inline=False)
-    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.timestamp = datetime.datetime.utcnow()
-    await ctx.send(embed=embed,delete_after=deletein)
-
-@bot.command()
-async def fun(ctx):
-    embed=discord.Embed(title="Fun commands", url="https://egg883.shop", description="This is fun section of the bot", color=0x007bff)
-    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.add_field(name=f"[{prefix}] pp", value=f"[{prefix}] pp (@user)", inline=False)
-    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.timestamp = datetime.datetime.utcnow()
-    await ctx.send(embed=embed,delete_after=deletein)
-
-@bot.command()
-async def server(ctx):
-    embed=discord.Embed(title="Server commands", url="https://egg883.shop", color=0x007bff)
-    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.add_field(name=f"[{prefix}] role", value=f"[{prefix}] role (@user rolename)", inline=False)
-    embed.add_field(name=f"[{prefix}] deleterole", value=f"[{prefix}] deleterole (rolename)", inline=False)
-    embed.add_field(name=f"[{prefix}] first", value=f"[{prefix}] first", inline=False)
-    embed.add_field(name=f"[{prefix}] spfp", value=f"[{prefix}] spfp", inline=False)
-    embed.add_field(name=f"[/] newticket", value=f"Creates a ticket for help (Must be in botcmds)", inline=False)
-    embed.add_field(name=f"[/] closeticket", value=f"Closes ticket", inline=False)
-    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.timestamp = datetime.datetime.utcnow()
-    await ctx.send(embed=embed,delete_after=deletein)
-
-@bot.command()
-async def crypto(ctx):
-    embed=discord.Embed(title="Crypto commands", url="https://egg883.shop", color=0x007bff)
-    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.add_field(name=f"[{prefix}] btc", value=f"Displays current btc price", inline=False)
-    embed.add_field(name=f"[{prefix}] sol", value=f"Displays current sol price", inline=False)
-    embed.add_field(name=f"[{prefix}] eth", value=f"Displays current eth price", inline=False)
-    embed.add_field(name=f"[{prefix}] usdt", value=f"Displays current usdt price", inline=False)
-    embed.add_field(name=f"[{prefix}] ltc", value=f"Displays current ltc price", inline=False)
-    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.timestamp = datetime.datetime.utcnow()
-    await ctx.send(embed=embed,delete_after=deletein)
-
-@bot.command()
-async def moderation(ctx):
-    await ctx.message.delete()
-    embed=discord.Embed(title="moderation commands", url="https://egg883.shop", color=0x007bff)
-    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.add_field(name=f"[{prefix}] mute", value=f"[{prefix}] mute (reason) | [{prefix}] unmute (reason)", inline=False)
-    embed.add_field(name=f"[{prefix}] purge", value=f"[{prefix}] purge (amount)", inline=False)
-    embed.add_field(name=f"[{prefix}] ban", value=f"[{prefix}] ban (@user, reason) | {prefix} unban (@user, reason)", inline=False)
-    embed.add_field(name=f"[{prefix}] kick", value=f"[{prefix}] kick (@user, reason)", inline=False)
-    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.timestamp = datetime.datetime.utcnow()
-    await ctx.send(embed=embed,delete_after=deletein)
-
-@bot.command()
-async def roblox(ctx):
-    embed=discord.Embed(title="Roblox Commands", url="https://egg883.shop", description="This is roblox section of the bot", color=0x007bff)
-    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
-    embed.add_field(name=f"[{prefix}] ruser", value=f"[{prefix}] ruser (robloxusername)", inline=False)
-    embed.add_field(name=f"[{prefix}] routfit", value=f"[{prefix}] routfit (robloxusername)", inline=False)
-    embed.add_field(name=f"[{prefix}] ruserhis", value=f"[{prefix}] ruserhis (robloxusername)", inline=False)
-    embed.add_field(name=f"[{prefix}] rvalue", value=f"[{prefix}] rvalue (robloxusername)", inline=False)
-    # embed.add_field(name=f"[{prefix}] ritem", value=f"[{prefix}] ritem (item url)", inline=False)
-    embed.add_field(name=f"[{prefix}] rgame", value=f"[{prefix}] rgame (game url)", inline=False)
-    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.timestamp = datetime.datetime.utcnow()
-    await ctx.send(embed=embed,delete_after=deletein)
-
-@bot.command()
-async def settings(ctx):
-    embed=discord.Embed(title="moderation commands", url="https://egg883.shop", color=0x007bff)
-    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.add_field(name=f"[{prefix}] info", value=f"[{prefix}] info", inline=False)
-    embed.add_field(name=f"[{prefix}] news", value=f"[{prefix}] news", inline=False)
-    embed.add_field(name=f"[{prefix}] restart", value=f"[{prefix}] restart (owner role only)", inline=False)
-    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.timestamp = datetime.datetime.utcnow()
-    await ctx.send(embed=embed,delete_after=deletein)
-
-
-@bot.command(pass_context=True)
-@commands.has_any_role(ownerrole, modrole, adminrole) 
-async def purge(ctx, limit: int):
-    await ctx.message.delete()
-    await ctx.channel.purge(limit=limit)
-    embed=discord.Embed(title="Purge command", url="https://egg883.shop", color=0x007bff)
-    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.add_field(name="Purged", value=f"I have purged {limit} Messages")
-    await ctx.send(embed=embed,delete_after=config['deletetime'])
-
-@bot.command()
+@slash.slash(
+    name="purge",
+    description="Delete a specified number of messages from the channel.",
+    options=[
+        create_option(
+            name="limit",
+            description="The number of messages to delete. (1-100)",
+            option_type=4,
+            required=True
+        )
+    ]
+)
 @commands.has_permissions(manage_messages=True)
 @commands.has_any_role(ownerrole, modrole, adminrole) 
-async def mute(ctx, member: discord.Member, *, reason=None):
+async def purge(ctx: SlashContext, limit: int):
+    await ctx.channel.purge(limit=limit+1)
+    embed=discord.Embed(title="Purge command", url="https://egg883.shop", color=0x007bff)
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.add_field(name="Purged", value=f"I have purged {limit} messages.")
+    await ctx.send(embed=embed,delete_after=config['deletetime'])
+
+@slash.slash(name="mute", 
+             description="Mutes a user in the server", 
+             options=[
+                 create_option(
+                     name="member", 
+                     description="The member to be muted", 
+                     option_type=6, 
+                     required=True
+                 ),
+                 create_option(
+                     name="reason", 
+                     description="The reason for the mute", 
+                     option_type=3, 
+                     required=False
+                 )
+             ])
+@commands.has_permissions(manage_messages=True)
+@commands.has_any_role(ownerrole, modrole, adminrole) 
+async def mute(ctx, member: discord.Member, reason: str = None):
     await ctx.message.delete()
     guild = ctx.guild
     mutedRole = discord.utils.get(guild.roles, name="Muted")
@@ -305,70 +282,123 @@ async def mute(ctx, member: discord.Member, *, reason=None):
     embed = discord.Embed(title="Muted", description=f"{member.mention} was muted ", colour=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.add_field(name="reason:", value=reason, inline=False)
-    await ctx.send(embed=embed,delete_after=config['deletetime'])
+    await ctx.send(embed=embed, delete_after=config['deletetime'])
     await member.add_roles(mutedRole, reason=reason)
-    await member.send(f" you have been muted from: {guild.name} reason: {reason}")
+    await member.send(f"You have been muted from: {guild.name}\nReason: {reason}")
 
-@bot.command()
-@commands.has_any_role(ownerrole, modrole, adminrole)
-async def unmute(ctx,member: discord.Member, *, reason=None):
-        await ctx.message.delete()
-        guild = ctx.guild
-        mutedRole = discord.utils.get(guild.roles, name="Muted")
-        embed = discord.Embed(title="Unmuted", description=f"{member.mention} was unmuted ", colour=0x007bff)
-        embed.set_author(name="Egglington", url="https://egg883.shop", icon_url=f"https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.add_field(name="reason:", value=reason, inline=False)
-        await ctx.send(embed=embed,delete_after=config['deletetime'])
-        await member.remove_roles(mutedRole, reason=reason)
-        await member.send(f" You have been unmuted in: {guild.name} reason: {reason}")
-
-@bot.command()
-async def whois(ctx,*,member: discord.Member):
-        await ctx.message.delete()
-        embed = discord.Embed(title=f"Info about **{member.display_name}**", colour=0x007bff)
-        embed.set_thumbnail(url=f"{member.avatar_url}")
-        embed.set_author(name=f"Egglington", url="https://egg883.shop", icon_url=f"https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.add_field(name="User ID:", value=f"```{member.id}```", inline=False)
-        embed.add_field(name="Users Discriminator:", value=f"```#{member.discriminator}```", inline=True)
-        embed.add_field(name="Creation Date:", value=f"```{member.created_at.strftime('%d/%m/%Y')}```", inline=True)
-        embed.add_field(name="Server Join Date:", value=f"```{member.joined_at.strftime('%d/%m/%Y')}```", inline=True)
-        embed.add_field(name="Is a bot:", value=f"```{member.bot}```", inline=True)
-        await ctx.send(embed=embed,delete_after=60)
-
-@bot.command()
-@commands.has_any_role(ownerrole, modrole, adminrole) 
+@slash.slash(name="unmute",
+             description="Unmute a member.",
+             options=[
+                 create_option(
+                     name="member",
+                     description="The member to unmute.",
+                     option_type=6,
+                     required=True
+                 ),
+                 create_option(
+                     name="reason",
+                     description="The reason for unmuting.",
+                     option_type=3,
+                     required=False
+                 )
+             ])
 @commands.has_permissions(manage_messages=True)
-async def role(ctx,member: discord.Member,*, rname):
-    await ctx.message.delete()
+@commands.has_any_role(ownerrole, modrole, adminrole)
+async def unmute(ctx: SlashContext, member: discord.Member, reason: str = None):
+    await ctx.defer()
     guild = ctx.guild
-    mutedRole = discord.utils.get(guild.roles, name=f"{rname}")
-    if not mutedRole:
-        mutedRole = await guild.create_role(name=f"{rname}")
+    mutedRole = discord.utils.get(guild.roles, name="Muted")
+    embed = discord.Embed(title="Unmuted", description=f"{member.mention} was unmuted ", colour=0x007bff)
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url=f"https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.add_field(name="reason:", value=reason, inline=False)
+    await ctx.send(embed=embed,delete_after=config['deletetime'])
+    await member.remove_roles(mutedRole, reason=reason)
+    await member.send(f" You have been unmuted in: {guild.name} reason: {reason}")
+
+@slash.slash(name="whois",
+             description="Shows information about a member.",
+             options=[
+                 create_option(
+                     name="member",
+                     description="The member you want to see information about.",
+                     option_type=6,
+                     required=True
+                 )
+             ])
+async def whois(ctx: SlashContext, member: discord.Member):
+    embed = discord.Embed(title=f"Info about **{member.display_name}**", colour=0x007bff)
+    embed.set_thumbnail(url=f"{member.avatar_url}")
+    embed.set_author(name=f"Egglington", url="https://egg883.shop", icon_url=f"https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.add_field(name="User ID:", value=f"```{member.id}```", inline=False)
+    embed.add_field(name="Users Discriminator:", value=f"```#{member.discriminator}```", inline=True)
+    embed.add_field(name="Creation Date:", value=f"```{member.created_at.strftime('%d/%m/%Y')}```", inline=True)
+    embed.add_field(name="Server Join Date:", value=f"```{member.joined_at.strftime('%d/%m/%Y')}```", inline=True)
+    embed.add_field(name="Is a bot:", value=f"```{member.bot}```", inline=True)
+    await ctx.send(embed=embed)
+    await ctx.message.delete(delay=deletein)
+
+@slash.slash(name="role",
+             description="Gives a specified role to a member",
+             options=[
+                 create_option(
+                     name="member",
+                     description="The member to give the role to",
+                     option_type=6,
+                     required=True
+                 ),
+                 create_option(
+                     name="rname",
+                     description="The name of the role to give",
+                     option_type=3,
+                     required=True
+                 )
+             ])
+@commands.has_permissions(manage_roles=True)
+async def give_role(ctx: SlashContext, member: discord.Member, rname: str):
+    await ctx.defer()
+    guild = ctx.guild
+    role = discord.utils.get(guild.roles, name=rname)
+    if not role:
+        role = await guild.create_role(name=rname)
         for channel in guild.channels:
-            await channel.set_permissions(mutedRole, speak=True, send_messages=True, read_message_history=True, read_messages=True)
+            await channel.set_permissions(role, speak=True, send_messages=True, read_message_history=True, read_messages=True)
         embed = discord.Embed(title="Created Role", colour=0x007bff)
         embed.set_author(name=f"Egglington", url="https://egg883.shop", icon_url=f"https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
         embed.add_field(name="Created role:", value=f"The Role: {rname} Has successfully been given to {member.display_name}", inline=False)
-        await member.add_roles(mutedRole)
-        await ctx.send(embed=embed, delete_after=60)
+    await member.add_roles(role)
+    await ctx.send(embed=embed, delete_after=config['deletetime'])
 
-@bot.command()
+@slash.slash(name="deleterole",
+             description="Deletes the specified role",
+             options=[
+                 create_option(
+                     name="role",
+                     description="The role to delete",
+                     option_type=8,
+                     required=True
+                 )
+             ])
 @commands.has_any_role(ownerrole, modrole, adminrole) 
-async def deleterole(ctx, *, role: discord.Role = None):
-    await ctx.message.delete()
-    if ctx.author.guild_permissions.administrator and role:
+async def _deleterole(ctx: SlashContext, role: discord.Role):
+    await ctx.defer()
+    if ctx.author.guild_permissions.administrator:
         guild = ctx.guild
         if role in guild.roles:
             await role.delete()
+            await ctx.send(f"The role `{role}` has been deleted!", hidden=True)
             return
-        embed = discord.Embed(title=F"Deleted Role", colour=0x007bff)
-        embed.set_author(name=f"Egglington", url="https://egg883.shop", icon_url=f"https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.add_field(name=f"{ctx.author.display_name} ", value=f"The Role: {role} Has been Deleted", inline=False)
-        await ctx.send(embed=embed, delete_after=60)
+    await ctx.send("You don't have permission to delete this role or the role doesn't exist!", hidden=True)
 
-@bot.command()
-async def pp(ctx, *, user: discord.Member = None):
-    await ctx.message.delete()
+@slash.slash(name="pp", description="Check someone's pp size", options=[
+    create_option(
+        name="user",
+        description="The user whose pp size you want to check",
+        option_type=6,
+        required=False
+    )
+])
+async def pp(ctx: SlashContext, user: discord.Member = None):
+    await ctx.defer()
     if user is None:
         user = ctx.author
     size = random.randint(1, 15)
@@ -381,96 +411,119 @@ async def pp(ctx, *, user: discord.Member = None):
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed, delete_after=deletein)
 
-@bot.command()
-@commands.has_any_role(ownerrole, adminrole) 
-async def unban(ctx, member:discord.User, *, reason=None):
-    await ctx.message.delete()
-    if reason == None:
-        reason = f"No Reason Provided"
-    await ctx.guild.unban(member, reason=reason)
-    embed11 = discord.Embed(title="Unbanned!", description=f"{member.mention} Has been Ressurected", colour=0x007bff)
-    embed11.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed11.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063813203445944420/94-940113_file-ban-hammer-png-roblox-ban-hammer-png_1.png")
-    embed11.add_field(name="reason:", value=reason, inline=False)
-    embed = discord.Embed(title="Unban Log", description=f"{member.mention} has been **unbanned** by {ctx.author.mention}\n\nReason: `{reason}`\n\nUnbanned from: `{ctx.guild.name}`", color=0x1355ed)
-    embed.add_field(name="User", value=f"{member}", inline=True)
-    embed.add_field(name="UserID", value=f"{member.id}", inline=True)
-    embed.add_field(name="Moderator", value=f"{ctx.author}", inline=True)
-    embed.set_footer(text=f"Unban log - Banned user: {member.name}")
-    embed.set_thumbnail(url=member.avatar_url)
-    embed.timestamp = datetime.datetime.utcnow()
-    await ctx.send(embed=embed11, delete_after=15)
-    logchannel = config['logs']
-    await logchannel.send(embed=embed)
-    await ctx.message.delete()
-    print("Command Executed")
+@slash.slash(name="unban",
+             description="Unbans a member from the server.",
+             options=[
+                 create_option(
+                     name="member",
+                     description="The member you want to unban. You can use either a mention or their user ID.",
+                     option_type=3,
+                     required=True
+                 )
+             ])
+@commands.has_permissions(ban_members=True)
+@commands.has_any_role(1063848147476025456, ownerrole, modrole, adminrole)
+async def unban(ctx: SlashContext, member: str):
+    await ctx.defer()
 
-@bot.command()
-@commands.has_any_role(ownerrole, adminrole) 
-async def ban(ctx, member:discord.User, *, reason=None):
-    await ctx.message.delete()
-    if reason == None:
-        reason = f"No Reason Provided"
     guild = ctx.guild
-    await member.send(f" You have been Banished from: {guild.name} reason: {reason}")
+
+    try:
+        member_obj = await guild.fetch_member(int(member.strip("<@!>")))
+        await guild.unban(member_obj)
+        embed = discord.Embed(title="Unbanned", description=f"{member_obj.mention} was unbanned", colour=0x007bff)
+    except discord.errors.NotFound:
+        await guild.unban(discord.Object(id=int(member)))
+        embed = discord.Embed(title="Unbanned", description=f"User with ID {member} was unbanned", colour=0x007bff)
+
+    await ctx.send(embed=embed, delete_after=config['deletetime'])
+
+@slash.slash(name="ban",
+             description="Bans a member from the server",
+             options=[
+                 create_option(
+                     name="member",
+                     description="The member to ban",
+                     option_type=6,
+                     required=True
+                 ),
+                 create_option(
+                     name="reason",
+                     description="The reason for the ban",
+                     option_type=3,
+                     required=False
+                 )
+             ])
+@commands.has_permissions(ban_members=True)
+async def ban(ctx: SlashContext, member: discord.Member, reason: str = None):
+    if reason is None:
+        reason = "No reason provided"
+
     await member.ban(reason=reason)
-    embed11 = discord.Embed(title="Banned!", description=f"{member.mention} Has been hit with the hammer ", colour=0x007bff)
-    embed11.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed11.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063813203445944420/94-940113_file-ban-hammer-png-roblox-ban-hammer-png_1.png")
-    embed11.add_field(name="reason:", value=reason, inline=False)
-    embed = discord.Embed(title="Ban Log", description=f"{member.mention} has been **Banned** by {ctx.author.mention}\n\nReason: `{reason}`\n\nBanned from: `{ctx.guild.name}`", color=0x1355ed)
-    embed.add_field(name="User", value=f"{member}", inline=True)
-    embed.add_field(name="UserID", value=f"{member.id}", inline=True)
-    embed.add_field(name="Moderator", value=f"{ctx.author}", inline=True)
-    embed.set_footer(text=f"ban log - Banned user: {member.name}")
-    embed.set_thumbnail(url=member.avatar_url)
-    embed.timestamp = datetime.datetime.utcnow()
-    await ctx.send(embed=embed11, delete_after=15)
-    logchannel = config['logs']
-    await logchannel.send(embed=embed)
-    await ctx.message.delete()
-    print("Command Executed")
 
-@bot.command()
-@commands.has_any_role(ownerrole, modrole, adminrole) 
-async def kick(ctx, member:discord.User, *, reason=None):
-    await ctx.message.delete()
+    embed = discord.Embed(
+        title="Member banned",
+        description=f"{member.mention} has been banned from the server.",
+        color=0xFF0000
+    )
+    embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+    embed.set_thumbnail(url=member.avatar_url)
+    embed.add_field(name="Reason", value=reason)
+
+    await ctx.send(embed=embed)
+
+@slash.slash(name="kick",
+             description="Kicks a member from the server",
+             options=[
+                 create_option(
+                     name="member",
+                     description="The member to kick",
+                     option_type=6,
+                     required=True
+                 ),
+                 create_option(
+                     name="reason",
+                     description="The reason for the kick",
+                     option_type=3,
+                     required=False
+                 )
+             ])
+@commands.has_permissions(kick_members=True)
+async def kick(ctx: SlashContext, member: discord.Member, reason: str = "No reason specified"):
     guild = ctx.guild
-    await member.send(f" You have been kicked from: {guild.name} reason: {reason}")
-    await member.kick()
-    if reason == None:
-        reason = "No Reason Specified"
-    embed11 = discord.Embed(title="kicked!", description=f"{member.mention} Has been booted out of the server", colour=0x007bff)
-    embed11.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed11.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063823799490986054/8495-moderation-icon.png")
-    embed11.add_field(name="reason:", value=reason, inline=False)
-    embed = discord.Embed(title="Kick Log", description=f"{member.mention} has been **Kicked** by {ctx.author.mention}\n\nReason: `{reason}`\nKicked from: `{ctx.guild.name}`", color=0x1355ed)
+    await member.send(f"You have been kicked from {guild.name}. Reason: {reason}")
+    await member.kick(reason=reason)
+    
+    embed = discord.Embed(
+        title="Kick Log",
+        description=f"{member.mention} has been **kicked** by {ctx.author.mention}.",
+        color=0x1355ed
+    )
+    embed.set_thumbnail(url=member.avatar_url)
     embed.add_field(name="User", value=f"{member}", inline=True)
     embed.add_field(name="UserID", value=f"{member.id}", inline=True)
-    embed.add_field(name="Moderator", value=f"{ctx.author}", inline=True)
-    embed.set_footer(text=f"Kick log - Kicked user: {member.name}")
-    embed.set_thumbnail(url=member.avatar_url)
+    embed.add_field(name="Reason", value=f"{reason}", inline=False)
     embed.timestamp = datetime.datetime.utcnow()
-    await ctx.send(embed=embed11, delete_after=15)
-    logchannel = config['logs']
-    await logchannel.send(embed=embed)
+    await ctx.send(embeds=[embed])
 
-@bot.command()
-@commands.has_any_role(ownerrole) 
-async def restart(ctx):
-    await ctx.message.delete()
+@slash.slash(name="restart",
+             description="Restart the bot"
+)
+@commands.has_any_role(botowner)
+async def restart(ctx: SlashContext):
+    await ctx.defer()
     embed=discord.Embed(title="Command Executed", colour=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1072208453323460790/giphy.gif")
     embed.add_field(name="**Please Wait**", value="Bot Is Restarting.", inline=False)
-    await ctx.send(embed=embed, delete_after=600)
+    await ctx.send(embed=embed, delete_after=deletein)
     print("restarting bot")
     restart_bot()
 
 
-@bot.command()
-async def news(ctx):
-    await ctx.message.delete()
+@slash.slash(name="news", description="Displays the latest news about the bot.")
+async def news(ctx: SlashContext):
+    await ctx.defer()
     embed = discord.Embed(title=f"Update V{version}", description=f"This is the latest news about our bot Update", url=f"{githuburl}", colour=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
@@ -480,10 +533,8 @@ async def news(ctx):
     await ctx.send(embed=embed)
 
 
-@bot.command()
-@commands.guild_only()
+@slash.slash(name="sinfo", description="Get information about the server")
 async def sinfo(ctx):
-    await ctx.message.delete()
     text_channels = len(ctx.guild.text_channels)
     voice_channels = len(ctx.guild.voice_channels)
     guild = ctx.guild
@@ -500,20 +551,20 @@ async def sinfo(ctx):
     embed.add_field(name="Server Verification", value=f"```{str(ctx.guild.verification_level).upper()}```", inline=False)
     await ctx.send(embed=embed)
 
-@bot.command()
+@slash.slash(name="info", description="Displays info about the bot.")
 async def info(ctx):
     embed = discord.Embed(title="Info", description=f"This is a information page about my bot", colour=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.add_field(name="Total Commands:", value = f"```{len(bot.commands)}```", inline=True)
+    embed.add_field(name="Total Commands:", value = f"```{len(slash.commands)}```", inline=True)
     embed.add_field(name="Prefix:", value=f"```{prefix}```", inline=True)
     embed.add_field(name="Version:", value=f"```{version}```", inline=True)
-    embed.add_field(name="Creator:", value="```This bot was made by eggs#6666 this is a little project i wanted todo```", inline=False)
+    embed.add_field(name="Creator:", value="```This bot was made by jackk#6666 this is a little project i wanted todo```", inline=False)
     embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
 
-@bot.command()
+@slash.slash(name="first", description="Displays the first message ever sent in the channel.")
 async def first(ctx):
     await ctx.message.delete()
     channel = ctx.channel
@@ -525,7 +576,7 @@ async def first(ctx):
     embed.add_field(name="First Message link", value = f"{first_message.jump_url}", inline=False)
     await ctx.send(embed=embed)
 
-@bot.command()
+@slash.slash(name="spfp", description="Displays the server icon.")
 async def spfp(ctx):
     await ctx.message.delete()
     guild = ctx.guild
@@ -536,26 +587,38 @@ async def spfp(ctx):
     embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     await ctx.send(embed=embed, delete_after=deletein)
 
-@bot.command()
-async def jail(ctx, member=None):
-    await ctx.message.delete()
-    if member==None:
-        member = ctx.message.author
-    else:
-        member = ctx.message.mentions[0]
-        member = await bot.fetch_user(int(member.id))
+@slash.slash(name="jail", 
+             description="Send someone to jail!",
+             options=[
+                 create_option(
+                     name="member",
+                     description="The member you want to send to jail.",
+                     option_type=SlashCommandOptionType.USER,
+                     required=False
+                 )
+             ])
+async def jail(ctx: SlashContext, member: typing.Optional[discord.Member] = None):
+    if member is None:
+        member = ctx.author
     async with aiohttp.ClientSession() as trigSession:
         async with trigSession.get(f'https://some-random-api.ml/canvas/jail?avatar={member.avatar_url_as(format="png", size=1024)}') as trigImg:
-            imageData = io.BytesIO(await trigImg.read()) 
-            
+            imageData = io.BytesIO(await trigImg.read())
             await trigSession.close()
-            
             await ctx.send(file=discord.File(imageData, 'eggui.gif'))
 
 
-@bot.command()
-async def ruser(ctx, user423):
-    user = await client1.get_user_by_username(user423)
+@slash.slash(name="ruser",
+             description="Get information about a Roblox user.",
+             options=[
+                 create_option(
+                     name="username",
+                     description="The Roblox username of the user.",
+                     option_type=3,
+                     required=True
+                 )
+             ])
+async def ruser(ctx, username):
+    user = await client1.get_user_by_username(username)
     userid = user.id
     URL3 = f"https://www.roblox.com/users/{userid}/profile"
     requestURL = requests.get(URL3)
@@ -585,13 +648,24 @@ async def ruser(ctx, user423):
         embed.add_field(name=f"Premium:", value=f"```{listofusers['premium']}```", inline=True)
         embed.add_field(name=f"Is banned:", value=f"```{user.is_banned}```", inline=True)
         embed.add_field(name=f"Description:", value=f"```{user.description}```", inline=False)
-        embed.set_footer(text=f"{user423}'s Information", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
+        embed.set_footer(text=f"{username}'s Information", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
-@bot.command()
-async def routfit(ctx, user423):
-    user = await client1.get_user_by_username(user423)
+@slash.slash(
+    name="routfit",
+    description="Find the current outfit of a Roblox user",
+    options=[
+        create_option(
+            name="username",
+            description="The username of the Roblox user",
+            option_type=3,
+            required=True
+        )
+    ]
+)
+async def routfit(ctx: SlashContext, username: str):
+    user = await client1.get_user_by_username(username)
     user_thumbnails = await client1.thumbnails.get_user_avatar_thumbnails(
         users=[user],
         size=(420, 420)
@@ -602,253 +676,280 @@ async def routfit(ctx, user423):
         embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
         embed.add_field(name=f"Username:", value=f"{user.name}", inline=False)
         embed.set_image(url = f"{user_thumbnail.image_url}")
-        embed.set_footer(text=f"{user423}'s current outfit", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
+        embed.set_footer(text=f"{username}'s current outfit", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
-@bot.command()
-async def wasted(ctx, member=None):
-    await ctx.message.delete()
-    if member==None:
-        member = ctx.message.author
-    else:
-        member = ctx.message.mentions[0]
-        member = await bot.fetch_user(int(member.id))
-        
-    async with aiohttp.ClientSession() as trigSession:
-        async with trigSession.get(f'https://some-random-api.ml/canvas/wasted?avatar={member.avatar_url_as(format="png", size=1024)}') as trigImg:
-            imageData = io.BytesIO(await trigImg.read()) 
-            
-            await trigSession.close()
-            
-            await ctx.send(file=discord.File(imageData, 'eggui.gif'))
+@slash.slash(name="wasted",
+             description="Apply the GTA 'Wasted' effect to a user's avatar",
+             options=[
+                 create_option(
+                     name="user",
+                     description="The user to apply the effect to (optional, defaults to yourself)",
+                     option_type=6,
+                     required=False
+                 )
+             ])
+async def wasted(ctx, user: discord.Member = None):
+    await ctx.defer()
+    if user is None:
+        user = ctx.author
+    async with aiohttp.ClientSession() as session:
+        async with session.get(f"https://some-random-api.ml/canvas/wasted?avatar={user.avatar_url_as(format='png', size=1024)}") as resp:
+            if resp.status == 200:
+                img_bytes = io.BytesIO(await resp.read())
+                file = discord.File(img_bytes, filename="wasted.gif")
+                await ctx.send(file=file)
+            else:
+                await ctx.send("An error occurred while processing the command.")
 
-@bot.command(aliases=['youtube','yt'])
-async def _youtube(ctx, *, search):
-    await ctx.message.delete()
-    author=ctx.message.author
-    guild=ctx.guild
+
+@slash.slash(name="youtube",
+             description="Searches YouTube for a video.",
+             options=[
+                 create_option(
+                     name="search",
+                     description="The search query for the YouTube video.",
+                     option_type=SlashCommandOptionType.STRING,
+                     required=True
+                 )
+             ])
+async def _youtube(ctx: SlashContext, search: str):
+    author = ctx.author
     query_string = urllib.parse.urlencode({'search_query': search})
     html_content = urllib.request.urlopen('http://www.youtube.com/results?' + query_string)
-    search_content= html_content.read().decode()
+    search_content = html_content.read().decode()
     search_results = re.findall(r'\/watch\?v=\w+', search_content)
     await ctx.send(f'{author.mention} result for {search}:\n https://www.youtube.com' + search_results[0])
 
-@bot.command()
-async def lolice(ctx, member=None):
-    await ctx.message.delete()
-    if member==None:
-        member = ctx.message.author
-    else:
-        member = ctx.message.mentions[0]
-        member = await bot.fetch_user(int(member.id))
+@slash.slash(name="lolice",
+             description="Generates a lolice image with the avatar of the specified member or yourself",
+             options=[
+                 create_option(
+                     name="member",
+                     description="The member to generate the image for. If not specified, the command user will be used",
+                     option_type=6,
+                     required=False
+                 )
+             ])
+async def lolice(ctx: SlashContext, member: typing.Optional[discord.Member] = None):
+    await ctx.defer()
+    if member is None:
+        member = ctx.author
     async with aiohttp.ClientSession() as trigSession:
         async with trigSession.get(f'https://some-random-api.ml/canvas/lolice?avatar={member.avatar_url_as(format="png", size=1024)}') as trigImg:
-            imageData = io.BytesIO(await trigImg.read()) 
-            
-            await trigSession.close()
-            
-            await ctx.send(file=discord.File(imageData, 'eggui.gif'))
+            imageData = io.BytesIO(await trigImg.read())
+        await trigSession.close()
+        await ctx.send(file=discord.File(imageData, 'eggui.gif'))
 
-@bot.command()
-async def trump(ctx, *, msg):
-    await ctx.message.delete()
+@slash.slash(name="trump",
+             description="Generate a fake tweet from Donald Trump with your message.")
+async def _trump(ctx, msg: str):
     response = requests.get(f"https://nekobot.xyz/api/imagegen?type=trumptweet&text={msg}")
     stuff = json.loads(response.text)
-    embed=discord.Embed(title="Meanwhile on twitter:", color=0x007bff, timestamp=ctx.message.created_at)
-    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_image(url = stuff['message'])
-    await ctx.send(embed=embed, delete_after = deletein)
+    embed = discord.Embed(title="Meanwhile on twitter:",
+                          color=0x007bff)
+    embed.set_author(name="Egglington",
+                     url="https://egg883.shop",
+                     icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_footer(text="https://egg883.shop",
+                     icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_image(url=stuff['message'])
+    await ctx.send(embed=embed)
 
-@bot.command()
-async def ph(ctx, member=None, *, msg):
-    if member==None:
-        member = ctx.message.author
+@slash.slash(name="horny", description="Generates a horny image with the user's avatar or the mentioned user's avatar", options=[
+    create_option(
+        name="user",
+        description="The user to generate the image for",
+        option_type=6,
+        required=False
+    )
+])
+async def _horny(ctx: SlashContext, user: discord.Member = None):
+    await ctx.defer(hidden=True)
+    if user is None:
+        user = ctx.author
     else:
-        member = ctx.message.mentions[0]
-        member = await bot.fetch_user(int(member.id))
-    await ctx.message.delete()
-    url = member.avatar_url_as(format="png")
-    response = requests.get(f"https://nekobot.xyz/api/imagegen?type=phcomment&image={url}&username={member.display_name}&text={msg}")
-    stuff = json.loads(response.text)
-    embed=discord.Embed(title="Pornhub Comment Section:", color=0x007bff, timestamp=ctx.message.created_at)
-    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_image(url = stuff['message'])
-    embed.timestamp = datetime.datetime.utcnow()
-    await ctx.send(embed=embed, delete_after = deletein)
-
-
-@bot.command()
-async def horny(ctx, member=None):
-    await ctx.message.delete()
-    if member==None:
-        member = ctx.message.author
-    else:
-        member = ctx.message.mentions[0]
-        member = await bot.fetch_user(int(member.id))
+        user = ctx.guild.get_member(user.id)
     async with aiohttp.ClientSession() as trigSession:
-        async with trigSession.get(f'https://some-random-api.ml/canvas/horny?avatar={member.avatar_url_as(format="png", size=1024)}') as trigImg:
-            imageData = io.BytesIO(await trigImg.read()) 
-            
+        async with trigSession.get(f'https://some-random-api.ml/canvas/horny?avatar={user.avatar_url_as(format="png", size=1024)}') as trigImg:
+            imageData = io.BytesIO(await trigImg.read())
             await trigSession.close()
-            
             await ctx.send(file=discord.File(imageData, 'eggui.gif'))
 
-@bot.command()
-async def clyde(ctx,*, msg):
-    await ctx.message.delete()
+@slash.slash(name="clyde",
+             description="Make Clyde say something",
+             options=[
+                 create_option(
+                     name="msg",
+                     description="The message Clyde should say",
+                     option_type=3,
+                     required=True
+                 )
+             ])
+async def clyde(ctx: SlashContext, msg: str):
+    await ctx.defer()
     response = requests.get(f"https://nekobot.xyz/api/imagegen?type=clyde&text={msg}")
     stuff = json.loads(response.text)
-    embed=discord.Embed(title="Clyde has a message for you", color=0x007bff, timestamp=ctx.message.created_at)
+    embed=discord.Embed(title="Clyde has a message for you", color=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_image(url = stuff['message'])
     embed.timestamp = datetime.datetime.utcnow()
-    await ctx.send(embed=embed, delete_after = deletein)
+    await ctx.send(embed=embed)
 
-@bot.command()
-async def pixel(ctx, member=None):
-    await ctx.message.delete()
-    if member==None:
-        member = ctx.message.author
-    else:
-        member = ctx.message.mentions[0]
-        member = await bot.fetch_user(int(member.id))
-    async with aiohttp.ClientSession() as trigSession:
-        async with trigSession.get(f'https://some-random-api.ml/canvas/pixelate?avatar={member.avatar_url_as(format="png", size=1024)}') as trigImg:
-            imageData = io.BytesIO(await trigImg.read()) 
-            
-            await trigSession.close()
-            
-            await ctx.send(file=discord.File(imageData, 'eggui.gif'))
+@slash.slash(name="pixel",
+             description="Pixelate a user's avatar",
+             options=[
+                 create_option(
+                     name="member",
+                     description="The user whose avatar to pixelate",
+                     option_type=6,
+                     required=False
+                 )
+             ])
+async def pixel(ctx: SlashContext, member: discord.Member = None):
+    await ctx.defer()
+    if member is None:
+        member = ctx.author
+    async with aiohttp.ClientSession() as session:
+        async with session.get(f'https://some-random-api.ml/canvas/pixelate?avatar={member.avatar_url_as(format="png", size=1024)}') as img:
+            image_data = io.BytesIO(await img.read())
+            await session.close()
+            await ctx.send(file=discord.File(image_data, 'eggui.gif'))
 
-@commands.is_nsfw()
-@bot.command()
-async def nsfw(ctx, category=None):
-    await ctx.message.delete()
+@slash.slash(name="nsfw", description="NSFW commands", options=[
+    create_option(
+        name="category",
+        description="Category name",
+        option_type=3,
+        required=False,
+        choices=[
+            create_choice(name="tentacle", value="tentacle"),
+            create_choice(name="hass", value="hass"),
+            create_choice(name="hmidriff", value="hmidriff"),
+            create_choice(name="pgif", value="pgif"),
+            create_choice(name="4k", value="4k"),
+            create_choice(name="holo", value="holo"),
+            create_choice(name="hboobs", value="hboobs"),
+            create_choice(name="pussy", value="pussy"),
+            create_choice(name="hthigh", value="hthigh"),
+            create_choice(name="thigh", value="thigh"),
+            create_choice(name="hentai", value="hentai")
+        ]
+    )
+])
+async def nsfw(ctx: SlashContext, category: str = None):
+    nsfw_enabled = config.get('nsfw_enabled', False)
+    if not nsfw_enabled:
+        await ctx.send("NSFW commands are disabled.")
+        return
+    if not ctx.channel.is_nsfw():
+        await ctx.send("This command can only be used in NSFW channels.")
+        return
+    await ctx.defer()
     if category is None:
-        embed=discord.Embed(title="NSFW Commands", description = "**THESE MUST BE SENT IN AN NSFW CHANNEL**", color=0x007bff, timestamp=ctx.message.created_at)
+        embed=discord.Embed(title="NSFW Commands", description = "**THESE MUST BE SENT IN AN NSFW CHANNEL**", color=0x007bff)
         embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
         embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.add_field(name="NSFW Command Usage", value = f"[{prefix}] nsfw (catagory name)", inline=False)
-        embed.add_field(name="**NSFW Catagories**", value=f"tentacle\nhass\nhmidriff\npgif\n4k\nholo\nhboobs\npussy\nhthigh\nthigh", inline=True)
+        embed.add_field(name="NSFW Command Usage", value = f"/nsfw (category name)", inline=False)
+        embed.add_field(name="**NSFW Categories**", value=f"tentacle\nhass\nhmidriff\npgif\n4k\nholo\nhboobs\npussy\nhthigh\nthigh\nhentai", inline=True)
         await ctx.send(embed=embed, delete_after=deletein)
- 
-    elif str(category).lower() == "tentacle":    
+
+    elif category.lower() == "tentacle":    
         r = requests.get(f'https://nekobot.xyz/api/image?type=tentacle')
         res = r.json()
-        embed=discord.Embed(title="Tentacle", color=0x007bff, timestamp=ctx.message.created_at)
+        embed=discord.Embed(title="Tentacle", color=0x007bff)
         embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
         embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
- 
         embed.set_image(url=res['message'])
         await ctx.send(embed=embed, delete_after=deletein)
 
-    elif str(category).lower() == "hass":    
+    elif category.lower() == "hass":    
         r = requests.get(f'https://nekobot.xyz/api/image?type=hass')
         res = r.json()
-        embed=discord.Embed(title="Hentai Ass", color=0x007bff, timestamp=ctx.message.created_at)
-        embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed=discord.Embed(title="Hentai Ass", color=0x007bff)
+        embed.set_author(name ="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
         embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
- 
         embed.set_image(url=res['message'])
         await ctx.send(embed=embed, delete_after=deletein)
 
-    elif str(category).lower() == "hmidriff":    
+    elif category.lower() == "hmidriff":    
         r = requests.get(f'https://nekobot.xyz/api/image?type=hmidriff')
         res = r.json()
-        embed=discord.Embed(title="hmidriff", color=0x007bff, timestamp=ctx.message.created_at)
+        embed=discord.Embed(title="Hentai Midriff", color=0x007bff)
         embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
         embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
- 
         embed.set_image(url=res['message'])
         await ctx.send(embed=embed, delete_after=deletein)
-
-    elif str(category).lower() == "pgif":    
+    elif category.lower() == "pgif":    
         r = requests.get(f'https://nekobot.xyz/api/image?type=pgif')
         res = r.json()
-        embed=discord.Embed(title="pgif", color=0x007bff, timestamp=ctx.message.created_at)
+        embed=discord.Embed(title="Porn Gif", color=0x007bff)
         embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
         embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
- 
         embed.set_image(url=res['message'])
         await ctx.send(embed=embed, delete_after=deletein)
-        
-    elif str(category).lower() == "4k":    
+    elif category.lower() == "4k":    
         r = requests.get(f'https://nekobot.xyz/api/image?type=4k')
         res = r.json()
-        embed=discord.Embed(title="4k", color=0x007bff, timestamp=ctx.message.created_at)
+        embed=discord.Embed(title="4K Porn", color=0x007bff)
         embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
         embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
- 
         embed.set_image(url=res['message'])
         await ctx.send(embed=embed, delete_after=deletein)
-
-    elif str(category).lower() == "hentai":    
-        r = requests.get(f'https://nekobot.xyz/api/image?type=hentai')
-        res = r.json()
-        embed=discord.Embed(title="hentai", color=0x007bff, timestamp=ctx.message.created_at)
-        embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
- 
-        embed.set_image(url=res['message'])
-        await ctx.send(embed=embed, delete_after=deletein)
-
-    elif str(category).lower() == "holo":    
+    elif category.lower() == "holo":    
         r = requests.get(f'https://nekobot.xyz/api/image?type=holo')
         res = r.json()
-        embed=discord.Embed(title="holo", color=0x007bff, timestamp=ctx.message.created_at)
+        embed=discord.Embed(title="Holo", color=0x007bff)
         embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
         embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
- 
         embed.set_image(url=res['message'])
         await ctx.send(embed=embed, delete_after=deletein)
-
-    elif str(category).lower() == "hboobs":    
-        r = requests.get(f'https://nekobot.xyz/api/image?type=hboobs')
+    elif category.lower() == "hentai":
+        r = requests.get(f'https://nekobot.xyz/api/image?type=hentai')
         res = r.json()
-        embed=discord.Embed(title="hboobs", color=0x007bff, timestamp=ctx.message.created_at)
+        embed=discord.Embed(title="Hentai", color=0x007bff)
         embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
         embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
- 
         embed.set_image(url=res['message'])
         await ctx.send(embed=embed, delete_after=deletein)
-
-    elif str(category).lower() == "pussy":    
-        r = requests.get(f'https://nekobot.xyz/api/image?type=pussy')
+    elif category.lower() == "tits":
+        r = requests.get(f'https://nekobot.xyz/api/image?type=tits')
         res = r.json()
-        embed=discord.Embed(title="pussy", color=0x007bff, timestamp=ctx.message.created_at)
+        embed=discord.Embed(title="Tits", color=0x007bff)
         embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
         embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
- 
         embed.set_image(url=res['message'])
         await ctx.send(embed=embed, delete_after=deletein)
-
-    elif str(category).lower() == "hthigh":    
-        r = requests.get(f'https://nekobot.xyz/api/image?type=hthigh')
+    elif category.lower() == "waifu":
+        r = requests.get(f'https://nekobot.xyz/api/image?type=waifu')
         res = r.json()
-        embed=discord.Embed(title="hthigh", color=0x007bff, timestamp=ctx.message.created_at)
+        embed=discord.Embed(title="Waifu", color=0x007bff)
         embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
         embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
- 
         embed.set_image(url=res['message'])
         await ctx.send(embed=embed, delete_after=deletein)
+    else:
+        await ctx.send(f"Sorry {ctx.author.mention}, I couldn't find any results for that category. Please use one of the following categories: anal, ass, boobs, hentai, hmidriff, pgif, 4k, holo, tits, waifu.")
 
-    elif str(category).lower() == "thigh":    
-        r = requests.get(f'https://nekobot.xyz/api/image?type=thigh')
-        res = r.json()
-        embed=discord.Embed(title="thigh", color=0x007bff, timestamp=ctx.message.created_at)
-        embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
- 
-        embed.set_image(url=res['message'])
-        await ctx.send(embed=embed, delete_after=deletein)
 
-@bot.command() # THANKS TO PAW
-async def ruserhis(ctx,user423):
-    user = await client1.get_user_by_username(user423)
+
+
+
+
+@slash.slash(name="ruserhis",
+             description="Gets Roblox user's past usernames.",
+             options=[
+                 create_option(
+                     name="username",
+                     description="The Roblox username of the user.",
+                     option_type=3,
+                     required=True
+                 )
+             ])
+async def ruserhis(ctx,username):
+    user = await client1.get_user_by_username(username)
     userid = user.id
     URL3 = f"https://www.roblox.com/users/{userid}/profile"
     requestURL = requests.get(URL3)
@@ -865,11 +966,20 @@ async def ruserhis(ctx,user423):
         embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
         embed.set_thumbnail(url=f"{user_thumbnail.image_url}")
         embed.add_field(name=f"Past usernames", value=f"```{users}```", inline=False)
-        embed.set_footer(text=f"{user423}'s Past Usernames", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
+        embed.set_footer(text=f"{username}'s Past Usernames", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
-@bot.command() 
+@slash.slash(name="rvalue",
+             description="Get Rolimons info for a user.",
+             options=[
+                 create_option(
+                     name="username",
+                     description="The Roblox username of the user.",
+                     option_type=3,
+                     required=True
+                 )
+             ])
 async def rvalue(ctx,username):
     user = await client1.get_user_by_username(username)
     userid = user.id
@@ -912,7 +1022,8 @@ async def rvalue(ctx,username):
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
 
-@bot.command(aliases=['btc','bitcoin', '#1'])
+@slash.slash(name="BTC",
+             description="Get the current price of Bitcoin.")
 async def _btc(ctx):
     URL3 = f"https://coinmarketcap.com/currencies/bitcoin/"
     requestURL = requests.get(URL3)
@@ -947,7 +1058,8 @@ async def _btc(ctx):
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
 
-@bot.command(aliases=['eth','ethereum', '#2'])
+@slash.slash(name="ETH",
+             description="Get information about Ethereum")
 async def _eth(ctx):
     URL3 = f"https://coinmarketcap.com/currencies/Ethereum/"
     requestURL = requests.get(URL3)
@@ -983,7 +1095,8 @@ async def _eth(ctx):
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
 
-@bot.command(aliases=['sol','solana', '#11'])
+@slash.slash(name="sol",
+             description="Get information about Solana")
 async def _sol(ctx):
     URL3 = f"https://coinmarketcap.com/currencies/solana/"
     requestURL = requests.get(URL3)
@@ -1019,7 +1132,8 @@ async def _sol(ctx):
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
 
-@bot.command(aliases=['tether','usdt', '#3'])
+@slash.slash(name="USDT",
+             description="Display information about Tether (USDT).")
 async def _tether(ctx):
     URL3 = f"https://coinmarketcap.com/currencies/tether/"
     requestURL = requests.get(URL3)
@@ -1055,7 +1169,8 @@ async def _tether(ctx):
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
 
-@bot.command(aliases=['litecoin','ltc', '#15'])
+@slash.slash(name="LTC",
+             description="Display information about Litecoin (LTC).")
 async def _litecoin(ctx):
     URL3 = f"https://coinmarketcap.com/currencies/litecoin/"
     requestURL = requests.get(URL3)
@@ -1091,9 +1206,18 @@ async def _litecoin(ctx):
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
 
-@bot.command()
-async def rgame(ctx, url):
-    await ctx.message.delete()
+@slash.slash(name="rgame",
+             description="Displays information about a Roblox game.",
+             options=[
+                 create_option(
+                     name="url",
+                     description="The URL of the Roblox game.",
+                     option_type=3,
+                     required=True
+                 )
+             ])
+async def rgame(ctx: SlashContext, url: str):
+    await ctx.defer()
     url1 = f"{url}"
     requestURL = requests.get(url1)
     content = requestURL.content
@@ -1232,6 +1356,110 @@ async def vote(ctx: SlashContext):
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
+
+@slash.slash(name="github", description="View the bot's source code.")
+async def github(ctx: SlashContext):
+    embed = discord.Embed(title="Egglington's GitHub", description="Click [here](https://github.com/egg883/Egglington-Discord-bot) to view the bot's source code.", color=discord.Color.blue())
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed.timestamp = datetime.datetime.utcnow()
+    await ctx.send(embed=embed)
+
+@slash.slash(name="8ball", description="Ask the magic 8ball a question.")
+async def eightball(ctx: SlashContext, *, question):
+    responses = [
+        "It is certain.",
+        "It is decidedly so.",
+        "Without a doubt.",
+        "Yes - definitely.",
+        "You may rely on it.",
+        "As I see it, yes.",
+        "Most likely.",
+        "Outlook good.",
+        "Yes.",
+        "Signs point to yes.",
+        "Reply hazy, try again.",
+        "Ask again later.",
+        "Better not tell you now.",
+        "Cannot predict now.",
+        "Concentrate and ask again.",
+        "Don't count on it.",
+        "My reply is no.",
+        "My sources say no.",
+        "Outlook not so good.",
+        "Very doubtful."
+    ]
+    embed = discord.Embed(title="8ball", description=f"Question: {question}\nAnswer: {random.choice(responses)}", color=discord.Color.blue())
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed.timestamp = datetime.datetime.utcnow()
+    await ctx.send(embed=embed)
+
+@slash.slash(name="coinflip", description="Flip a coin.")
+async def coinflip(ctx: SlashContext):
+    responses = [
+        "Heads",
+        "Tails"
+    ]
+    embed = discord.Embed(title="Coinflip", description=f"{random.choice(responses)}", color=discord.Color.blue())
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed.timestamp = datetime.datetime.utcnow()
+    await ctx.send(embed=embed)
+
+@slash.slash(name="rps", description="Play rock paper scissors.")
+async def rps(ctx: SlashContext, *, choice):
+    responses = [
+        "Rock",
+        "Paper",
+        "Scissors"
+    ]
+    embed = discord.Embed(title="Rock Paper Scissors", description=f"Your choice: {choice}\nMy choice: {random.choice(responses)}", color=discord.Color.blue())
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed.timestamp = datetime.datetime.utcnow()
+    await ctx.send(embed=embed)
+
+@slash.slash(name="dice", description="Roll a dice.")
+async def dice(ctx: SlashContext):
+    responses = [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+    ]
+    embed = discord.Embed(title="Dice", description=f"{random.choice(responses)}", color=discord.Color.blue())
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed.timestamp = datetime.datetime.utcnow()
+    await ctx.send(embed=embed)
+
+@slash.slash(name="choose", description="Choose between multiple options.")
+async def choose(ctx: SlashContext, *, options):
+    embed = discord.Embed(title="Choose", description=f"{random.choice(options.split())}", color=discord.Color.blue())
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed.timestamp = datetime.datetime.utcnow()
+    await ctx.send(embed=embed)
+
+@slash.slash(name="poll", description="Create a poll.")
+async def poll(ctx: SlashContext, *, question):
+    embed = discord.Embed(title="Poll", description=f"{question}", color=discord.Color.blue())
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed.timestamp = datetime.datetime.utcnow()
+    message = await ctx.send(embed=embed)
+    await message.add_reaction("👍")
+    await message.add_reaction("👎")
 
 #////////////////////////////////////////////////////////////////////////// 
 def Init():
