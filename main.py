@@ -272,7 +272,7 @@ async def purge(ctx: SlashContext, limit: int):
 @commands.has_permissions(manage_messages=True)
 @commands.has_any_role(ownerrole, modrole, adminrole) 
 async def mute(ctx, member: discord.Member, reason: str = None):
-    await ctx.message.delete()
+    await ctx.defer()
     guild = ctx.guild
     mutedRole = discord.utils.get(guild.roles, name="Muted")
     if not mutedRole:
@@ -566,7 +566,7 @@ async def info(ctx):
 
 @slash.slash(name="first", description="Displays the first message ever sent in the channel.")
 async def first(ctx):
-    await ctx.message.delete()
+    await ctx.defer()
     channel = ctx.channel
     first_message = (await channel.history(limit = 1, oldest_first = True).flatten())[0]
     embed = discord.Embed(title="First message", description=f"This is the first ever message sent in this channel", colour=0x007bff)
@@ -578,7 +578,7 @@ async def first(ctx):
 
 @slash.slash(name="spfp", description="Displays the server icon.")
 async def spfp(ctx):
-    await ctx.message.delete()
+    await ctx.defer()
     guild = ctx.guild
     embed = discord.Embed(title=f"{guild.name}'s Server Icon", colour=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
