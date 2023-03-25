@@ -121,7 +121,7 @@ async def on_member_join(member):
 
 @bot.event
 async def on_connect():
-    title = ctypes.windll.kernel32.SetConsoleTitleW(f"Egglington Client | Version: [v{version}]  | Commands: [{len(bot.commands)}]") 
+    title = ctypes.windll.kernel32.SetConsoleTitleW(f"Egglington Client | Version: [v{version}]  | Commands: [{len(slash.commands)}]") 
     time.sleep(1)
     title
     new_splash()
@@ -158,10 +158,10 @@ async def help(ctx: SlashContext):
         embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
         embed.timestamp = datetime.datetime.utcnow()
         embed.add_field(name="General", value="`/whois`, `/yt`, `/vote`, `/choose`, `/poll`", inline=False)
-        embed.add_field(name="Fun", value="`/coinflip`, `/rps`, `/dice`, `/choose`, `/poll`,`/pp`", inline=False)
+        embed.add_field(name="Fun", value="`/coinflip`, `/rps`, `/dice`, `/pp`, `/8ball`", inline=False)
         embed.add_field(name="Moderation", value=f"`/kick`, `/ban`, `/unban`, `/purge`, `/mute`, `/unmute`, `/lock`, `/unlock`, `/slowmode`", inline=False)
         embed.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`", inline=False)
-        embed.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`,`/newticket`,`/closeticket`,`/support`", inline=False)
+        embed.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`, `/newticket`, `/closeticket`, `/support`", inline=False)
         embed.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`", inline=False)
         embed.add_field(name="Roblox", value="`/rgame`, `/ruser`, `/routfit`, `/rvalue`, `/ruserhis`", inline=False)
         embed.add_field(name="Crypto", value="`/btc`, `/eth`, `/sol`, `/ltc`, `/usdt`", inline=False)
@@ -175,14 +175,14 @@ async def help(ctx: SlashContext):
         embed1.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
         embed1.timestamp = datetime.datetime.utcnow()
         embed1.add_field(name="General", value="`/whois`, `/yt`, `/vote`, `/choose`, `/poll`", inline=False)
-        embed1.add_field(name="Fun", value="`/coinflip`, `/rps`, `/dice`, `/choose`, `/poll`,`/pp`", inline=False)
+        embed1.add_field(name="Fun", value="`/coinflip`, `/rps`, `/dice`,`/pp`, `/8ball", inline=False)
         embed1.add_field(name="Moderation", value=f"`/kick`, `/ban`, `/unban`, `/purge`, `/mute`, `/unmute`, `/lock`, `/unlock`, `/slowmode`", inline=False)
         embed1.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`", inline=False)
-        embed1.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`,`/newticket`,`/closeticket`,`/support`", inline=False)
+        embed1.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`, `/newticket`, `/closeticket`, `/support`", inline=False)
         embed1.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`", inline=False)
         embed1.add_field(name="Roblox", value="`/rgame`, `/ruser`, `/routfit`, `/rvalue`, `/ruserhis`", inline=False)
         embed1.add_field(name="Crypto", value="`/btc`, `/eth`, `/sol`, `/ltc`, `/usdt`", inline=False)
-        embed1.add_field(name="nsfw", value="`/tentacle`,`/hass`,`/hmidriff`,`/pgif`,`/4k`,`/holo`,`/hboobs`,`/pussy`,`/hthigh`,`/thigh`, `/hentai`", inline=False)
+        embed1.add_field(name="nsfw", value="`/tentacle`, `/hass`, `/hmidriff`, `/pgif`, `/4k`, `/holo`, `/hboobs`, `/pussy`, `/hthigh`, `/thigh`, `/hentai`", inline=False)
         await ctx.send(embed=embed1)
 
 @slash.slash(name="slowmode", description="Set the slowmode of the channel.")
