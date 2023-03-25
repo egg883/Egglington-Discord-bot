@@ -37,6 +37,7 @@ class Colours:
     White = "\x1b[38;2;250;250;250m"
     Magenta = "\x1b[38;2;255;94;255m"
 os.system("color")
+#//////////////////////////////////////////////////////////////////////////
 config = json.load(open('config.json', 'rb'))
 bottoken = config['bot_token']
 prefix = config['prefix']
@@ -50,6 +51,7 @@ logs = config['logs']
 playingstatus = config['status']
 playingstatus2 = config['status2']
 welc = config['welcome']
+#//////////////////////////////////////////////////////////////////////////
 embed_color = 0xfcd005
 intents = discord.Intents.default()
 intents.members = True
@@ -63,6 +65,7 @@ client = discord.Client(intents=intents)
 intents.members = True
 openai.api_key = "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"
 githuburl = "https://github.com/egg883/Egglington-Discord-bot"
+s = "/"
 def restart_bot(): 
   os.execv(sys.executable,sys.argv)
 #//////////////////////////////////////////////////////////////////////////
@@ -109,8 +112,6 @@ async def on_member_join(member):
     message = f"Welcome to the server, {member.mention}, Please visit <#1048221792147341342> If you are looking to verify you can do so by going to <#1048222728588636210>"
     await channel.send(message)
 
-
-
 @bot.event
 async def on_connect():
     title = ctypes.windll.kernel32.SetConsoleTitleW(f"Egglington Client | Version: [v{version}]  | Commands: [{len(bot.commands)}]") 
@@ -150,6 +151,7 @@ async def help(ctx):
     embed.add_field(name=f"[{prefix}] fun", value="List of fun commands", inline=False)
     embed.add_field(name=f"[{prefix}] crypto", value="List of crypto commands", inline=False)
     embed.add_field(name=f"[{prefix}] roblox", value="List of roblox commands", inline=False)
+    embed.add_field(name=f"[{prefix}] slashcmds", value="List of slash commands", inline=False)
     embed.add_field(name=f"[{prefix}] settings", value="List of settings commands", inline=False)
     embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.timestamp = datetime.datetime.utcnow()
@@ -168,6 +170,18 @@ async def memes(ctx):
     embed.add_field(name=f"[{prefix}] pixel", value=f"[{prefix}] pixel (@user)", inline=False)
     embed.add_field(name=f"[{prefix}] clyde", value=f"[{prefix}] clyde (text)", inline=False)
     embed.add_field(name=f"[{prefix}] trump", value=f"[{prefix}] trump (text)", inline=False)
+    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.timestamp = datetime.datetime.utcnow()
+    await ctx.send(embed=embed,delete_after=deletein)
+
+@bot.command()
+async def slashcmds(ctx):
+    embed=discord.Embed(title="Slash commands", url="https://egg883.shop", description="This is slash cmds section of the bot", color=0x007bff)
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed.add_field(name=f"[{s}] invite", value=f"[{s}] bot invite", inline=False)
+    embed.add_field(name=f"[{s}] newticket", value=f"[{s}] opens a new ticket", inline=False)
+    embed.add_field(name=f"[{s}] closeticket", value=f"[{s}] closes an open ticket", inline=False)
     embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed,delete_after=deletein)
@@ -1122,6 +1136,20 @@ async def rgame(ctx, url):
     embed.set_footer(text=f"{name}'s Info", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
+
+@slash.slash(
+    name="invite",
+    description="Get the bot's invite link.",
+    guild_ids=[config['serverid']],
+)
+async def invite(ctx: SlashContext):
+    embed = discord.Embed(title=f"Egglington Invite", url=f"https://top.gg/bot/1063758752160960573", colour=0x007bff)
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed.add_field(name="Bot Invite", value="https://discord.com/api/oauth2/authorize?client_id=1063758752160960573&permissions=8796093022199&scope=bot%20applications.commands", inline=False)
+    embed.timestamp = datetime.datetime.utcnow()
+    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    await ctx.send(embed=embed, delete_after=config['deletetime'])
 
 @support.error
 async def support(ctx,error):
