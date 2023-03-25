@@ -12,6 +12,7 @@ import string
 import ctypes
 import re
 import sys
+from googletrans import Translator
 from discord_interactions import *
 from discord.ext import commands
 from discord_slash import SlashCommand, SlashContext, ComponentContext
@@ -31,13 +32,13 @@ from discord.utils import find
 import urllib.request
 from typing import Dict
 import time
-#//////////////////////////////////////////////////////////////////////////
+#////////////////////////////////////////////////////////////////////////// COLOR DEFINING
 client1 = Client()
 class Colours:
     White = "\x1b[38;2;250;250;250m"
     Magenta = "\x1b[38;2;255;94;255m"
 os.system("color")
-#//////////////////////////////////////////////////////////////////////////
+#////////////////////////////////////////////////////////////////////////// CONFIG DEFINING
 config = json.load(open('config.json', 'rb'))
 bottoken = config['bot_token']
 prefix = config['prefix']
@@ -51,7 +52,7 @@ logs = config['logs']
 playingstatus = config['status']
 playingstatus2 = config['status2']
 welc = config['welcome']
-#//////////////////////////////////////////////////////////////////////////
+#////////////////////////////////////////////////////////////////////////// GENERIC SH*T 
 embed_color = 0xfcd005
 intents = discord.Intents.default()
 intents.members = True
@@ -66,16 +67,15 @@ intents.members = True
 openai.api_key = "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"
 githuburl = "https://github.com/egg883/Egglington-Discord-bot"
 s = "/"
+CHANNEL_ID = config['logs']
+allowed_guild_ids = [config['serverid']]
 def restart_bot(): 
   os.execv(sys.executable,sys.argv)
-#//////////////////////////////////////////////////////////////////////////
+#////////////////////////////////////////////////////////////////////////// EVENT STUFF
 def new_splash():
     print(f'{Colours.Magenta}Egglington is now Listening to {len(bot.guilds)} servers')
     print(f"{Colours.Magenta}Egglington's Prefix is {prefix}")
     print(f"{Colours.Magenta}Do {prefix}help for the help commands")
-
-CHANNEL_ID = config['logs']
-allowed_guild_ids = [config['serverid']]
 
 async def log(embed):
     channel = bot.get_channel(CHANNEL_ID)
@@ -139,7 +139,6 @@ async def clearconsole(ctx):
 
 @bot.command()
 async def help(ctx):
-    guild = ctx.guild
     embed=discord.Embed(title="Help commands", url="https://egg883.shop", description="This is help section of the bot", color=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
@@ -179,9 +178,12 @@ async def slashcmds(ctx):
     embed=discord.Embed(title="Slash commands", url="https://egg883.shop", description="This is slash cmds section of the bot", color=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.add_field(name=f"[{s}] invite", value=f"[{s}] bot invite", inline=False)
-    embed.add_field(name=f"[{s}] newticket", value=f"[{s}] opens a new ticket", inline=False)
-    embed.add_field(name=f"[{s}] closeticket", value=f"[{s}] closes an open ticket", inline=False)
+    embed.add_field(name=f"[{s}] invite", value=f"Gives you the bots invite link", inline=False)
+    embed.add_field(name=f"[{s}] newticket", value=f"opens a new ticket", inline=False)
+    embed.add_field(name=f"[{s}] closeticket", value=f"closes an open ticket", inline=False)
+    embed.add_field(name=f"[{s}] ping", value=f"tells you the bots ping", inline=False)
+    embed.add_field(name=f"[{s}] support", value=f"tells you the bots ping", inline=False)
+    embed.add_field(name=f"[{s}] vote", value=f"vote for egglington bot", inline=False)
     embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed,delete_after=deletein)
@@ -273,7 +275,6 @@ async def settings(ctx):
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
     embed.add_field(name=f"[{prefix}] info", value=f"[{prefix}] info", inline=False)
     embed.add_field(name=f"[{prefix}] news", value=f"[{prefix}] news", inline=False)
-    embed.add_field(name=f"[{prefix}] support", value=f"[{prefix}] support (dms only)", inline=False)
     embed.add_field(name=f"[{prefix}] restart", value=f"[{prefix}] restart (owner role only)", inline=False)
     embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.timestamp = datetime.datetime.utcnow()
@@ -478,26 +479,6 @@ async def news(ctx):
     embed.add_field(name="Our Website", value="```https://egg883.shop```", inline=False)
     await ctx.send(embed=embed)
 
-@bot.command()
-async def vote(ctx):
-    await ctx.message.delete()
-    embed = discord.Embed(title=f"Vote for Egglington", url=f"https://top.gg/bot/1063758752160960573", colour=0x007bff)
-    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.add_field(name="Vote for us", value="https://top.gg/bot/1063758752160960573", inline=False)
-    embed.timestamp = datetime.datetime.utcnow()
-    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    await ctx.send(embed=embed)
-
-@commands.dm_only()
-@bot.command()
-async def support(ctx):
-    embed = discord.Embed(title="Support Panel", description=f"This is the support panel of our bot", colour=0x007bff)
-    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.add_field(name="Need help? Join our discord: ", value="https://discord.gg/AUevumCwXj", inline=False)
-    embed.add_field(name="Or contact our email", value="egg@egg883.shop", inline=False)
-    await ctx.send(embed=embed)
 
 @bot.command()
 @commands.guild_only()
@@ -1137,30 +1118,6 @@ async def rgame(ctx, url):
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
 
-@slash.slash(
-    name="invite",
-    description="Get the bot's invite link.",
-    guild_ids=[config['serverid']],
-)
-async def invite(ctx: SlashContext):
-    embed = discord.Embed(title=f"Egglington Invite", url=f"https://top.gg/bot/1063758752160960573", colour=0x007bff)
-    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.add_field(name="Bot Invite", value="https://discord.com/api/oauth2/authorize?client_id=1063758752160960573&permissions=8796093022199&scope=bot%20applications.commands", inline=False)
-    embed.timestamp = datetime.datetime.utcnow()
-    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    await ctx.send(embed=embed, delete_after=config['deletetime'])
-
-@support.error
-async def support(ctx,error):
-    embed=discord.Embed(title="SUPPORT COMMAND ERROR", color=0xFF0400)
-    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.add_field(name="This command is only enabled for dms", value=f"DM the bot to preview this command!", inline=True)
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1064570023437422743/1195445329999867155jean_victor_balin_cross.svg.thumb.png")
-    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.timestamp = datetime.datetime.utcnow()
-    await ctx.send(embed=embed, delete_after=deletein)
-
 @nsfw.error
 async def nsfw(ctx,error):
     embed=discord.Embed(title="NSFW COMMAND ERROR", color=0xFF0400)
@@ -1238,6 +1195,43 @@ async def close_ticket(ctx: SlashContext):
         await ctx.message.edit(content=f"I hope we could help. Closing your ticket in {i} seconds...")
     await ticket_channel.delete()
     del open_tickets[ctx.author.id]
+
+
+@slash.slash(name="ping", description="Check bot latency.")
+async def ping(ctx: SlashContext):
+    embed = discord.Embed(title="Pong!", description=f"Latency: {round(bot.latency * 1000)}ms", color=discord.Color.blue())
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed.timestamp = datetime.datetime.utcnow()
+    await ctx.send(embed=embed)
+
+@slash.slash(name="invite", description="Invite the bot to your server.")
+async def invite(ctx: SlashContext):
+    embed = discord.Embed(title="Invite Egglington", description="Click [here](https://discord.com/api/oauth2/authorize?client_id=1063758752160960573&permissions=8&scope=bot%20applications.commands) to invite the bot to your server.", color=discord.Color.blue())
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.timestamp = datetime.datetime.utcnow()
+    await ctx.send(embed=embed)
+
+@slash.slash(name="support", description="Join the support server.")
+async def support(ctx: SlashContext):
+    embed = discord.Embed(title="Support Server", description="Click [here](https://discord.gg/https://discord.gg/AUevumCwXj) to join the support server.", color=discord.Color.blue())
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed.timestamp = datetime.datetime.utcnow()
+    await ctx.send(embed=embed)
+
+@slash.slash(name="vote", description="Vote for the bot.")
+async def vote(ctx: SlashContext):
+    embed = discord.Embed(title="Vote for Egglington", description="Click [here](https://top.gg/bot/1063758752160960573/vote) to vote for the bot.", color=discord.Color.blue())
+    embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed.timestamp = datetime.datetime.utcnow()
+    await ctx.send(embed=embed)
 
 #////////////////////////////////////////////////////////////////////////// 
 def Init():
