@@ -1,11 +1,13 @@
 {
     "bot_token": "bot token here",
     "prefix": "BOT PREFIX HERE",
+    "ownerid": 1,
     "owner": 1,
     "admin": 1,
     "mod": 1,
     "serverid": 1,
     "logs": 1,
+    "welcome": 1,
     "botcmds": 1,
     "status": "test bot 1",
     "status2": "test bot 2",
