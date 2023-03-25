@@ -9,6 +9,7 @@
     "logs": 1,
     "welcome": 1,
     "botcmds": 1,
+    "nsfw_enabled": false,
     "status": "test bot 1",
     "status2": "test bot 2",
     "deletetime": 15
