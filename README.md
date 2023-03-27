@@ -17,7 +17,7 @@ https://www.youtube.com/watch?v=oZbzgoXlAuI
 # Linux Install
 1. Install Python 3.9.9 or higher
 2. ```git clone https://github.com/egg883/Egglington-Discord-bot.git```
-3. Change the config.js to your stuff.
+3. Change the ```config.json``` to your stuff.
 4. Open terminal
 5. ```pip install -r requirements.txt```
 6. Open eggbot.sh
