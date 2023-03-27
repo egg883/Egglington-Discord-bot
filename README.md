@@ -20,7 +20,7 @@ https://www.youtube.com/watch?v=oZbzgoXlAuI
 3. Change the ```config.json``` to your stuff.
 4. Open terminal
 5. ```pip install -r requirements.txt```
-6. Open eggbot.sh
+6. Open ```eggbot.sh```
 7. Change ```"/home/{usr}/Desktop/Egglington/main.py"``` to ur egglington install location
 8. type in terminal ```chmod +x eggbot.sh```
 9. Open eggbot.sh then fun happens :)
