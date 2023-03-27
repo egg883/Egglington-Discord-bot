@@ -11,7 +11,7 @@ Egglington is Public to anyone to rewrite, use as their own bot As long as credi
 # Bot invite: 
 https://discord.com/api/oauth2/authorize?client_id=1063758752160960573&permissions=8&scope=applications.commands%20bot
 
-# Tutorial on how to install:
+# Tutorial on how to install (Windows):
 https://www.youtube.com/watch?v=oZbzgoXlAuI
 
 # Linux Install
