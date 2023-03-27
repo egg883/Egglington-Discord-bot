@@ -14,6 +14,18 @@ https://discord.com/api/oauth2/authorize?client_id=1063758752160960573&permissio
 # Tutorial on how to install:
 https://www.youtube.com/watch?v=oZbzgoXlAuI
 
+# Linux Install
+1. Install Python 3.9.9 or higher
+2. ```git clone https://github.com/egg883/Egglington-Discord-bot.git```
+3. Change the config.js to your stuff.
+4. Open terminal
+5. ```pip install -r requirements.txt```
+6. Open eggbot.sh
+7. Change ```"/home/{usr}/Desktop/Egglington/main.py"``` to ur egglington install location
+8. type in terminal ```chmod +x eggbot.sh```
+9. Open eggbot.sh then fun happens :)
+
+
 # Discord invite:
  https://discord.gg/AUevumCwXj
  
