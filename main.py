@@ -11,8 +11,8 @@ import random
 import string
 import ctypes
 import re
+from datetime import datetime, timedelta
 import sys
-from googletrans import Translator
 from discord_interactions import *
 from discord.ext import commands
 from discord_slash import SlashCommand, SlashContext, ComponentContext, SlashCommandOptionType
@@ -33,6 +33,7 @@ import urllib
 from discord.utils import find
 import urllib.request
 from typing import Dict
+import datetime
 import time
 import typing
 from typing import Union
@@ -88,6 +89,7 @@ async def log(embed):
     channel = bot.get_channel(CHANNEL_ID)
     await channel.send(embed=embed)
 
+
 @bot.event
 async def on_member_update(before, after):
     if before.guild.id not in allowed_guild_ids:
@@ -121,7 +123,7 @@ async def on_member_join(member):
 
 @bot.event
 async def on_connect():
-    title = ctypes.windll.kernel32.SetConsoleTitleW(f"Egglington Client | Version: [v{version}]  | Commands: [{len(slash.commands)}]") 
+    title = os.system(f"title Egglington Client | Version: [v{version}]  | Commands: [{len(slash.commands)}]") 
     time.sleep(1)
     title
     new_splash()
@@ -148,6 +150,7 @@ async def clearconsole(ctx):
     Clear()
     new_splash()
 
+
 @slash.slash(name="help", description="Shows this message.")
 async def help(ctx: SlashContext):
     nsfw_enabled = config.get('nsfw_enabled', False)
@@ -160,7 +163,7 @@ async def help(ctx: SlashContext):
         embed.add_field(name="General", value="`/whois`, `/yt`, `/vote`, `/choose`, `/poll`", inline=False)
         embed.add_field(name="Fun", value="`/coinflip`, `/rps`, `/dice`, `/pp`, `/8ball`", inline=False)
         embed.add_field(name="Moderation", value=f"`/kick`, `/ban`, `/unban`, `/purge`, `/mute`, `/unmute`, `/lock`, `/unlock`, `/slowmode`", inline=False)
-        embed.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`", inline=False)
+        embed.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`", inline=False)
         embed.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`, `/newticket`, `/closeticket`, `/support`", inline=False)
         embed.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`", inline=False)
         embed.add_field(name="Roblox", value="`/rgame`, `/ruser`, `/routfit`, `/rvalue`, `/ruserhis`", inline=False)
@@ -177,7 +180,7 @@ async def help(ctx: SlashContext):
         embed1.add_field(name="General", value="`/whois`, `/yt`, `/vote`, `/choose`, `/poll`", inline=False)
         embed1.add_field(name="Fun", value="`/coinflip`, `/rps`, `/dice`,`/pp`, `/8ball", inline=False)
         embed1.add_field(name="Moderation", value=f"`/kick`, `/ban`, `/unban`, `/purge`, `/mute`, `/unmute`, `/lock`, `/unlock`, `/slowmode`", inline=False)
-        embed1.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`", inline=False)
+        embed1.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`", inline=False)
         embed1.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`, `/newticket`, `/closeticket`, `/support`", inline=False)
         embed1.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`", inline=False)
         embed1.add_field(name="Roblox", value="`/rgame`, `/ruser`, `/routfit`, `/rvalue`, `/ruserhis`", inline=False)
@@ -252,6 +255,83 @@ async def purge(ctx: SlashContext, limit: int):
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.add_field(name="Purged", value=f"I have purged {limit} messages.")
     await ctx.send(embed=embed,delete_after=config['deletetime'])
+
+afk_users = {}
+
+@bot.event
+async def on_message(message):
+    if message.author.bot:
+        return
+    if message.author == bot.user:
+        return
+
+    # Check for mentions of AFK users
+    for user in message.mentions:
+        if user.nick is not None and user.nick.startswith('[AFK]'):
+            # Send message with AFK status and custom message (if provided)
+            if 'is now AFK' in user.nick:
+                afk_message = 'is now AFK'
+            else:
+                afk_message = user.nick.split(': ')[-1]
+            await message.channel.send(f"{message.author.mention} {user.mention} is currently AFK. For {afk_message}")
+
+    # Check for AFK users in message content
+    if message.author.nick is not None and message.author.nick.startswith('[AFK]'):
+        await message.author.edit(nick=message.author.display_name.replace('[AFK]', ''))
+        await message.channel.send(f"{message.author.mention} is back from AFK")
+        return
+
+    await bot.process_commands(message)
+
+@slash.slash(name="afk",
+             description="Set yourself as AFK with a custom message",
+             )
+async def afk(ctx: SlashContext):
+    if ctx.author.nick is not None and ctx.author.nick.startswith('[AFK]'):
+        await ctx.send("You're already AFK!")
+        return
+    nickname = f"[AFK] {ctx.author.display_name}"
+    await ctx.author.edit(nick=nickname)
+    await ctx.send(f"{ctx.author.mention} is now AFK.")
+
+@bot.event
+async def on_message(message):
+    if message.author.bot:
+        return
+    if message.author == bot.user:
+        return
+
+    user = None
+
+    # Check for mentions of AFK users
+    for mention in message.mentions:
+        if mention.nick is not None and mention.nick.startswith('[AFK]'):
+            user = mention
+            # Send message with AFK status and custom message (if provided)
+            if 'is now AFK' in user.nick:
+                afk_message = 'No reason provided'
+            else:
+                afk_message = user.nick.split(': ')[-1]
+            await message.channel.send(f"{message.author.mention} {user.mention} is currently AFK.")
+            break
+
+    # Check for AFK users in message content
+    if message.author.nick is not None and message.author.nick.startswith('[AFK]'):
+        user = message.author
+        await user.edit(nick=user.display_name.replace('[AFK]', ''))
+        await message.channel.send(f"{user.mention} is back from AFK")
+
+    await bot.process_commands(message)
+
+
+#useful commands thats not ping or help or invite or serverinfo or userinfo
+@slash.slash(name="avatar", description="Get the avatar of a user.")
+async def avatar(ctx: SlashContext, member: discord.Member = None):
+    if member is None:
+        member = ctx.author
+    embed = discord.Embed(title=f"{member.name}'s avatar", color=0x007bff)
+    embed.set_image(url=member.avatar_url)
+    await ctx.send(embed=embed)
 
 @slash.slash(name="mute", 
              description="Mutes a user in the server", 
