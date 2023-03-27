@@ -14,7 +14,7 @@ https://discord.com/api/oauth2/authorize?client_id=1063758752160960573&permissio
 # Tutorial on how to install (Windows):
 https://www.youtube.com/watch?v=oZbzgoXlAuI
 
-# Linux Install
+# Linux Install (Manual)
 1. Install Python 3.9.9 or higher
 2. ```git clone https://github.com/egg883/Egglington-Discord-bot.git```
 3. Change the ```config.json``` to your stuff.
