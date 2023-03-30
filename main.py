@@ -4,12 +4,10 @@ import time
 import io
 import json
 import os
-import openai
 import discord
 from colorama import Fore
 import random
 import string
-import ctypes
 import re
 from datetime import datetime, timedelta
 import sys
@@ -30,14 +28,10 @@ import random
 from discord_components import Button, Select, SelectOption, ComponentsBot, interaction
 from discord_components.component import ButtonStyle
 import urllib
-from discord.utils import find
 import urllib.request
-from typing import Dict
 import datetime
 import time
 import typing
-from typing import Union
-from typing import Optional
 #////////////////////////////////////////////////////////////////////////// COLOR DEFINING
 client1 = Client()
 class Colours:
@@ -67,13 +61,12 @@ intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix = prefix, intents=intents, help_command=None)
 cmds = {len(bot.commands)}
-version = "1.1.3"
+version = "1.1.4"
 slash = SlashCommand(bot, sync_commands=True)
 DiscordComponents(bot)
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 intents.members = True
-openai.api_key = "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"
 githuburl = "https://github.com/egg883/Egglington-Discord-bot"
 CHANNEL_ID = config['logs']
 allowed_guild_ids = [config['serverid']]
@@ -89,7 +82,6 @@ def new_splash():
 async def log(embed):
     channel = bot.get_channel(CHANNEL_ID)
     await channel.send(embed=embed)
-
 
 @bot.event
 async def on_member_update(before, after):
@@ -124,7 +116,7 @@ async def on_member_join(member):
 
 @bot.event
 async def on_connect():
-    title = os.system(f"title Egglington Client | Version: [v{version}]  | Commands: [{len(slash.commands)}]") 
+    title = os.system(f"title Egglington Client v{version}")
     time.sleep(1)
     title
     new_splash()
@@ -133,12 +125,22 @@ def Clear():
     os.system('cls')
 #//////////////////////////////////////////////////////////////////////////
 async def ch_pr():
- await bot.wait_until_ready()
- statuses = [f"{playingstatus} || {playingstatus2}", f"listening on {len(bot.guilds)} servers", f"Still need help? do /help for more help!"]
- while not bot.is_closed():
-   status = random.choice(statuses)
-   await bot.change_presence(activity=discord.Game(name=status))
-   await asyncio.sleep(10)
+    await bot.wait_until_ready()
+    total = 0
+    for guild in bot.guilds:
+        total += guild.member_count
+    formatted_total = '{:,}'.format(total)
+    statuses = [
+        f"{playingstatus} || {playingstatus2}",
+        f"Listening on {len(bot.guilds)} servers",
+        f"Still need help? do /help for more help!",
+        f"Total Users: {formatted_total}"
+    ]
+    while not bot.is_closed():
+        status = random.choice(statuses)
+        await bot.change_presence(activity=discord.Game(name=status))
+        await asyncio.sleep(10)
+
 bot.loop.create_task(ch_pr())
 
 @bot.command()
@@ -188,6 +190,7 @@ async def help(ctx: SlashContext):
         embed1.add_field(name="Crypto", value="`/btc`, `/eth`, `/sol`, `/ltc`, `/usdt`", inline=False)
         embed1.add_field(name="nsfw", value="`/tentacle`, `/hass`, `/hmidriff`, `/pgif`, `/4k`, `/holo`, `/hboobs`, `/pussy`, `/hthigh`, `/thigh`, `/hentai`", inline=False)
         await ctx.send(embed=embed1)
+
 
 @slash.slash(name="slowmode", description="Set the slowmode of the channel.")
 async def slowmode(ctx: SlashContext, seconds: int):
