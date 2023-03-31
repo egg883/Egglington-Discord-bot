@@ -4,11 +4,14 @@ import time
 import io
 import json
 import os
+from discord import Message
 import discord
 from colorama import Fore
 import random
 import string
 import re
+import urllib
+import urllib.request
 from datetime import datetime, timedelta
 import sys
 from discord_interactions import *
@@ -19,18 +22,17 @@ from discord_slash.model import ButtonStyle
 from discord_slash.utils.manage_commands import create_option, create_choice
 from discord_slash.utils.manage_commands import create_option
 from discord_slash.utils.manage_components import create_select, create_select_option
-from discord_components import DiscordComponents
 from roblox import Client
 import asyncio
 import requests
 from bs4 import BeautifulSoup
 import random
-from discord_components import Button, Select, SelectOption, ComponentsBot, interaction
-from discord_components.component import ButtonStyle
 import urllib
 import urllib.request
 import datetime
+import pymongo
 import time
+import pytz
 import typing
 #////////////////////////////////////////////////////////////////////////// COLOR DEFINING
 client1 = Client()
@@ -54,6 +56,8 @@ logs = config['logs']
 playingstatus = config['status']
 playingstatus2 = config['status2']
 welc = config['welcome']
+mongodb = config['economy']['mongodb']
+dbname = config['economy']['database-name']
 nsfwonoroff = config['nsfw_enabled']
 #////////////////////////////////////////////////////////////////////////// GENERIC SH*T 
 embed_color = 0xfcd005
@@ -63,21 +67,33 @@ bot = commands.Bot(command_prefix = prefix, intents=intents, help_command=None)
 cmds = {len(bot.commands)}
 version = "1.1.4"
 slash = SlashCommand(bot, sync_commands=True)
-DiscordComponents(bot)
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 intents.members = True
+mongo = pymongo.MongoClient(f"{mongodb}")
+collection = mongo.mydatabase.mycollection
+db = mongo[f'{dbname}']
 githuburl = "https://github.com/egg883/Egglington-Discord-bot"
 CHANNEL_ID = config['logs']
 allowed_guild_ids = [config['serverid']]
+MIN_DATE = datetime.datetime(1970, 1, 1)
 total_members = sum([guild.member_count for guild in bot.guilds])
 def restart_bot(): 
   os.execv(sys.executable,sys.argv)
 #////////////////////////////////////////////////////////////////////////// EVENT STUFF
 def new_splash():
+    try:
+        mongo.admin.command('ismaster')
+        print(f"{Colours.Magenta}MongoDB connection established.")
+    except pymongo.errors.ConnectionFailure:
+        print(f"{Colours.Magenta}MongoDB connection failed.")
     print(f'{Colours.Magenta}Egglington is now Listening to {len(bot.guilds)} servers')
     print(f"{Colours.Magenta}Egglington's Prefix is /")
     print(f"{Colours.Magenta}Do /help for the help commands")
+    
+def add_balance(user_id, amount):
+    collection = db["users"]
+    collection.update_one({"_id": user_id}, {"$inc": {"balance": amount}})
 
 async def log(embed):
     channel = bot.get_channel(CHANNEL_ID)
@@ -153,7 +169,6 @@ async def clearconsole(ctx):
     Clear()
     new_splash()
 
-
 @slash.slash(name="help", description="Shows this message.")
 async def help(ctx: SlashContext):
     nsfw_enabled = config.get('nsfw_enabled', False)
@@ -169,27 +184,214 @@ async def help(ctx: SlashContext):
         embed.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`", inline=False)
         embed.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`, `/newticket`, `/closeticket`, `/support`", inline=False)
         embed.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`", inline=False)
-        embed.add_field(name="Roblox", value="`/rgame`, `/ruser`, `/routfit`, `/rvalue`, `/ruserhis`", inline=False)
+        embed.add_field(name="Roblox", value=f"`/rgame`, `/ruser`, `/routfit`, `{prefix}rvalue`, `/ruserhis`", inline=False)
         embed.add_field(name="Crypto", value="`/btc`, `/eth`, `/sol`, `/ltc`, `/usdt`", inline=False)
+        embed.add_field(name="Economy", value="`/rob`, `/shop`, `/balance`, `/beg`, `/daily`", inline=False)
         await ctx.send(embed=embed)
         return
     nsfw_enabled1 = config.get('nsfw_enabled', True)
     if nsfw_enabled1:
-        embed1 = discord.Embed(title="Help", description="This is the Help Panel Below will be commands:", color=discord.Color.blue())
+        embed1 = discord.Embed(title="Help Panel", description="This is the Help Panel Below will be commands:", color=discord.Color.blue())
         embed1.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
         embed1.set_footer(text="https://egg883.shop", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
         embed1.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
         embed1.timestamp = datetime.datetime.utcnow()
         embed1.add_field(name="General", value="`/whois`, `/yt`, `/vote`, `/choose`, `/poll`", inline=False)
-        embed1.add_field(name="Fun", value="`/coinflip`, `/rps`, `/dice`,`/pp`, `/8ball", inline=False)
+        embed1.add_field(name="Fun", value="`/coinflip`, `/rps`, `/dice`, `/pp`, `/8ball`", inline=False)
         embed1.add_field(name="Moderation", value=f"`/kick`, `/ban`, `/unban`, `/purge`, `/mute`, `/unmute`, `/lock`, `/unlock`, `/slowmode`", inline=False)
         embed1.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`", inline=False)
         embed1.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`, `/newticket`, `/closeticket`, `/support`", inline=False)
         embed1.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`", inline=False)
-        embed1.add_field(name="Roblox", value="`/rgame`, `/ruser`, `/routfit`, `/rvalue`, `/ruserhis`", inline=False)
+        embed1.add_field(name="Roblox", value=f"`/rgame`, `/ruser`, `/routfit`, `{prefix}rvalue`, `/ruserhis`", inline=False)
         embed1.add_field(name="Crypto", value="`/btc`, `/eth`, `/sol`, `/ltc`, `/usdt`", inline=False)
+        embed1.add_field(name="Economy", value="`/rob`, `/shop`, `/balance`, `/beg`, `/daily`", inline=False)
         embed1.add_field(name="nsfw", value="`/tentacle`, `/hass`, `/hmidriff`, `/pgif`, `/4k`, `/holo`, `/hboobs`, `/pussy`, `/hthigh`, `/thigh`, `/hentai`", inline=False)
         await ctx.send(embed=embed1)
+        return
+
+@slash.slash(
+    name='balance',
+    description='Check your account balance'
+)
+async def balance(ctx: SlashContext):
+    user_id = str(ctx.author.id)
+    collection = db["users"]
+    result = collection.find_one({'_id': user_id})
+    if result is None:
+        await ctx.send(f"{ctx.author.mention}, you have 0 eggcoins do **/daily** to get 1000 eggcoins")
+    else:
+        balance = result['balance']
+        await ctx.send(f"{ctx.author.mention}, your current balance is {balance}.")
+
+@slash.slash(name="daily", description="Claim your daily reward!")
+async def daily(ctx):
+    user_id = str(ctx.author.id)
+    collection = db["users"]
+    result = collection.find_one({"_id": user_id})
+
+    if not result:
+        collection.insert_one({"_id": user_id, "balance": 0, "last_claim": 0})
+        embed = discord.Embed(title="Welcome to Egglington!",
+                              description=f"You have claimed your daily reward of **1000** eggcoins, {ctx.author.mention}!",
+                              color=0x00ff00)
+        collection.update_one({"_id": user_id}, {"$inc": {"balance": 1000}, "$set": {"last_claim": time.time()}})
+        await ctx.send(embed=embed)
+        return
+
+    last_claim = result["last_claim"]
+
+    if last_claim and isinstance(last_claim, (int, float)) and time.time() - last_claim < 86400:
+        delta = timedelta(seconds=int(86400 - (time.time() - last_claim)))
+        embed = discord.Embed(title="Daily Reward",
+                              description=f"Sorry, you can claim your next daily reward in {delta}, {ctx.author.mention}.",
+                              color=0xff0000)
+        await ctx.send(embed=embed)
+        return
+
+    collection.update_one({"_id": user_id}, {"$inc": {"balance": 1000}, "$set": {"last_claim": time.time()}})
+    embed = discord.Embed(title="Daily Reward",
+                          description=f"Congratulations! You have claimed your daily reward of **1000** coins, {ctx.author.mention}!",
+                          color=0x00ff00)
+    result = collection.find_one({"_id": user_id})
+    balance = result["balance"]
+    embed.add_field(name="Current Balance", value=f"{balance} eggcoins", inline=False)
+    await ctx.send(embed=embed)
+
+@slash.slash(
+    name='shop',
+    description='Buy items from the shop'
+)
+async def shop(ctx: SlashContext):
+    user_id = str(ctx.author.id)
+    collection = db["users"]
+    result = collection.find_one({'_id': user_id})
+    if result is None:
+        await ctx.send(f"{ctx.author.mention}, you have 0 eggcoins do **/daily** to get 1000 eggcoins")
+        return
+
+    balance = result['balance']
+    items = [
+        {'name': 'Item 1', 'price': 500},
+        {'name': 'Item 2', 'price': 1000},
+        {'name': 'Item 3', 'price': 1500},
+    ]
+
+    embed = discord.Embed(title="Shop")
+    for item in items:
+        name = item['name']
+        price = item['price']
+        embed.add_field(name=name, value=f"{price} eggcoins")
+
+    await ctx.send(embed=embed)
+
+    def check(m: Message):
+        return m.author == ctx.author and m.channel == ctx.channel
+
+    while True:
+        try:
+            msg = await bot.wait_for('message', timeout=60.0, check=check)
+            if msg.content == 'exit':
+                await ctx.send("Exiting shop...")
+                break
+
+            selected_item = next((item for item in items if item['name'] == msg.content), None)
+            if selected_item is None:
+                await ctx.send("Invalid selection. Try again.")
+                continue
+
+            if balance < selected_item['price']:
+                await ctx.send("You don't have enough eggcoins to buy this item.")
+                continue
+
+            collection.update_one({'_id': user_id}, {'$inc': {'balance': -selected_item['price']}})
+            await ctx.send(f"You have purchased {selected_item['name']} for {selected_item['price']} eggcoins!")
+            break
+
+        except asyncio.TimeoutError:
+            await ctx.send("Shop timed out. Exiting shop...")
+            break
+
+@slash.slash(
+    name='reset',
+    description='Reset all economy data'
+)
+async def reset(ctx: SlashContext):
+    if ctx.author.id != ctx.guild.owner_id:
+        await ctx.send("Sorry, only the server owner can run this command.")
+        return
+
+    db.drop_collection('users')
+    await ctx.send("Economy data has been reset.")
+
+@slash.slash(
+    name='beg',
+    description='Beg for eggcoins'
+)
+async def beg(ctx: SlashContext):
+    user_id = str(ctx.author.id)
+    collection = db["users"]
+    result = collection.find_one({'_id': user_id})
+    if result is None:
+        await ctx.send(f"{ctx.author.mention}, you have 0 eggcoins. Do **/daily** to get 1000 eggcoins.")
+    else:
+        last_beg_time = result.get('last_beg_time', 0)
+        current_time = time.time()
+        if current_time - last_beg_time < 30:
+            wait_time = int(30 - (current_time - last_beg_time))
+            await ctx.send(f"{ctx.author.mention}, you have to wait {wait_time} seconds before you can beg again.")
+            return
+
+        if random.random() < 0.5: # 50% chance of success
+            balance = result['balance']
+            amount = random.randint(1, 100)
+            new_balance = balance + amount
+            collection.update_one({'_id': user_id}, {'$set': {'balance': new_balance, 'last_beg_time': current_time}})
+            await ctx.send(f"{ctx.author.mention}, you begged and received {amount} eggcoins! Your new balance is {new_balance}.")
+        else:
+            await ctx.send(f"{ctx.author.mention}, no one wants to give you any eggcoins. Maybe try again later when you're not so smelly.")
+
+@slash.slash(
+    name='rob',
+    description='Attempt to rob another user',
+    options=[
+        create_option(
+            name='user',
+            description='The user you want to rob',
+            option_type=6,
+            required=True
+        )
+    ]
+)
+async def rob(ctx: SlashContext, user: discord.Member):
+    collection = db["users"]
+    thief_id = str(ctx.author.id)
+    victim_id = str(user.id)
+    victim = collection.find_one({'_id': victim_id})
+    if victim is None or victim['balance'] == 0:
+        await ctx.send(f"{ctx.author.mention}, {user.mention} has no coins to rob.")
+        return
+    thief = collection.find_one({'_id': thief_id})
+    if thief is not None and 'last_robbed' in thief:
+        last_robbed = thief['last_robbed']
+        cooldown_time = 30 * 60  # 30 minutes cooldown
+        if time.time() - last_robbed < cooldown_time:
+            await ctx.send(f"{ctx.author.mention}, you can't rob again for another {cooldown_time//60} minutes.")
+            return
+
+    amount_to_steal = int(victim['balance'] * 0.1)
+    if amount_to_steal < 1:
+        amount_to_steal = 1
+    fine = int(amount_to_steal * 0.05)
+    if thief is None or thief['balance'] < fine:
+        await ctx.send(f"{ctx.author.mention}, you don't have enough coins to pay the fine.")
+        return
+    if random.random() < 0.5:
+        collection.update_one({'_id': victim_id}, {'$inc': {'balance': -amount_to_steal}})
+        collection.update_one({'_id': thief_id}, {'$inc': {'balance': amount_to_steal}, '$set': {'last_robbed': time.time()}})
+        await ctx.send(f"{ctx.author.mention}, you stole {amount_to_steal} coins from {user.mention}.")
+    else:
+        collection.update_one({'_id': thief_id}, {'$inc': {'balance': -fine}})
+        await ctx.send(f"{ctx.author.mention}, you failed to rob {user.mention} and had to pay a fine of {fine} coins.")
 
 
 @slash.slash(name="slowmode", description="Set the slowmode of the channel.")
@@ -268,18 +470,13 @@ async def on_message(message):
         return
     if message.author == bot.user:
         return
-
-    # Check for mentions of AFK users
     for user in message.mentions:
         if user.nick is not None and user.nick.startswith('[AFK]'):
-            # Send message with AFK status and custom message (if provided)
             if 'is now AFK' in user.nick:
                 afk_message = 'is now AFK'
             else:
                 afk_message = user.nick.split(': ')[-1]
             await message.channel.send(f"{message.author.mention} {user.mention} is currently AFK. For {afk_message}")
-
-    # Check for AFK users in message content
     if message.author.nick is not None and message.author.nick.startswith('[AFK]'):
         await message.author.edit(nick=message.author.display_name.replace('[AFK]', ''))
         await message.channel.send(f"{message.author.mention} is back from AFK")
@@ -304,22 +501,16 @@ async def on_message(message):
         return
     if message.author == bot.user:
         return
-
     user = None
-
-    # Check for mentions of AFK users
     for mention in message.mentions:
         if mention.nick is not None and mention.nick.startswith('[AFK]'):
             user = mention
-            # Send message with AFK status and custom message (if provided)
             if 'is now AFK' in user.nick:
                 afk_message = 'No reason provided'
             else:
                 afk_message = user.nick.split(': ')[-1]
             await message.channel.send(f"{message.author.mention} {user.mention} is currently AFK.")
             break
-
-    # Check for AFK users in message content
     if message.author.nick is not None and message.author.nick.startswith('[AFK]'):
         user = message.author
         await user.edit(nick=user.display_name.replace('[AFK]', ''))
@@ -328,7 +519,6 @@ async def on_message(message):
     await bot.process_commands(message)
 
 
-#useful commands thats not ping or help or invite or serverinfo or userinfo
 @slash.slash(name="avatar", description="Get the avatar of a user.")
 async def avatar(ctx: SlashContext, member: discord.Member = None):
     if member is None:
@@ -555,6 +745,26 @@ async def ban(ctx: SlashContext, member: discord.Member, reason: str = None):
     embed.add_field(name="Reason", value=reason)
 
     await ctx.send(embed=embed)
+
+@bot.command()
+async def test(ctx, username: str):
+    user = await client1.get_user_by_username(username)
+    userid = str(user.id)
+    url= f"https://inventory.roblox.com/v1/users/{userid}/assets/collectibles?limit=100&sortOrder=Asc"
+    count = 0 
+    with urllib.request.urlopen(url) as url:
+        data = json.load(url)
+        count += len(data['data'])
+        try:
+            while data['nextPageCursor'] != "null": 
+                url = f"https://inventory.roblox.com/v1/users/{userid}/assets/collectibles?limit=100&sortOrder=Asc&cursor="+data['nextPageCursor'] 
+            with urllib.request.urlopen(url) as url:
+                data = json.load(url)
+                count += len(data['data'])
+        except: 
+            pass
+    await ctx.send(f"{username} has {count} collectibles.")
+
 
 @slash.slash(name="kick",
              description="Kicks a member from the server",
@@ -1054,19 +1264,10 @@ async def ruserhis(ctx,username):
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
-@slash.slash(name="rvalue",
-             description="Get Rolimons info for a user.",
-             options=[
-                 create_option(
-                     name="username",
-                     description="The Roblox username of the user.",
-                     option_type=3,
-                     required=True
-                 )
-             ])
-async def rvalue(ctx,username):
+@bot.command()
+async def rvalue(ctx, username):
     user = await client1.get_user_by_username(username)
-    userid = user.id
+    userid = str(user.id)
     listofusers1 = requests.get(f'https://www.rolimons.com/playerapi/player/{userid}').json()
     user_thumbnails = await client1.thumbnails.get_user_avatar_thumbnails(
         users=[user],
@@ -1077,7 +1278,6 @@ async def rvalue(ctx,username):
         URL = f"https://www.rolimons.com/player/{userid}"
     requestURL = requests.get(URL)
     content = requestURL.content
-    soup = BeautifulSoup(content, "html.parser")
     URL3 = f"https://www.rolimons.com/player/{userid}"
     requestURL = requests.get(URL3)
     content = requestURL.content
@@ -1085,10 +1285,22 @@ async def rvalue(ctx,username):
     URL3 = f"https://rblx.trade/u/{username}"
     requestURL = requests.get(URL3)
     content = requestURL.content
-    soup = BeautifulSoup(content, "html.parser")  
-    test_json = json.loads(soup.find('script', id="__NEXT_DATA__").string)
-    collect = format(max([x['roblox_itemcount'] for x in test_json['props']['pageProps']['inventoryHistory'] if x['roblox_itemcount'] < 15000]), ",")
     trade = soup1.find('span',class_="card-title mb-1 text-light stat-data text-nowrap").text
+    count = 0
+    url = f"https://inventory.roblox.com/v1/users/{userid}/assets/collectibles?limit=100&sortOrder=Asc"
+
+    with urllib.request.urlopen(url) as url:
+        data = json.loads(url.read().decode())
+        count += len(data['data'])
+
+        try:
+            while data['nextPageCursor'] != "null":
+                url = f"https://inventory.roblox.com/v1/users/{userid}/assets/collectibles?limit=100&sortOrder=Asc&cursor={data['nextPageCursor']}"
+                with urllib.request.urlopen(url) as url:
+                    data = json.loads(url.read().decode())
+                    count += len(data['data'])
+        except:
+            pass
     embed=discord.Embed(title=f"Rolimons Info for {user.name} ", url=f"https://www.rolimons.com/player/{userid}", color=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.shop", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url=f"{user_thumbnail.image_url}")
@@ -1096,7 +1308,7 @@ async def rvalue(ctx,username):
     embed.add_field(name=f"Rank:", value=f"```{listofusers1['rank']}```", inline=True)
     embed.add_field(name=f"RAP:", value=f"```{listofusers1['rap']}```", inline=True)
     embed.add_field(name=f"Value:", value=f"```{listofusers1['value']}```", inline=True)
-    embed.add_field(name=f"Collectibles:", value=f"```{collect}```", inline=True)
+    embed.add_field(name=f"Collectibles:", value=f"```{count}```", inline=True)
     embed.add_field(name=f"Trade ads:", value=f"```{trade}```", inline=True)
     embed.add_field(name=f"Premium:", value=f"```{listofusers1['premium']}```", inline=True)
     embed.add_field(name=f"Terminated:", value=f"```{listofusers1['terminated']}```", inline=True)
@@ -1289,6 +1501,23 @@ async def _litecoin(ctx):
     embed.set_footer(text=f"{name}'s info", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
+
+@slash.slash(name="test1", description="Count the number of collectibles a user has")
+async def count_collectibles(ctx):
+    url= f"https://inventory.roblox.com/v1/users/1/assets/collectibles?limit=100&sortOrder=Asc"
+    count = 0 
+    with urllib.request.urlopen(url) as url:
+        data = json.load(url)
+        count += len(data['data'])
+        try:
+            while data['nextPageCursor'] != "null": 
+                url = f"https://inventory.roblox.com/v1/users/1/assets/collectibles?limit=100&sortOrder=Asc&cursor="+data['nextPageCursor'] 
+            with urllib.request.urlopen(url) as url:
+                data = json.load(url)
+                count += len(data['data'])
+        except:
+           await ctx.send(f"has {count} collectibles.")
+
 
 @slash.slash(name="rgame",
              description="Displays information about a Roblox game.",
@@ -1544,6 +1773,7 @@ async def poll(ctx: SlashContext, *, question):
     message = await ctx.send(embed=embed)
     await message.add_reaction("👍")
     await message.add_reaction("👎")
+
 
 #////////////////////////////////////////////////////////////////////////// 
 def Init():
