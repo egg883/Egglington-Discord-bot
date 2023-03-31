@@ -12,7 +12,7 @@
     "nsfw_enabled": true,
     "status": "test bot 1",
     "status2": "test bot 2",
-    "deletetime": 15
+    "deletetime": 15,
     "economy": {
         "mongodb": "your mongo db url",
         "database-name": "the name of ur cluster"
