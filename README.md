@@ -27,7 +27,7 @@ https://www.youtube.com/watch?v=oZbzgoXlAuI
 8. type in terminal ```chmod +x eggbot.sh```
 9. Open eggbot.sh then fun happens :)
 
-## [Discord Server](https://discord.gg/AUevumCwXj) | [Website](https://egg883.shop)
+## [Discord Server](https://discord.gg/AUevumCwXj) | [Website](https://egg883.xyz)
 <a href="https://discord.gg/AUevumCwXj"><img src="https://discord.com/api/guilds/1048219013173493850/widget.png?style=banner2"></a>
  
 <h2><strong> Discord Tag -->  </strong></h2>
