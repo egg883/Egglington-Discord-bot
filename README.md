@@ -7,6 +7,8 @@ This bot is just a personal project that gives me something todo It is in early 
 If you'd like to give feedback or maybe suggestions consider making a pull request or joining my discord link is down below,
 Egglington is Public to anyone to rewrite, use as their own bot As long as credit is given.
 
+# [Click here for commands list]([https://egg883.shop](https://github.com/egg883/Egglington-Discord-bot/blob/main/commands.md))
+
 
 # Bot invite: 
 https://discord.com/api/oauth2/authorize?client_id=1063758752160960573&permissions=8&scope=applications.commands%20bot
@@ -32,3 +34,5 @@ https://www.youtube.com/watch?v=oZbzgoXlAuI
 <p align="left">
     <img width="40%" src="https://lanyard-profile-readme.vercel.app/api/184841558661529600" />
 </p>
+
+#[Click here for commands list]
