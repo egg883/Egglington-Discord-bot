@@ -36,7 +36,6 @@ client1 = Client()
 class Colours:
     White = "\x1b[38;2;250;250;250m"
     Magenta = "\x1b[38;2;255;94;255m"
-os.system("color")
 #////////////////////////////////////////////////////////////////////////// CONFIG DEFINING#
 with open('config.json', 'r') as f:
     config = json.load(f)
