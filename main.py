@@ -1297,7 +1297,7 @@ async def rvalue(ctx, username):
     embed.add_field(name=f"Rank:", value=f"```{listofusers1['rank']}```", inline=True)
     embed.add_field(name=f"RAP:", value=f"```{listofusers1['rap']}```", inline=True)
     embed.add_field(name=f"Value:", value=f"```{listofusers1['value']}```", inline=True)
-    embed.add_field(name=f"Collectibles:", value=f"```{count}```", inline=True)
+    embed.add_field(name=f"Collectables:", value=f"```{count}```", inline=True)
     embed.add_field(name=f"Trade ads:", value=f"```{trade}```", inline=True)
     embed.add_field(name=f"Premium:", value=f"```{listofusers1['premium']}```", inline=True)
     embed.add_field(name=f"Terminated:", value=f"```{listofusers1['terminated']}```", inline=True)
