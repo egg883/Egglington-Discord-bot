@@ -57,7 +57,6 @@ welc = config['welcome']
 nsfwonoroff = config['nsfw_enabled']
 #////////////////////////////////////////////////////////////////////////// GENERIC SH*T 
 embed_color = 0xfcd005
-mongo = pymongo.MongoClient(f"{mongodb}")
 intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix = prefix, intents=intents, help_command=None)
@@ -179,7 +178,7 @@ async def help(ctx: SlashContext):
         embed.add_field(name="Fun", value="`/coinflip`, `/rps`, `/dice`, `/pp`, `/8ball`", inline=False)
         embed.add_field(name="Moderation", value=f"`/kick`, `/ban`, `/unban`, `/purge`, `/mute`, `/unmute`, `/lock`, `/unlock`, `/slowmode`", inline=False)
         embed.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`", inline=False)
-        embed.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`, `/newticket`, `/closeticket`, `/support`", inline=False)
+        embed.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`, `/newticket`, `/closeticket`, `/support`, `/uptime`", inline=False)
         embed.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`", inline=False)
         embed.add_field(name="Roblox", value=f"`/rgame`, `/ruser`, `/routfit`, `{prefix}rvalue`, `/ruserhis`", inline=False)
         embed.add_field(name="Crypto", value="`/btc`, `/eth`, `/sol`, `/ltc`, `/usdt`", inline=False)
@@ -197,7 +196,7 @@ async def help(ctx: SlashContext):
         embed1.add_field(name="Fun", value="`/coinflip`, `/rps`, `/dice`, `/pp`, `/8ball`", inline=False)
         embed1.add_field(name="Moderation", value=f"`/kick`, `/ban`, `/unban`, `/purge`, `/mute`, `/unmute`, `/lock`, `/unlock`, `/slowmode`", inline=False)
         embed1.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`", inline=False)
-        embed1.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`, `/newticket`, `/closeticket`, `/support`", inline=False)
+        embed1.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`, `/newticket`, `/closeticket`, `/support`, `/uptime`", inline=False)
         embed1.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`", inline=False)
         embed1.add_field(name="Roblox", value=f"`/rgame`, `/ruser`, `/routfit`, `{prefix}rvalue`, `/ruserhis`", inline=False)
         embed1.add_field(name="Crypto", value="`/btc`, `/eth`, `/sol`, `/ltc`, `/usdt`", inline=False)
@@ -219,6 +218,16 @@ async def balance(ctx: SlashContext):
     else:
         balance = result['balance']
         await ctx.send(f"{ctx.author.mention}, your current balance is {balance}.")
+
+
+@slash.slash(
+    name='uptime',
+    description='Check the bot uptime'
+)
+async def uptime(ctx: SlashContext):
+    embed = discord.Embed(title="Uptime", description=f"{round(bot.uptime.total_seconds())} seconds", color=discord.Color.blue())
+    await ctx.send(embed=embed)
+
 
 @slash.slash(name="daily", description="Claim your daily reward!")
 async def daily(ctx):
