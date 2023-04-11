@@ -14,6 +14,4 @@
 
 "Roblox", /rgame, /ruser, /routfit, {prefix}rvalue, /ruserhis
 
-"Crypto", /btc, /eth, /sol, /ltc, /usdt
-
 "NSFW" ,/tentacle, /hass, /hmidriff, /pgif, /4k, /holo, /hboobs, /pussy, /hthigh, /thigh, /hentai [TOGGLED OFF BY DEFAULT ENABLE IN CONFIG]
