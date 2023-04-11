@@ -632,6 +632,7 @@ async def news(ctx: SlashContext):
     embed = discord.Embed(title=f"Update V{version}", description=f"This is the latest news about our bot Update", url=f"{githuburl}", colour=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed.add_field(name="Added template stealer", value="```allows you to steal shirt templates or pants```", inline=False)
     embed.add_field(name="Removed 2 catagories", value="```Removed Crypto and economy```", inline=False)
     embed.add_field(name="Removed these due to issues", value="```ritem still has not returned```", inline=False)
     embed.add_field(name="Our Website", value="```https://egg883.xyz```", inline=False)
