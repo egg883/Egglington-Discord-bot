@@ -167,7 +167,7 @@ async def help(ctx: SlashContext):
         embed.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`", inline=False)
         embed.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`, `/newticket`, `/closeticket`, `/support`, `/uptime`", inline=False)
         embed.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`", inline=False)
-        embed.add_field(name="Roblox", value=f"`/rgame`, `/ruser`, `/routfit`, `{prefix}rvalue`, `/ruserhis`", inline=False)
+        embed.add_field(name="Roblox", value=f"`/rgame`, `/ruser`, `/routfit`, `{prefix}rvalue`, `/ruserhis`, `/template`", inline=False)
         embed.add_field(name="https://egg883.xyz", value=" ", inline=True)
         await ctx.send(embed=embed)
         return
@@ -184,7 +184,7 @@ async def help(ctx: SlashContext):
         embed1.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`", inline=False)
         embed1.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`, `/newticket`, `/closeticket`, `/support`, `/uptime`", inline=False)
         embed1.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`", inline=False)
-        embed1.add_field(name="Roblox", value=f"`/rgame`, `/ruser`, `/routfit`, `{prefix}rvalue`, `/ruserhis`", inline=False)
+        embed1.add_field(name="Roblox", value=f"`/rgame`, `/ruser`, `/routfit`, `{prefix}rvalue`, `/ruserhis`, `/template`", inline=False)
         embed1.add_field(name="nsfw", value="`/tentacle`, `/hass`, `/hmidriff`, `/pgif`, `/4k`, `/holo`, `/hboobs`, `/pussy`, `/hthigh`, `/thigh`, `/hentai`", inline=False)
         embed1.add_field(name="https://egg883.xyz", value=" ", inline=True)
         await ctx.send(embed=embed1)
@@ -400,6 +400,26 @@ async def unmute(ctx: SlashContext, member: discord.Member, reason: str = None):
     await member.remove_roles(mutedRole, reason=reason)
     await member.send(f" You have been unmuted in: {guild.name} reason: {reason}")
 
+@slash.slash(name="template", description="steals shirt template by ID", options=[
+    {
+        "name": "id",
+        "description": "The ID of the shirt asset",
+        "type": SlashCommandOptionType.STRING,
+        "required": True
+    }
+])
+async def get_shirt(ctx: SlashContext, id: str):
+    assetRequest = requests.get(f"https://assetdelivery.roblox.com/v1/asset/?id={id}", allow_redirects=False)
+    assetLocation = assetRequest.headers["location"]
+    locationRequest = requests.get(assetLocation)
+    templateAssetId = re.search(r"\?id=(\d+)", str(locationRequest.content)).group()[4:]
+    templateDownloadRequest = requests.get(f"https://assetdelivery.roblox.com/v1/asset/?id={templateAssetId}", allow_redirects=False)
+    templateBinaryRequest = requests.get(templateDownloadRequest.headers["location"])
+    with open("shirt.png", "wb") as shirt:
+        shirt.write(templateBinaryRequest.content)
+    await ctx.send(file=discord.File("shirt.png"))
+
+
 @slash.slash(name="whois",
              description="Shows information about a member.",
              options=[
@@ -612,8 +632,8 @@ async def news(ctx: SlashContext):
     embed = discord.Embed(title=f"Update V{version}", description=f"This is the latest news about our bot Update", url=f"{githuburl}", colour=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.add_field(name="Added Slash commands", value="```added ticket slash command```", inline=False)
-    embed.add_field(name="stupid gay ritem broke", value="```Removed ritem due to issues```", inline=False)
+    embed.add_field(name="Removed 2 catagories", value="```Removed Crypto and economy```", inline=False)
+    embed.add_field(name="Removed these due to issues", value="```ritem still has not returned```", inline=False)
     embed.add_field(name="Our Website", value="```https://egg883.xyz```", inline=False)
     await ctx.send(embed=embed)
 
