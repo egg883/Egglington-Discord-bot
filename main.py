@@ -158,7 +158,7 @@ async def help(ctx: SlashContext):
     if not nsfw_enabled:
         embed = discord.Embed(title="Help Panel", description="This is the Help Panel Below will be commands:", color=discord.Color.blue())
         embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.set_footer(text="https://egg883.xyz", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.set_footer(text="Egglington", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
         embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
         embed.timestamp = datetime.datetime.utcnow()
         embed.add_field(name="General", value="`/whois`, `/yt`, `/vote`, `/choose`, `/poll`", inline=False)
@@ -168,14 +168,14 @@ async def help(ctx: SlashContext):
         embed.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`, `/newticket`, `/closeticket`, `/support`, `/uptime`", inline=False)
         embed.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`", inline=False)
         embed.add_field(name="Roblox", value=f"`/rgame`, `/ruser`, `/routfit`, `{prefix}rvalue`, `/ruserhis`", inline=False)
-        embed.add_field(name="Crypto", value="`/btc`, `/eth`, `/sol`, `/ltc`, `/usdt`", inline=False)
+        embed.add_field(name="https://egg883.xyz", value=" ", inline=True)
         await ctx.send(embed=embed)
         return
     nsfw_enabled1 = config.get('nsfw_enabled', True)
     if nsfw_enabled1:
-        embed1 = discord.Embed(title="Help Panel", description="This is the Help Panel Below will be commands:", color=discord.Color.blue())
+        embed1 = discord.Embed(title="Help Panel ", description="This is the Help Panel Below will be commands:", color=discord.Color.blue())
         embed1.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed1.set_footer(text="https://egg883.xyz", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed1.set_footer(text="Egglington", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
         embed1.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
         embed1.timestamp = datetime.datetime.utcnow()
         embed1.add_field(name="General", value="`/whois`, `/yt`, `/vote`, `/choose`, `/poll`", inline=False)
@@ -185,8 +185,8 @@ async def help(ctx: SlashContext):
         embed1.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`, `/newticket`, `/closeticket`, `/support`, `/uptime`", inline=False)
         embed1.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`", inline=False)
         embed1.add_field(name="Roblox", value=f"`/rgame`, `/ruser`, `/routfit`, `{prefix}rvalue`, `/ruserhis`", inline=False)
-        embed1.add_field(name="Crypto", value="`/btc`, `/eth`, `/sol`, `/ltc`, `/usdt`", inline=False)
         embed1.add_field(name="nsfw", value="`/tentacle`, `/hass`, `/hmidriff`, `/pgif`, `/4k`, `/holo`, `/hboobs`, `/pussy`, `/hthigh`, `/thigh`, `/hentai`", inline=False)
+        embed1.add_field(name="https://egg883.xyz", value=" ", inline=True)
         await ctx.send(embed=embed1)
         return
 
@@ -202,8 +202,6 @@ async def uptime(ctx: SlashContext):
     embed.add_field(name="Uptime", value=f"{str(datetime.timedelta(seconds=round(time.time() - start_time)))}", inline=False)
     await ctx.send(embed=embed)
     return
-
-
 
 
 @slash.slash(name="slowmode", description="Set the slowmode of the channel.")
@@ -1119,190 +1117,6 @@ async def rvalue(ctx, username):
     embed.add_field(name=f"Private:", value=f"```{listofusers1['privacy_enabled']}```", inline=True)
     embed.add_field(name=f"Last Location:", value=f"```{listofusers1['last_location']}```", inline=True)
     embed.set_footer(text=f"{username}'s rolimons", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1079482029776842812/JCiYruAM_400x400.png")
-    embed.timestamp = datetime.datetime.utcnow()
-    await ctx.send(embed=embed)
-
-@slash.slash(name="BTC",
-             description="Get the current price of Bitcoin.")
-async def _btc(ctx):
-    URL3 = f"https://coinmarketcap.com/currencies/bitcoin/"
-    requestURL = requests.get(URL3)
-    content = requestURL.content
-    soup = BeautifulSoup(content, "html.parser")
-    URL4 = "https://www.coindesk.com/price/bitcoin/"
-    requestURL = requests.get(URL4)
-    content = requestURL.content
-    soup1 = BeautifulSoup(content, "html.parser")
-    acronym = soup.find('small').text
-    price = soup.find('div', class_="priceValue").text
-    rank = soup.find('div', class_="namePill namePillPrimary").text
-    market = soup.find('div', class_="statsValue").text
-    vol = soup.find_all('div', class_="statsValue")[2].text
-    percent = soup1.find('h6', class_="typography__StyledTypography-owin6q-0 hZxwDe").text
-    highest = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[4].text
-    Rytd = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[5].text
-    fee = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[11].text
-    embed=discord.Embed(title=f"Information about Bitcoin", url=f"https://coinmarketcap.com/currencies/bitcoin/", color=0x007bff)
-    embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.add_field(name=f"Name:", value=f"```Bitcoin```", inline=True)
-    embed.add_field(name=f"Acronym:", value=f"```{acronym}```", inline=True)
-    embed.add_field(name=f"Market Rank:", value=f"```{rank}```", inline=True)
-    embed.add_field(name=f"Price:", value=f"```{price}```", inline=True)
-    embed.add_field(name=f"Market Cap:", value=f"```{market}```", inline=True)
-    embed.add_field(name=f"Volume [24hrs]:", value=f"```{vol}```", inline=True)
-    embed.add_field(name=f"Percent [24hrs]:", value=f"```{percent}```", inline=True)
-    embed.add_field(name=f"Highest AllTime:", value=f"```{highest}```", inline=True)
-    embed.add_field(name=f"Return YTD:", value=f"```{Rytd}```", inline=True)
-    embed.add_field(name=f"Average Fee [24hrs]:", value=f"```{fee}```", inline=True)
-    embed.set_footer(text=f"bitcoin's info", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1086238157693001788/bitcoin-logo-5234.png")
-    embed.timestamp = datetime.datetime.utcnow()
-    await ctx.send(embed=embed)
-
-@slash.slash(name="ETH",
-             description="Get information about Ethereum")
-async def _eth(ctx):
-    URL3 = f"https://coinmarketcap.com/currencies/Ethereum/"
-    requestURL = requests.get(URL3)
-    content = requestURL.content
-    soup = BeautifulSoup(content, "html.parser")
-    URL4 = "https://www.coindesk.com/price/Ethereum/"
-    requestURL = requests.get(URL4)
-    content = requestURL.content
-    soup1 = BeautifulSoup(content, "html.parser")
-    acronym = soup.find('small').text
-    price = soup.find('div', class_="priceValue").text
-    rank = soup.find('div', class_="namePill namePillPrimary").text
-    market = soup.find('div', class_="statsValue").text
-    vol = soup.find_all('div', class_="statsValue")[2].text
-    percent = soup1.find('h6', class_="typography__StyledTypography-owin6q-0 hZxwDe").text
-    highest = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[4].text
-    Rytd = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[5].text
-    fee = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[11].text
-    name = soup.find('span', class_="sc-1d5226ca-1 fLa-dNu").text
-    embed=discord.Embed(title=f"Information about {name}", url=f"https://coinmarketcap.com/currencies/Ethereum/", color=0x007bff)
-    embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.add_field(name=f"Name:", value=f"```{name}```", inline=True)
-    embed.add_field(name=f"Acronym:", value=f"```{acronym}```", inline=True)
-    embed.add_field(name=f"Market Rank:", value=f"```{rank}```", inline=True)
-    embed.add_field(name=f"Price:", value=f"```{price}```", inline=True)
-    embed.add_field(name=f"Market Cap:", value=f"```{market}```", inline=True)
-    embed.add_field(name=f"Volume [24hrs]:", value=f"```{vol}```", inline=True)
-    embed.add_field(name=f"Percent [24hrs]:", value=f"```{percent}```", inline=True)
-    embed.add_field(name=f"Highest AllTime:", value=f"```{highest}```", inline=True)
-    embed.add_field(name=f"Return YTD:", value=f"```{Rytd}```", inline=True)
-    embed.add_field(name=f"Average Fee [24hrs]:", value=f"```{fee}```", inline=True)
-    embed.set_footer(text=f"{name}'s info", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.timestamp = datetime.datetime.utcnow()
-    await ctx.send(embed=embed)
-
-@slash.slash(name="sol",
-             description="Get information about Solana")
-async def _sol(ctx):
-    URL3 = f"https://coinmarketcap.com/currencies/solana/"
-    requestURL = requests.get(URL3)
-    content = requestURL.content
-    soup = BeautifulSoup(content, "html.parser")
-    URL4 = "https://www.coindesk.com/price/solana/"
-    requestURL = requests.get(URL4)
-    content = requestURL.content
-    soup1 = BeautifulSoup(content, "html.parser")
-    acronym = soup.find('small').text
-    price = soup.find('div', class_="priceValue").text
-    rank = soup.find('div', class_="namePill namePillPrimary").text
-    market = soup.find('div', class_="statsValue").text
-    vol = soup.find_all('div', class_="statsValue")[2].text
-    percent = soup1.find('h6', class_="typography__StyledTypography-owin6q-0 hZxwDe").text
-    highest = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[4].text
-    Rytd = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[5].text
-    fee = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[11].text
-    name = soup.find('span', class_="sc-1d5226ca-1 fLa-dNu").text
-    embed=discord.Embed(title=f"Information about {name}", url=f"https://coinmarketcap.com/currencies/solana/", color=0x007bff)
-    embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.add_field(name=f"Name:", value=f"```{name}```", inline=True)
-    embed.add_field(name=f"Acronym:", value=f"```{acronym}```", inline=True)
-    embed.add_field(name=f"Market Rank:", value=f"```{rank}```", inline=True)
-    embed.add_field(name=f"Price:", value=f"```{price}```", inline=True)
-    embed.add_field(name=f"Market Cap:", value=f"```{market}```", inline=True)
-    embed.add_field(name=f"Volume [24hrs]:", value=f"```{vol}```", inline=True)
-    embed.add_field(name=f"Percent [24hrs]:", value=f"```{percent}```", inline=True)
-    embed.add_field(name=f"Highest AllTime:", value=f"```{highest}```", inline=True)
-    embed.add_field(name=f"Return YTD:", value=f"```{Rytd}```", inline=True)
-    embed.add_field(name=f"Average Fee [24hrs]:", value=f"```{fee}```", inline=True)
-    embed.set_footer(text=f"{name}'s info", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.timestamp = datetime.datetime.utcnow()
-    await ctx.send(embed=embed)
-
-@slash.slash(name="USDT",
-             description="Display information about Tether (USDT).")
-async def _tether(ctx):
-    URL3 = f"https://coinmarketcap.com/currencies/tether/"
-    requestURL = requests.get(URL3)
-    content = requestURL.content
-    soup = BeautifulSoup(content, "html.parser")
-    URL4 = "https://www.coindesk.com/price/tether/"
-    requestURL = requests.get(URL4)
-    content = requestURL.content
-    soup1 = BeautifulSoup(content, "html.parser")
-    acronym = soup.find('small').text
-    price = soup.find('div', class_="priceValue").text
-    rank = soup.find('div', class_="namePill namePillPrimary").text
-    market = soup.find('div', class_="statsValue").text
-    vol = soup.find_all('div', class_="statsValue")[2].text
-    percent = soup1.find('h6', class_="typography__StyledTypography-owin6q-0 hZxwDe").text
-    highest = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[4].text
-    Rytd = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[5].text
-    fee = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[11].text
-    name = soup.find('span', class_="sc-1d5226ca-1 fLa-dNu").text
-    embed=discord.Embed(title=f"Information about {name}", url=f"https://coinmarketcap.com/currencies/tether/", color=0x007bff)
-    embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.add_field(name=f"Name:", value=f"```{name}```", inline=True)
-    embed.add_field(name=f"Acronym:", value=f"```{acronym}```", inline=True)
-    embed.add_field(name=f"Market Rank:", value=f"```{rank}```", inline=True)
-    embed.add_field(name=f"Price:", value=f"```{price}```", inline=True)
-    embed.add_field(name=f"Market Cap:", value=f"```{market}```", inline=True)
-    embed.add_field(name=f"Volume [24hrs]:", value=f"```{vol}```", inline=True)
-    embed.add_field(name=f"Percent [24hrs]:", value=f"```{percent}```", inline=True)
-    embed.add_field(name=f"Highest AllTime:", value=f"```{highest}```", inline=True)
-    embed.add_field(name=f"Return YTD:", value=f"```{Rytd}```", inline=True)
-    embed.add_field(name=f"Average Fee [24hrs]:", value=f"```{fee}```", inline=True)
-    embed.set_footer(text=f"{name}'s info", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.timestamp = datetime.datetime.utcnow()
-    await ctx.send(embed=embed)
-
-@slash.slash(name="LTC",
-             description="Display information about Litecoin (LTC).")
-async def _litecoin(ctx):
-    URL3 = f"https://coinmarketcap.com/currencies/litecoin/"
-    requestURL = requests.get(URL3)
-    content = requestURL.content
-    soup = BeautifulSoup(content, "html.parser")
-    URL4 = "https://www.coindesk.com/price/litecoin/"
-    requestURL = requests.get(URL4)
-    content = requestURL.content
-    soup1 = BeautifulSoup(content, "html.parser")
-    acronym = soup.find('small').text
-    price = soup.find('div', class_="priceValue").text
-    rank = soup.find('div', class_="namePill namePillPrimary").text
-    market = soup.find('div', class_="statsValue").text
-    vol = soup.find_all('div', class_="statsValue")[2].text
-    percent = soup1.find('h6', class_="typography__StyledTypography-owin6q-0 hZxwDe").text
-    highest = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[4].text
-    Rytd = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[5].text
-    fee = soup1.find_all('span', class_="typography__StyledTypography-owin6q-0 gaZnSf")[11].text
-    name = soup.find('span', class_="sc-1d5226ca-1 fLa-dNu").text
-    embed=discord.Embed(title=f"Information about {name}", url=f"https://coinmarketcap.com/currencies/litecoin/", color=0x007bff)
-    embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.add_field(name=f"Name:", value=f"```{name}```", inline=True)
-    embed.add_field(name=f"Acronym:", value=f"```{acronym}```", inline=True)
-    embed.add_field(name=f"Market Rank:", value=f"```{rank}```", inline=True)
-    embed.add_field(name=f"Price:", value=f"```{price}```", inline=True)
-    embed.add_field(name=f"Market Cap:", value=f"```{market}```", inline=True)
-    embed.add_field(name=f"Volume [24hrs]:", value=f"```{vol}```", inline=True)
-    embed.add_field(name=f"Percent [24hrs]:", value=f"```{percent}```", inline=True)
-    embed.add_field(name=f"Highest AllTime:", value=f"```{highest}```", inline=True)
-    embed.add_field(name=f"Return YTD:", value=f"```{Rytd}```", inline=True)
-    embed.add_field(name=f"Average Fee [24hrs]:", value=f"```{fee}```", inline=True)
-    embed.set_footer(text=f"{name}'s info", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
 
