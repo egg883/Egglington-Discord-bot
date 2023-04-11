@@ -40,8 +40,6 @@ class Colours:
 with open('config.json', 'r') as f:
     config = json.load(f)
 bottoken = config['bot_token']
-mongodb = config['economy']['mongodb']
-dbname = config['economy']['database-name']
 prefix = config['prefix']
 deletein = config['deletetime']
 botowner = config['ownerid']
@@ -191,6 +189,21 @@ async def help(ctx: SlashContext):
         embed1.add_field(name="nsfw", value="`/tentacle`, `/hass`, `/hmidriff`, `/pgif`, `/4k`, `/holo`, `/hboobs`, `/pussy`, `/hthigh`, `/thigh`, `/hentai`", inline=False)
         await ctx.send(embed=embed1)
         return
+
+start_time = time.time()
+
+@slash.slash(name="uptime", description="Get the uptime of the bot.")
+async def uptime(ctx: SlashContext):
+    embed=discord.Embed(title="Uptime", url="https://egg883.xyz", color=0x007bff)
+    embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_footer(text="https://egg883.xyz", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed.timestamp = datetime.datetime.utcnow()
+    embed.add_field(name="Uptime", value=f"{str(datetime.timedelta(seconds=round(time.time() - start_time)))}", inline=False)
+    await ctx.send(embed=embed)
+    return
+
+
 
 
 @slash.slash(name="slowmode", description="Set the slowmode of the channel.")
