@@ -400,6 +400,8 @@ async def unmute(ctx: SlashContext, member: discord.Member, reason: str = None):
     await member.remove_roles(mutedRole, reason=reason)
     await member.send(f" You have been unmuted in: {guild.name} reason: {reason}")
 
+#thx tyris for this
+
 @slash.slash(name="template", description="steals shirt template by ID", options=[
     {
         "name": "id",
