@@ -16,6 +16,4 @@
 
 "Crypto", /btc, /eth, /sol, /ltc, /usdt
 
-"Economy", /rob, /shop, /balance, /beg, /daily
-
 "NSFW" ,/tentacle, /hass, /hmidriff, /pgif, /4k, /holo, /hboobs, /pussy, /hthigh, /thigh, /hentai [TOGGLED OFF BY DEFAULT ENABLE IN CONFIG]
