@@ -59,7 +59,7 @@ intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix = prefix, intents=intents, help_command=None)
 cmds = {len(bot.commands)}
-version = "1.1.4"
+version = "1.1.5"
 slash = SlashCommand(bot, sync_commands=True)
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
@@ -280,18 +280,13 @@ async def on_message(message):
         return
     if message.author == bot.user:
         return
-
-    # Check for mentions of AFK users
     for user in message.mentions:
         if user.nick is not None and user.nick.startswith('[AFK]'):
-            # Send message with AFK status and custom message (if provided)
             if 'is now AFK' in user.nick:
                 afk_message = 'is now AFK'
             else:
                 afk_message = user.nick.split(': ')[-1]
             await message.channel.send(f"{message.author.mention} {user.mention} is currently AFK. For {afk_message}")
-
-    # Check for AFK users in message content
     if message.author.nick is not None and message.author.nick.startswith('[AFK]'):
         await message.author.edit(nick=message.author.display_name.replace('[AFK]', ''))
         await message.channel.send(f"{message.author.mention} is back from AFK")
@@ -318,12 +313,9 @@ async def on_message(message):
         return
 
     user = None
-
-    # Check for mentions of AFK users
     for mention in message.mentions:
         if mention.nick is not None and mention.nick.startswith('[AFK]'):
             user = mention
-            # Send message with AFK status and custom message (if provided)
             if 'is now AFK' in user.nick:
                 afk_message = 'No reason provided'
             else:
@@ -331,7 +323,6 @@ async def on_message(message):
             await message.channel.send(f"{message.author.mention} {user.mention} is currently AFK.")
             break
 
-    # Check for AFK users in message content
     if message.author.nick is not None and message.author.nick.startswith('[AFK]'):
         user = message.author
         await user.edit(nick=user.display_name.replace('[AFK]', ''))
@@ -339,8 +330,6 @@ async def on_message(message):
 
     await bot.process_commands(message)
 
-
-#useful commands thats not ping or help or invite or serverinfo or userinfo
 @slash.slash(name="avatar", description="Get the avatar of a user.")
 async def avatar(ctx: SlashContext, member: discord.Member = None):
     if member is None:
