@@ -9,9 +9,9 @@ Egglington is Public to anyone to rewrite, use as their own bot As long as credi
 
 # [Click here for commands list](https://github.com/egg883/Egglington-Discord-bot/blob/main/commands.md)
 
-# Preview
-![image](https://user-images.githubusercontent.com/106391253/232242071-23687d28-88c8-44ac-9f73-1408371f3544.png)
-
+<p align="left">
+    <img width="35%" src="https://user-images.githubusercontent.com/106391253/232242071-23687d28-88c8-44ac-9f73-1408371f3544.png" />
+</p>
 
 # Bot invite: 
 https://discord.com/api/oauth2/authorize?client_id=1063758752160960573&permissions=8&scope=applications.commands%20bot
