@@ -14,4 +14,6 @@
 
 "Roblox", /rgame, /ruser, /routfit, {prefix}rvalue, /ruserhis, /template
 
-"NSFW" ,/tentacle, /hass, /hmidriff, /pgif, /4k, /holo, /hboobs, /pussy, /hthigh, /thigh, /hentai [TOGGLED OFF BY DEFAULT ENABLE IN CONFIG]
+"NSFW", /tentacle, /hass, /hmidriff, /pgif, /4k, /holo, /hboobs, /pussy, /hthigh, /thigh, /hentai [TOGGLED OFF BY DEFAULT ENABLE IN CONFIG]
+
+"Minecraft", /migrator, /vanilla, /minecon, /realmsmapmaker, /mojang, /mojangstudios, /translator, /cobalt, /scrolls, /turtle, /valentine, /birthday, /dB, /Prismarine, /snowman, /spade
