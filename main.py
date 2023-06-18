@@ -59,7 +59,7 @@ intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix = prefix, intents=intents, help_command=None)
 cmds = {len(bot.commands)}
-version = "1.1.5"
+version = "1.1.6"
 slash = SlashCommand(bot, sync_commands=True)
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
@@ -168,6 +168,7 @@ async def help(ctx: SlashContext):
         embed.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`, `/newticket`, `/closeticket`, `/support`, `/uptime`", inline=False)
         embed.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`", inline=False)
         embed.add_field(name="Roblox", value=f"`/rgame`, `/ruser`, `/routfit`, `{prefix}rvalue`, `/ruserhis`, `/template`", inline=False)
+        embed.add_field(name="Minecraft", value=f"`/migrator`, `/vanilla`, `/minecon`, `/realmsmapmaker`, `/mojang`, `/mojangstudios`, `/translator`, `/cobalt`, `/scrolls`, `/turtle`, `/valentine`, `/birthday`, `/dB`, `/Prismarine`, `/snowman`, `/spade`", inline=False)
         embed.add_field(name="https://egg883.xyz", value=" ", inline=True)
         await ctx.send(embed=embed)
         return
@@ -185,7 +186,8 @@ async def help(ctx: SlashContext):
         embed1.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`, `/newticket`, `/closeticket`, `/support`, `/uptime`", inline=False)
         embed1.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`", inline=False)
         embed1.add_field(name="Roblox", value=f"`/rgame`, `/ruser`, `/routfit`, `{prefix}rvalue`, `/ruserhis`, `/template`", inline=False)
-        embed1.add_field(name="nsfw", value="`/tentacle`, `/hass`, `/hmidriff`, `/pgif`, `/4k`, `/holo`, `/hboobs`, `/pussy`, `/hthigh`, `/thigh`, `/hentai`", inline=False)
+        embed1.add_field(name="NSFW", value="`/tentacle`, `/hass`, `/hmidriff`, `/pgif`, `/4k`, `/holo`, `/hboobs`, `/pussy`, `/hthigh`, `/thigh`, `/hentai`", inline=False)
+        embed1.add_field(name="Minecraft", value=f"`/migrator`, `/vanilla`, `/minecon`, `/realmsmapmaker`, `/mojang`, `/mojangstudios`, `/translator`, `/cobalt`, `/scrolls`, `/turtle`, `/valentine`, `/birthday`, `/dB`, `/Prismarine`, `/snowman`, `/spade`", inline=False)
         embed1.add_field(name="https://egg883.xyz", value=" ", inline=True)
         await ctx.send(embed=embed1)
         return
@@ -202,6 +204,7 @@ async def uptime(ctx: SlashContext):
     embed.add_field(name="Uptime", value=f"{str(datetime.timedelta(seconds=round(time.time() - start_time)))}", inline=False)
     await ctx.send(embed=embed)
     return
+
 
 
 @slash.slash(name="slowmode", description="Set the slowmode of the channel.")
@@ -634,8 +637,8 @@ async def news(ctx: SlashContext):
     embed = discord.Embed(title=f"Update V{version}", description=f"This is the latest news about our bot Update", url=f"{githuburl}", colour=0x007bff)
     embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.add_field(name="Added template stealer", value="```allows you to steal shirt templates or pants```", inline=False)
-    embed.add_field(name="Removed 2 catagories", value="```Removed Crypto and economy```", inline=False)
+    embed.add_field(name="Added 20 new minecraft commands", value="```Allows information on most Capes```", inline=False)
+    embed.add_field(name="Added a minecraft catagory", value="```Do /help to see.```", inline=False)
     embed.add_field(name="Removed these due to issues", value="```ritem still has not returned```", inline=False)
     embed.add_field(name="Our Website", value="```https://egg883.xyz```", inline=False)
     await ctx.send(embed=embed)
@@ -667,7 +670,7 @@ async def info(ctx):
     embed.add_field(name="Total Commands:", value = f"```{len(slash.commands)}```", inline=True)
     embed.add_field(name="Prefix:", value=f"```{prefix}```", inline=True)
     embed.add_field(name="Version:", value=f"```{version}```", inline=True)
-    embed.add_field(name="Creator:", value="```This bot was made by jackk#6666 this is a little project i wanted todo```", inline=False)
+    embed.add_field(name="Creator:", value="```This bot was made by jxkk (New username system for discord) this is a little project i wanted todo```", inline=False)
     embed.set_footer(text="https://egg883.xyz", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
@@ -1041,11 +1044,6 @@ async def nsfw(ctx: SlashContext, category: str = None):
     else:
         await ctx.send(f"Sorry {ctx.author.mention}, I couldn't find any results for that category. Please use one of the following categories: anal, ass, boobs, hentai, hmidriff, pgif, 4k, holo, tits, waifu.")
 
-
-
-
-
-
 @slash.slash(name="ruserhis",
              description="Gets Roblox user's past usernames.",
              options=[
@@ -1188,19 +1186,19 @@ async def restart(ctx,error):
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed, delete_after=deletein)
 
-@bot.event
-async def on_command_error(ctx, error:commands.CommandError):
-    if isinstance(error, commands.CommandNotFound):
-            cmd = ctx.message.content.split()[0]
-            cmd = cmd.lstrip(prefix)
-            embed=discord.Embed(title="COMMAND ERROR", color=0xFF0400)
-            embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-            embed.add_field(name="COMMAND NOT FOUND", value=f"The command {cmd} does not exist", inline=True)
-            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1064570023437422743/1195445329999867155jean_victor_balin_cross.svg.thumb.png")
-            embed.set_footer(text="https://egg883.xyz", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-            embed.timestamp = datetime.datetime.utcnow()
-            print(Fore.RED+f"[ERR] The Command {cmd} Does not exist"+Fore.RESET)
-            await ctx.send(embed=embed, delete_after=30)
+# @bot.event
+# async def on_command_error(ctx, error:commands.CommandError):
+#     if isinstance(error, commands.CommandNotFound):
+#             cmd = ctx.message.content.split()[0]
+#             cmd = cmd.lstrip(prefix)
+#             embed=discord.Embed(title="COMMAND ERROR", color=0xFF0400)
+#             embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+#             embed.add_field(name="COMMAND NOT FOUND", value=f"The command {cmd} does not exist", inline=True)
+#             embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1064570023437422743/1195445329999867155jean_victor_balin_cross.svg.thumb.png")
+#             embed.set_footer(text="https://egg883.xyz", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+#             embed.timestamp = datetime.datetime.utcnow()
+#             print(Fore.RED+f"[ERR] The Command {cmd} Does not exist"+Fore.RESET)
+#             await ctx.send(embed=embed, delete_after=30)
 open_tickets = {}
 
 @slash.slash(name="newticket", description="Create a new ticket.")
@@ -1314,7 +1312,8 @@ async def eightball(ctx: SlashContext, *, question):
         "My reply is no.",
         "My sources say no.",
         "Outlook not so good.",
-        "Very doubtful."
+        "Very doubtful.",
+        "You Smell"
     ]
     embed = discord.Embed(title="8ball", description=f"Question: {question}\nAnswer: {random.choice(responses)}", color=discord.Color.blue())
     embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
@@ -1387,7 +1386,247 @@ async def poll(ctx: SlashContext, *, question):
     await message.add_reaction("👍")
     await message.add_reaction("👎")
 
-#////////////////////////////////////////////////////////////////////////// 
+@slash.slash(name="Migrator", description="Migrator Cape")
+async def mig(ctx: SlashContext):
+        embed = discord.Embed(title="Migrator", url="https://namemc.com/cape/8a6cc02cc86e43f1", color=0x007bff)
+        embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.add_field(name= "Copies", value="3682264★", inline=False)
+        embed.add_field(name= "How To Obtain", value="The Migrator cape in Minecraft is given to players who have migrated their Mojang or legacy account to the new Microsoft account system before December 1, 2020.", inline=False)
+        embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/8a6cc02cc86e43f1)", inline=False)
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
+        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119945994545680404/vPfs6AAAAAElFTkSuQmCC.png")
+        embed.timestamp = datetime.datetime.utcnow()
+        await ctx.send(embed=embed)
+
+@slash.slash(name="Vanilla", description="Vanilla Cape")
+async def van(ctx: SlashContext):
+        embed = discord.Embed(title="Vanilla", url="https://namemc.com/cape/3c1a1e7e50fce5f0", color=0x007bff)
+        embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.add_field(name= "Copies", value="276967★", inline=False)
+        embed.add_field(name= "How To Obtain", value="The vanilla cape in Minecraft Java Edition can be obtained by owning both Java Edition and Bedrock Edition in the same Microsoft account before June 6, 2022.", inline=False)
+        embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/3c1a1e7e50fce5f0)", inline=False)
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
+        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119960504383848488/H2GnHkAOdD3CAAAAAElFTkSuQmCC.png")
+        embed.timestamp = datetime.datetime.utcnow()
+        await ctx.send(embed=embed)
+
+@slash.slash(name="MineCon2016", description="MineCon 2016 Cape")
+async def min016(ctx: SlashContext):
+        embed = discord.Embed(title="MineCon 2016", url="https://namemc.com/cape/1981aad373fa9754", color=0x007bff)
+        embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.add_field(name= "Copies", value="7268★", inline=False)
+        embed.add_field(name= "How To Obtain", value="A redemption link for the cape was emailed to people attending minecon.", inline=False)
+        embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/1981aad373fa9754)", inline=False)
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
+        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119961465277919262/F0Zp3iEW1jQAAAAASUVORK5CYII.png")
+        embed.timestamp = datetime.datetime.utcnow()
+        await ctx.send(embed=embed)
+
+@slash.slash(name="MineCon2015", description="MineCon 2015 Cape")
+async def min015(ctx: SlashContext):
+        embed = discord.Embed(title="MineCon 2015", url="https://namemc.com/cape/72ee2cfcefbfc081", color=0x007bff)
+        embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.add_field(name= "Copies", value="6732★", inline=False)
+        embed.add_field(name= "How To Obtain", value="A redemption link for the cape was emailed to people attending minecon.", inline=False)
+        embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/72ee2cfcefbfc081)", inline=False)
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
+        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119962687275814932/GCoq3qOmK0gAAAABJRU5ErkJggg.png")
+        embed.timestamp = datetime.datetime.utcnow()
+        await ctx.send(embed=embed)
+
+@slash.slash(name="MineCon2013", description="MineCon 2013 Cape")
+async def min013(ctx: SlashContext):
+        embed = discord.Embed(title="MineCon 2013", url="https://namemc.com/cape/0e4cc75a5f8a886d", color=0x007bff)
+        embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.add_field(name= "Copies", value="6104★", inline=False)
+        embed.add_field(name= "How To Obtain", value="A redemption link for the cape was emailed to people attending minecon.", inline=False)
+        embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/0e4cc75a5f8a886d)", inline=False)
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
+        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119963343894089798/8BVVbPjGKR4AAAAASUVORK5CYII.png")
+        embed.timestamp = datetime.datetime.utcnow()
+        await ctx.send(embed=embed)
+
+@slash.slash(name="MineCon2012", description="MineCon 2012 Cape")
+async def min012(ctx: SlashContext):
+        embed = discord.Embed(title="MineCon 2012", url="https://namemc.com/cape/ebc798c3f7eca2a3", color=0x007bff)
+        embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.add_field(name= "Copies", value="3987★", inline=False)
+        embed.add_field(name= "How To Obtain", value="A redemption link for the cape was emailed to people attending minecon.", inline=False)
+        embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/ebc798c3f7eca2a3)", inline=False)
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
+        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119963713034780733/Aiq0gFfOp6n0AAAAAElFTkSuQmCC.png")
+        embed.timestamp = datetime.datetime.utcnow()
+        await ctx.send(embed=embed)
+
+@slash.slash(name="MineCon2011", description="MineCon 2011 Cape")
+async def min011(ctx: SlashContext):
+        embed = discord.Embed(title="MineCon 2011", url="https://namemc.com/cape/9349fa25c64ae935", color=0x007bff)
+        embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.add_field(name= "Copies", value="3480★", inline=False)
+        embed.add_field(name= "How To Obtain", value="This cape was automatically added to all MINECON 2011 attendees' registered username.", inline=False)
+        embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/9349fa25c64ae935)", inline=False)
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
+        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119964176522170398/AzJwbLCpxwQWAAAAAElFTkSuQmCC.png")
+        embed.timestamp = datetime.datetime.utcnow()
+        await ctx.send(embed=embed)
+
+@slash.slash(name="RealmsMapMaker", description="Realms MapMaker Cape")
+async def REALMS(ctx: SlashContext):
+        embed = discord.Embed(title="Realms MapMaker", url="https://namemc.com/cape/11a3dcc4d826d0a1", color=0x007bff)
+        embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.add_field(name= "Copies", value="315★", inline=False)
+        embed.add_field(name= "How To Obtain", value="This cape was automatically added to all MINECON 2011 attendees' registered username.", inline=False)
+        embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/11a3dcc4d826d0a1)", inline=False)
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
+        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119964721345462322/Efimx5FeCt8AAAAASUVORK5CYII.png")
+        embed.timestamp = datetime.datetime.utcnow()
+        await ctx.send(embed=embed)
+
+@slash.slash(name="Mojang", description="Mojang Cape")
+async def mojang(ctx: SlashContext):
+        embed = discord.Embed(title="Mojang", url="https://namemc.com/cape/cb5dd34bee340182", color=0x007bff)
+        embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.add_field(name= "Copies", value="204★", inline=False)
+        embed.add_field(name= "How To Obtain", value="This cape was given to employees of Mojang Studios. This design was used from October 7, 2015 to July 25, 2021.", inline=False)
+        embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/cb5dd34bee340182)", inline=False)
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
+        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119966246084022312/8ESfkwAAAABJRU5ErkJggg.png")
+        embed.timestamp = datetime.datetime.utcnow()
+        await ctx.send(embed=embed)
+
+@slash.slash(name="MojangStudios", description="Mojang Studios Cape")
+async def mojangstu(ctx: SlashContext):
+        embed = discord.Embed(title="Mojang Studios", url="https://namemc.com/cape/c00df589ebea3ad6", color=0x007bff)
+        embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.add_field(name= "Copies", value="103★", inline=False)
+        embed.add_field(name= "How To Obtain", value="This cape was given to employees of Mojang Studios. This design has been used since July 25, 2021. It was made by Johan Aronson and it resembles the Mojangs or gizmos that make up the Mojang Studios logo.", inline=False)
+        embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/c00df589ebea3ad6)", inline=False)
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
+        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119966364271136819/SsHFDeKQIgbRVccgfhPgyjFzsGYDYsBQuDtOS2f4KoDLIW39SBi5jHIy2UJMCRVW0AXVK7ciq5iPmgWIJKyLaAbl9eD9wAS2gmMb2tW3QAAAABJRU5ErkJggg.png")
+        embed.timestamp = datetime.datetime.utcnow()
+        await ctx.send(embed=embed)
+
+@slash.slash(name="Translator", description="Translator Cape")
+async def transla(ctx: SlashContext):
+        embed = discord.Embed(title="Translator", url="https://namemc.com/cape/129a4675704fa3b8", color=0x007bff)
+        embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.add_field(name= "Copies", value="88★", inline=False)
+        embed.add_field(name= "How To Obtain", value="This cape was given to some proofreaders (experienced translators with moderation permissions for their language) on the Minecraft translation project in Crowdin.", inline=False)
+        embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/129a4675704fa3b8)", inline=False)
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
+        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119967103676588112/6dSfs4CE1BEtSouQjWfyd4fc7706hMwAI6PSk8z3UFSERCrB0QGvHnhAwWhUIWKty1uaKnxLgXq8peN4eQQPXCk0cDrEkBcHpJKCmehX34rYmTlDwX9QMrRMpfRdAAAAAElFTkSuQmCC.png")
+        embed.timestamp = datetime.datetime.utcnow()
+        await ctx.send(embed=embed)
+
+@slash.slash(name="Cobalt", description="Cobalt Cape")
+async def Cobaltc(ctx: SlashContext):
+        embed = discord.Embed(title="Cobalt", url="https://namemc.com/cape/696b6cc29946b968", color=0x007bff)
+        embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.add_field(name= "Copies", value="18★", inline=False)
+        embed.add_field(name= "How To Obtain", value="This cape was given to participants/winners of level-making competitions and the Cobalt League tournaments in 2016.", inline=False)
+        embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/696b6cc29946b968)", inline=False)
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
+        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119969316494901389/4pBpOHacDmYjujfGuGCCpI9C8F1c8W1wlGQAAAABJRU5ErkJggg.png")
+        embed.timestamp = datetime.datetime.utcnow()
+        await ctx.send(embed=embed)
+
+@slash.slash(name="Scrolls", description="Scrolls Cape")
+async def Scrollsss(ctx: SlashContext):
+        embed = discord.Embed(title="Scrolls", url="https://namemc.com/cape/116bacd62b233157", color=0x007bff)
+        embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.add_field(name= "Copies", value="9★", inline=False)
+        embed.add_field(name= "How To Obtain", value="Scrolls Cape	This cape was given to players who earned the Weekly First Place winner badge five times in Scrolls starting on November 7, 2014", inline=False)
+        embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/116bacd62b233157)", inline=False)
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
+        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119970401754304543/8PJaW9ZHBYiqIAAAAASUVORK5CYII.png")
+        embed.timestamp = datetime.datetime.utcnow()
+        await ctx.send(embed=embed)
+
+@slash.slash(name="Turtle", description="Turtle Cape")
+async def turtlec(ctx: SlashContext):
+        embed = discord.Embed(title="Turtle", url="https://namemc.com/cape/8c05ef3c54870d04", color=0x007bff)
+        embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.add_field(name= "Copies", value="3★", inline=False)
+        embed.add_field(name= "How To Obtain", value="This cape was given to billyK_ for his suggestion to add turtles into the game.", inline=False)
+        embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/8c05ef3c54870d04)", inline=False)
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
+        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119971331488895007/kovdUAAAAASUVORK5CYII.png")
+        embed.timestamp = datetime.datetime.utcnow()
+        await ctx.send(embed=embed)
+
+@slash.slash(name="Valentine", description="Valentine Cape")
+async def valentinec(ctx: SlashContext):
+        embed = discord.Embed(title="Valentine", url="https://namemc.com/cape/3d528060ab734868", color=0x007bff)
+        embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.add_field(name= "Copies", value="2★", inline=False)
+        embed.add_field(name= "How To Obtain", value="This cape was given to LolFoxy2 by a Mojang employee after resolving LolFoxy2's problems with migration to a Microsoft account. However, the cape was later removed after the Mojang employee realizing its rarity.", inline=False)
+        embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/3d528060ab734868)", inline=False)
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
+        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119971762210349086/coUMZQogCqIaoNbhj0lfUqkFDsCFE56nAnY9ASgAnv0dXCYwQhAfELzh01zM7ifAdABgBhOJU0OQJz1josZwP8A6XnGUmG4qNcAAAAASUVORK5CYII.png")
+        embed.timestamp = datetime.datetime.utcnow()
+        await ctx.send(embed=embed)
+
+@slash.slash(name="Birthday", description="Birthday Cape")
+async def birthdayc(ctx: SlashContext):
+        embed = discord.Embed(title="Birthday", url="https://namemc.com/cape/aab5a23c7495fc70", color=0x007bff)
+        embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.add_field(name= "Copies", value="1★", inline=False)
+        embed.add_field(name= "How To Obtain", value="This cape was given to Mojang employee Gr8Bizzo (formerly Gr8_Escape).", inline=False)
+        embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/aab5a23c7495fc70)", inline=False)
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
+        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119972599317938206/h8MNVkNFZf2agAAAABJRU5ErkJggg.png")
+        embed.timestamp = datetime.datetime.utcnow()
+        await ctx.send(embed=embed)
+
+@slash.slash(name="dB", description="dB Cape")
+async def dbc(ctx: SlashContext):
+        embed = discord.Embed(title="dB", url="https://namemc.com/cape/77421d9cf72e07e9", color=0x007bff)
+        embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.add_field(name= "Copies", value="1★", inline=False)
+        embed.add_field(name= "How To Obtain", value="This cape was given to dannyBstyle, a video game music composer, as Notch was a fan of his music.", inline=False)
+        embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/77421d9cf72e07e9)", inline=False)
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
+        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119972943825481878/M2GASDweG1tpEAaVzreJOAD8FwaLKnTsqwxcAAAAAElFTkSuQmCC.png")
+        embed.timestamp = datetime.datetime.utcnow()
+        await ctx.send(embed=embed)
+
+@slash.slash(name="Prismarine", description="Prismarine Cape")
+async def dbcz(ctx: SlashContext):
+        embed = discord.Embed(title="Prismarine", url="https://namemc.com/cape/88f1509813f4e324", color=0x007bff)
+        embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.add_field(name= "Copies", value="1★", inline=False)
+        embed.add_field(name= "How To Obtain", value="This cape was given to Drullkus by Jeb for recreating the prismarine block for use in his Chisel mod rather than modifying Mojang's texture.", inline=False)
+        embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/88f1509813f4e324)", inline=False)
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
+        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119977242953527316/Lady4K7orAAAAAElFTkSuQmCC.png")
+        embed.timestamp = datetime.datetime.utcnow()
+        await ctx.send(embed=embed)
+
+@slash.slash(name="Snowman", description="Snowman Cape")
+async def dbccc(ctx: SlashContext):
+        embed = discord.Embed(title="Snowman", url="https://namemc.com/cape/5e68fa78bd9df310", color=0x007bff)
+        embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.add_field(name= "Copies", value="1★", inline=False)
+        embed.add_field(name= "How To Obtain", value="This cape was given to JulianClark in return for bringing Notch the TV presenter and actor Ray Cokes.", inline=False)
+        embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/5e68fa78bd9df310)", inline=False)
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
+        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119977734920216666/AVz81T4j9v8HAAAAAElFTkSuQmCC.png")
+        embed.timestamp = datetime.datetime.utcnow()
+        await ctx.send(embed=embed)
+
+@slash.slash(name="Spade", description="Spade Cape")
+async def Spadec(ctx: SlashContext):
+        embed = discord.Embed(title="Spade", url="https://namemc.com/cape/7a939dc1a7ad4505", color=0x007bff)
+        embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.add_field(name= "Copies", value="1★", inline=False)
+        embed.add_field(name= "How To Obtain", value="This cape was given to MrMessiah as a thank you for creating the BetterLight mod,", inline=False)
+        embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/7a939dc1a7ad4505)", inline=False)
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
+        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119978178283327538/wwdWnDoHAZRAAAAAElFTkSuQmCC.png")
+        embed.timestamp = datetime.datetime.utcnow()
+        await ctx.send(embed=embed)
+
+#//////////////////////////////////////////////////////////////////////////
 def Init():
     with open('config.json', encoding="utf-8") as f:
         config = json.load(f)
