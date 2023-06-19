@@ -10,7 +10,7 @@ Egglington is Public to anyone to rewrite, use as their own bot As long as credi
 # [Click here for commands list](https://github.com/egg883/Egglington-Discord-bot/blob/main/commands.md)
 
 <p align="left">
-    <img width="55%" src="https://cdn.discordapp.com/attachments/1063746901679292529/1119994699034411028/image.png" />
+    <img width="55%" src="https://cdn.discordapp.com/attachments/1088501841345658941/1120366834072436756/image.png" />
 </p>
 
 # Bot invite: 
