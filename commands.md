@@ -10,7 +10,7 @@
 
 "Utility", /ping, /help, /invite, /sinfo, /whois, /info, /news, /newticket, /closeticket, /support, /uptime
 
-"Memes", /jail, /wasted, /horny, /lolice, /pixel, /clyde, /trump
+"Memes", /jail, /wasted, /horny, /lolice, /pixel, /clyde, /trump, /change, /deepfry
 
 "Roblox", /rgame, /ruser, /routfit, {prefix}rvalue, /ruserhis, /template
 
