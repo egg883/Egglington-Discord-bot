@@ -166,7 +166,7 @@ async def help(ctx: SlashContext):
         embed.add_field(name="Moderation", value=f"`/kick`, `/ban`, `/unban`, `/purge`, `/mute`, `/unmute`, `/lock`, `/unlock`, `/slowmode`", inline=False)
         embed.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`", inline=False)
         embed.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`, `/newticket`, `/closeticket`, `/support`, `/uptime`", inline=False)
-        embed.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`", inline=False)
+        embed.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`, `/change`, `/deepfry`", inline=False)
         embed.add_field(name="Roblox", value=f"`/rgame`, `/ruser`, `/routfit`, `{prefix}rvalue`, `/ruserhis`, `/template`", inline=False)
         embed.add_field(name="Minecraft", value=f"`/migrator`, `/vanilla`, `/minecon`, `/realmsmapmaker`, `/mojang`, `/mojangstudios`, `/translator`, `/cobalt`, `/scrolls`, `/turtle`, `/valentine`, `/birthday`, `/dB`, `/Prismarine`, `/snowman`, `/spade`", inline=False)
         embed.add_field(name="https://egg883.xyz", value=" ", inline=True)
@@ -184,7 +184,7 @@ async def help(ctx: SlashContext):
         embed1.add_field(name="Moderation", value=f"`/kick`, `/ban`, `/unban`, `/purge`, `/mute`, `/unmute`, `/lock`, `/unlock`, `/slowmode`", inline=False)
         embed1.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`", inline=False)
         embed1.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`, `/newticket`, `/closeticket`, `/support`, `/uptime`", inline=False)
-        embed1.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`", inline=False)
+        embed1.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`, `/change`, `/deepfry`", inline=False)
         embed1.add_field(name="Roblox", value=f"`/rgame`, `/ruser`, `/routfit`, `{prefix}rvalue`, `/ruserhis`, `/template`", inline=False)
         embed1.add_field(name="NSFW", value="`/tentacle`, `/hass`, `/hmidriff`, `/pgif`, `/4k`, `/holo`, `/hboobs`, `/pussy`, `/hthigh`, `/thigh`, `/hentai`", inline=False)
         embed1.add_field(name="Minecraft", value=f"`/migrator`, `/vanilla`, `/minecon`, `/realmsmapmaker`, `/mojang`, `/mojangstudios`, `/translator`, `/cobalt`, `/scrolls`, `/turtle`, `/valentine`, `/birthday`, `/dB`, `/Prismarine`, `/snowman`, `/spade`", inline=False)
@@ -868,6 +868,21 @@ async def _trump(ctx, msg: str):
     embed.set_image(url=stuff['message'])
     await ctx.send(embed=embed)
 
+@slash.slash(name="change",
+             description="Generates a Image based on your specification")
+async def _changemymind(ctx, msg: str):
+    response = requests.get(f"https://nekobot.xyz/api/imagegen?type=changemymind&text={msg}")
+    stuff = json.loads(response.text)
+    embed = discord.Embed(title="Meanwhile In London:",
+                          color=0x007bff)
+    embed.set_author(name="Egglington",
+                     url="https://egg883.xyz",
+                     icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_footer(text="https://egg883.xyz",
+                     icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_image(url=stuff['message'])
+    await ctx.send(embed=embed)
+
 @slash.slash(name="horny", description="Generates a horny image with the user's avatar or the mentioned user's avatar", options=[
     create_option(
         name="user",
@@ -1176,6 +1191,16 @@ async def nsfw(ctx,error):
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed, delete_after=deletein)
 
+@_changemymind.error
+async def changemymind(ctx,error):
+    embed=discord.Embed(title="COMMAND ERROR", color=0xFF0400)
+    embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.add_field(name="Required Field is too long", value=f"Try shortening your reponse", inline=True)
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1064570023437422743/1195445329999867155jean_victor_balin_cross.svg.thumb.png")
+    embed.set_footer(text="https://egg883.xyz", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.timestamp = datetime.datetime.utcnow()
+    await ctx.send(embed=embed, delete_after=deletein)
+
 @restart.error
 async def restart(ctx,error):
     embed=discord.Embed(title="RESTART COMMAND ERROR", color=0xFF0400)
@@ -1186,19 +1211,19 @@ async def restart(ctx,error):
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed, delete_after=deletein)
 
-# @bot.event
-# async def on_command_error(ctx, error:commands.CommandError):
-#     if isinstance(error, commands.CommandNotFound):
-#             cmd = ctx.message.content.split()[0]
-#             cmd = cmd.lstrip(prefix)
-#             embed=discord.Embed(title="COMMAND ERROR", color=0xFF0400)
-#             embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-#             embed.add_field(name="COMMAND NOT FOUND", value=f"The command {cmd} does not exist", inline=True)
-#             embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1064570023437422743/1195445329999867155jean_victor_balin_cross.svg.thumb.png")
-#             embed.set_footer(text="https://egg883.xyz", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-#             embed.timestamp = datetime.datetime.utcnow()
-#             print(Fore.RED+f"[ERR] The Command {cmd} Does not exist"+Fore.RESET)
-#             await ctx.send(embed=embed, delete_after=30)
+@bot.event
+async def on_command_error(ctx, error:commands.CommandError):
+    if isinstance(error, commands.CommandNotFound):
+            cmd = ctx.message.content.split()[0]
+            cmd = cmd.lstrip(prefix)
+            embed=discord.Embed(title="COMMAND ERROR", color=0xFF0400)
+            embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+            embed.add_field(name="COMMAND NOT FOUND", value=f"The command {cmd} does not exist", inline=True)
+            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1064570023437422743/1195445329999867155jean_victor_balin_cross.svg.thumb.png")
+            embed.set_footer(text="https://egg883.xyz", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+            embed.timestamp = datetime.datetime.utcnow()
+            print(Fore.RED+f"[ERR] The Command {cmd} Does not exist"+Fore.RESET)
+            await ctx.send(embed=embed, delete_after=30)
 open_tickets = {}
 
 @slash.slash(name="newticket", description="Create a new ticket.")
@@ -1625,6 +1650,35 @@ async def Spadec(ctx: SlashContext):
         embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119978178283327538/wwdWnDoHAZRAAAAAElFTkSuQmCC.png")
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
+
+@slash.slash(name="deepfry",
+             description="Deepfries The Users Profile Picture",
+             options=[
+                 create_option(
+                     name="member",
+                     description="The Member you want to deepfry",
+                     option_type=6,
+                     required=True
+                 )
+             ])
+async def deepfry(ctx: SlashContext, member: discord.Member = None):
+    if member==None:
+        member = ctx.message.author
+    else:
+        member = await bot.fetch_user(int(member.id))
+    url1 = member.avatar_url_as(format="png")
+    response = requests.get(f"https://nekobot.xyz/api/imagegen?type=deepfry&image={url1}")
+    stuff = json.loads(response.text)
+    embed = discord.Embed(title="DEEPFRY",
+                          color=0x007bff)
+    embed.set_author(name="Egglington",
+                     url="https://egg883.xyz",
+                     icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_footer(text="https://egg883.xyz",
+                     icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_image(url=stuff['message'])
+    await ctx.send(embed=embed)
+
 
 #//////////////////////////////////////////////////////////////////////////
 def Init():
