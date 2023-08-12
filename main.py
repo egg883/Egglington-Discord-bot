@@ -27,7 +27,6 @@ import random
 import urllib
 import urllib.request
 import datetime
-import pymongo
 import time
 from discord import Message
 import typing
@@ -186,7 +185,7 @@ async def help(ctx: SlashContext):
         embed1.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`, `/newticket`, `/closeticket`, `/support`, `/uptime`", inline=False)
         embed1.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`, `/change`, `/deepfry`", inline=False)
         embed1.add_field(name="Roblox", value=f"`/rgame`, `/ruser`, `/routfit`, `{prefix}rvalue`, `/ruserhis`, `/template`", inline=False)
-        embed1.add_field(name="NSFW", value="`/tentacle`, `/hass`, `/hmidriff`, `/pgif`, `/4k`, `/holo`, `/hboobs`, `/pussy`, `/hthigh`, `/thigh`, `/hentai`", inline=False)
+        embed1.add_field(name="NSFW", value="`/tentacle`, `/hass`, `/hmidriff`, `/pgif`, `/4k`, `/holo`, `/hboobs`, `/pussy`, `/hthigh`, `/thigh`, `/hentai`, `/wallpaper`", inline=False)
         embed1.add_field(name="Minecraft", value=f"`/migrator`, `/vanilla`, `/minecon`, `/realmsmapmaker`, `/mojang`, `/mojangstudios`, `/translator`, `/cobalt`, `/scrolls`, `/turtle`, `/valentine`, `/birthday`, `/dB`, `/Prismarine`, `/snowman`, `/spade`", inline=False)
         embed1.add_field(name="https://egg883.xyz", value=" ", inline=True)
         await ctx.send(embed=embed1)
@@ -238,6 +237,22 @@ async def lock(ctx: SlashContext):
     embed.add_field(name="Channel locked", value=f"{ctx.channel.mention}", inline=False)
     embed.set_footer(text="https://egg883.xyz", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     await ctx.send(embed=embed, delete_after=deletein)
+
+@slash.slash(name="wallpaper", description="Shows a random wallpaper (Chance of NSFW)")
+async def wallpaper(ctx: SlashContext):
+    nsfw_enabled = config.get('nsfw_enabled', False)
+    if not nsfw_enabled:
+        await ctx.send("NSFW commands are disabled.")
+        return
+    if not ctx.channel.is_nsfw():
+        await ctx.send("This command can only be used in NSFW channels.")
+        return
+    r = requests.get("https://nekos.life/api/v2/img/wallpaper")
+    res = r.json()
+    embed = discord.Embed(title=f"Generated A Random Wallpaper", color=0x007bff)
+    embed.set_image(url= f"{res['url']}" )
+    await ctx.send(embed=embed,delete_after=config['deletetime'])
+
 
 @slash.slash(name="unlock", description="Unlock the channel.")
 @commands.has_permissions(manage_channels=True)
@@ -1679,6 +1694,33 @@ async def deepfry(ctx: SlashContext, member: discord.Member = None):
     embed.set_image(url=stuff['message'])
     await ctx.send(embed=embed)
 
+# @slash.slash(name="steaminfo",
+#              description="Gathers Information about a user on steam",
+#              options=[
+#                  create_option(
+#                      name="user",
+#                      description="The URL of the Roblox game.",
+#                      option_type=3,
+#                      required=True
+#                  )
+#              ])
+# async def steaminfo(ctx: SlashContext, user = str):
+#         user1 = user
+#         URL3 = f"https://steamcommunity.com/id/{user1}/"
+#         requestURL = requests.get(URL3)
+#         content = requestURL.content
+#         soup = BeautifulSoup(content, "html.parser")
+#         soup.find('span', id = "commentthread_Profile_76561199245137935_totalcount").text
+
+#         embed = discord.Embed(title="steaminfo", url="https://steamcommunity.com/id/{user1}/", color=0x007bff)
+#         embed.set_author(name="Egglington", url="https://egg883.xyz", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+#         embed.add_field(name= "Copies", value="1★", inline=False)
+#         embed.add_field(name= "How To Obtain", value="This cape was given to JulianClark in return for bringing Notch the TV presenter and actor Ray Cokes.", inline=False)
+#         embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/5e68fa78bd9df310)", inline=False)
+#         embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
+#         embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119977734920216666/AVz81T4j9v8HAAAAAElFTkSuQmCC.png")
+#         embed.timestamp = datetime.datetime.utcnow()
+#         await ctx.send(f"{URL3}")
 
 #//////////////////////////////////////////////////////////////////////////
 def Init():
