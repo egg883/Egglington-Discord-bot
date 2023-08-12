@@ -13,8 +13,8 @@ Egglington is Public to anyone to rewrite, use as their own bot As long as credi
     <img width="55%" src="https://cdn.discordapp.com/attachments/1088501841345658941/1120366834072436756/image.png" />
 </p>
 
-# Bot invite: 
-https://discord.com/api/oauth2/authorize?client_id=1063758752160960573&permissions=8&scope=applications.commands%20bot
+# [Click here for bot invite](https://eggbot.site)
+
 
 # Tutorial on how to install (Windows):
 https://www.youtube.com/watch?v=oZbzgoXlAuI
@@ -30,8 +30,8 @@ https://www.youtube.com/watch?v=oZbzgoXlAuI
 8. type in terminal ```chmod +x eggbot.sh```
 9. Open eggbot.sh then fun happens :)
 
-## [Discord Server](https://discord.gg/AUevumCwXj) | [Website](https://egg883.xyz)
+## [Discord Server](https://discord.gg/AUevumCwXj) | [Website](https://eggbot.site)
 <a href="https://discord.gg/AUevumCwXj"><img src="https://discord.com/api/guilds/1048219013173493850/widget.png?style=banner2"></a>
- 
+
 <h2><strong> Discord -->  </strong></h2>
 <img width="50%" src=https://lanyard.cnrad.dev/api/281476115397345280 />
