@@ -14,7 +14,7 @@ Egglington is Public to anyone to rewrite, use as their own bot As long as credi
 </p>
 
 # [Click here for bot invite](https://eggbot.site)
-.
+
 
 # Tutorial on how to install (Windows):
 https://www.youtube.com/watch?v=oZbzgoXlAuI
