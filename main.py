@@ -141,6 +141,7 @@ async def ch_pr():
         await asyncio.sleep(10)
 
 bot.loop.create_task(ch_pr())
+start_time = time.time()
 
 @bot.command()
 async def clearconsole(ctx):
@@ -192,8 +193,6 @@ async def help(ctx: SlashContext):
         await ctx.send(embed=embed1)
         return
 
-start_time = time.time()
-
 @slash.slash(name="uptime", description="Get the uptime of the bot.")
 async def uptime(ctx: SlashContext):
     embed=discord.Embed(title="Uptime", url="https://eggbot.site", color=0x007bff)
@@ -204,7 +203,6 @@ async def uptime(ctx: SlashContext):
     embed.add_field(name="Uptime", value=f"{str(datetime.timedelta(seconds=round(time.time() - start_time)))}", inline=False)
     await ctx.send(embed=embed)
     return
-
 
 
 @slash.slash(name="slowmode", description="Set the slowmode of the channel.")
