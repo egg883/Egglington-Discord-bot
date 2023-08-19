@@ -133,7 +133,7 @@ async def ch_pr():
         f"{playingstatus} || {playingstatus2}",
         f"Listening on {len(bot.guilds)} servers.",
         f"Still need help? do /help for more help!",
-        f"Total Users: {formatted_total}"
+        f"Total Users: {formatted_total}",
     ]
     while not bot.is_closed():
         status = random.choice(statuses)
@@ -163,7 +163,7 @@ async def help(ctx: SlashContext):
         embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
         embed.timestamp = datetime.datetime.utcnow()
         embed.add_field(name="General", value="`/whois`, `/yt`, `/vote`, `/choose`, `/poll`", inline=False)
-        embed.add_field(name="Fun", value="`/coinflip`, `/rps`, `/dice`, `/pp`, `/8ball`", inline=False)
+        embed.add_field(name="Fun", value="`/coinflip`, `/rps`, `/dice`, `/pp`, `/8ball`, `/slot`", inline=False)
         embed.add_field(name="Moderation", value=f"`/kick`, `/ban`, `/unban`, `/purge`, `/mute`, `/unmute`, `/lock`, `/unlock`, `/slowmode`", inline=False)
         embed.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`", inline=False)
         embed.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`, `/newticket`, `/closeticket`, `/support`, `/uptime`", inline=False)
@@ -181,7 +181,7 @@ async def help(ctx: SlashContext):
         embed1.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
         embed1.timestamp = datetime.datetime.utcnow()
         embed1.add_field(name="General", value="`/whois`, `/yt`, `/vote`, `/choose`, `/poll`", inline=False)
-        embed1.add_field(name="Fun", value="`/coinflip`, `/rps`, `/dice`, `/pp`, `/8ball`", inline=False)
+        embed1.add_field(name="Fun", value="`/coinflip`, `/rps`, `/dice`, `/pp`, `/8ball`, `/slot`", inline=False)
         embed1.add_field(name="Moderation", value=f"`/kick`, `/ban`, `/unban`, `/purge`, `/mute`, `/unmute`, `/lock`, `/unlock`, `/slowmode`", inline=False)
         embed1.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`", inline=False)
         embed1.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`, `/newticket`, `/closeticket`, `/support`, `/uptime`", inline=False)
@@ -1329,6 +1329,23 @@ async def github(ctx: SlashContext):
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
 
+symb = ["🍒", "🍊", "🍋", "🍇", "🔔", "💎"]
+
+
+@slash.slash(
+    name="slot",
+    description="Spin a slot",
+)
+async def slot(ctx: commands.Context):
+    slot_results = [random.choice(symb) for _ in range(3)]
+    resp = f"{ctx.author.mention} spun the slot machine:\n\n"
+    resp += " ".join(slot_results)
+    if len(set(slot_results)) == 1:
+        resp += "\n\nYou Won The Jackpot! 🎉 +10 Reputation"
+    else:
+        resp += "\n\nF You failed -5 Reputation"
+    await ctx.send(resp)
+
 @slash.slash(name="8ball", description="Ask the magic 8ball a question.")
 async def eightball(ctx: SlashContext, *, question):
     responses = [
@@ -1692,6 +1709,34 @@ async def deepfry(ctx: SlashContext, member: discord.Member = None):
                      icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_image(url=stuff['message'])
     await ctx.send(embed=embed)
+
+# @slash.slash(name="steaminfo",
+#              description="Gathers Information about a user on steam",
+#              options=[
+#                  create_option(
+#                      name="user",
+#                      description="The URL of the Roblox game.",
+#                      option_type=3,
+#                      required=True
+#                  )
+#              ])
+# async def steaminfo(ctx: SlashContext, user = str):
+#         user1 = user
+#         URL3 = f"https://steamcommunity.com/id/{user1}/"
+#         requestURL = requests.get(URL3)
+#         content = requestURL.content
+#         soup = BeautifulSoup(content, "html.parser")
+#         soup.find('span', id = "commentthread_Profile_76561199245137935_totalcount").text
+
+#         embed = discord.Embed(title="steaminfo", url="https://steamcommunity.com/id/{user1}/", color=0x007bff)
+#         embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+#         embed.add_field(name= "Copies", value="1★", inline=False)
+#         embed.add_field(name= "How To Obtain", value="This cape was given to JulianClark in return for bringing Notch the TV presenter and actor Ray Cokes.", inline=False)
+#         embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/5e68fa78bd9df310)", inline=False)
+#         embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
+#         embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119977734920216666/AVz81T4j9v8HAAAAAElFTkSuQmCC.png")
+#         embed.timestamp = datetime.datetime.utcnow()
+#         await ctx.send(f"{URL3}")
 
 #//////////////////////////////////////////////////////////////////////////
 def Init():
