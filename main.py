@@ -58,7 +58,7 @@ intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix = prefix, intents=intents, help_command=None)
 cmds = {len(bot.commands)}
-version = "1.1.7"
+version = "1.1.8"
 slash = SlashCommand(bot, sync_commands=True)
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
@@ -77,6 +77,7 @@ def new_splash():
     print(f"{Colours.Magenta}Egglington's Prefix is /")
     print(f"{Colours.Magenta}Do /help for the help commands")
 
+verified_roles = {}
 
 async def log(embed):
     channel = bot.get_channel(CHANNEL_ID)
@@ -166,7 +167,7 @@ async def help(ctx: SlashContext):
         embed.add_field(name="General", value="`/whois`, `/yt`, `/vote`, `/choose`, `/poll`", inline=False)
         embed.add_field(name="Fun", value="`/coinflip`, `/rps`, `/dice`, `/pp`, `/8ball`, `/slot`", inline=False)
         embed.add_field(name="Moderation", value=f"`/kick`, `/ban`, `/unban`, `/purge`, `/mute`, `/unmute`, `/lock`, `/unlock`, `/slowmode`", inline=False)
-        embed.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`", inline=False)
+        embed.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`, `/setup`", inline=False)
         embed.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`, `/newticket`, `/closeticket`, `/support`, `/uptime`", inline=False)
         embed.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`, `/change`, `/deepfry`", inline=False)
         embed.add_field(name="Roblox", value=f"`/rgame`, `/ruser`, `/routfit`, `{prefix}rvalue`, `/ruserhis`, `/template`", inline=False)
@@ -184,7 +185,7 @@ async def help(ctx: SlashContext):
         embed1.add_field(name="General", value="`/whois`, `/yt`, `/vote`, `/choose`, `/poll`", inline=False)
         embed1.add_field(name="Fun", value="`/coinflip`, `/rps`, `/dice`, `/pp`, `/8ball`, `/slot`", inline=False)
         embed1.add_field(name="Moderation", value=f"`/kick`, `/ban`, `/unban`, `/purge`, `/mute`, `/unmute`, `/lock`, `/unlock`, `/slowmode`", inline=False)
-        embed1.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`", inline=False)
+        embed1.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`, `/setup`", inline=False)
         embed1.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`, `/newticket`, `/closeticket`, `/support`, `/uptime`", inline=False)
         embed1.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`, `/change`, `/deepfry`", inline=False)
         embed1.add_field(name="Roblox", value=f"`/rgame`, `/ruser`, `/routfit`, `{prefix}rvalue`, `/ruserhis`, `/template`", inline=False)
@@ -652,9 +653,9 @@ async def news(ctx: SlashContext):
     embed = discord.Embed(title=f"Update V{version}", description=f"This is the latest news about our bot Update", url=f"{githuburl}", colour=0x007bff)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.add_field(name="Fixed the Support command", value="```Re-added my site link and discord invite```", inline=False)
-    embed.add_field(name="Added a wallpaper command", value="```Do /wallpaper to see. [NSFW Enabled Only.]```", inline=False)
-    embed.add_field(name="Removed these due to issues", value="```Ritem Doesn't want to work, Removed forever```", inline=False)
+    embed.add_field(name="[+] Added setup command", value="```You can now protect your server using verification with egglington```", inline=False)
+    embed.add_field(name="[+] Added Slots Command", value="```Do /slot to try your luck```", inline=False)
+    embed.add_field(name="[-] Removed nothing", value="```Empty for once yay```", inline=False)
     embed.add_field(name="Our Website", value="```https://eggbot.site```", inline=False)
     await ctx.send(embed=embed)
 
@@ -707,6 +708,51 @@ async def first(ctx):
     embed.add_field(name="First Message Content", value = f"{first_message.content}", inline=False)
     embed.add_field(name="First Message link", value = f"{first_message.jump_url}", inline=False)
     await ctx.send(embed=embed)
+
+
+@slash.slash(
+    name="setup",
+    description="Set up verification",
+    options=[
+        {
+            "name": "verification_channel",
+            "description": "Select the verification channel",
+            "type": SlashCommandOptionType.CHANNEL,
+            "required": True,
+        },
+        {
+            "name": "verified_role",
+            "description": "Select the verified role",
+            "type": SlashCommandOptionType.ROLE,
+            "required": True,
+        }
+    ],
+)
+async def setup(ctx: SlashContext, verification_channel: discord.TextChannel, verified_role: discord.Role):
+    if ctx.author.guild_permissions.administrator or verification_channel.permissions_for(ctx.author).send_messages:
+        verified_roles[ctx.guild.id] = verified_role
+        embed = discord.Embed(title=f"Verification Setup for {ctx.guild.name}",description=f"Type `/verify` to verify for **{ctx.guild.name}**.", color=discord.Color.green(),)
+        embed.add_field(name="You must read rules before entering", value=f"Make sure to read the rules before typing `/verify`")
+        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        await verification_channel.send(embed=embed)
+        await ctx.send(content=f"Verification setup message sent to {verification_channel.mention}.", hidden=True)
+    else:
+        await ctx.send(content="You do not have permission to set up verification.", hidden=True)
+
+@slash.slash(name="verify", description="Verify yourself")
+async def verify(ctx: SlashContext):
+    if ctx.guild.id in verified_roles:
+        verified_role = verified_roles[ctx.guild.id]
+        if verified_role not in ctx.author.roles:
+            await ctx.author.add_roles(verified_role)
+            await ctx.send(content="You are now verified!", hidden=True)
+        else:
+            await ctx.send(content="You are already verified!", hidden=True)
+    else:
+        await ctx.send(content="Verification role is not set up for this server. Please run `/setup` first.", hidden=True)
+
 
 @slash.slash(name="spfp", description="Displays the server icon.")
 async def spfp(ctx):
@@ -1716,7 +1762,7 @@ async def deepfry(ctx: SlashContext, member: discord.Member = None):
                      icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_image(url=stuff['message'])
     await ctx.send(embed=embed)
-    
+
 #//////////////////////////////////////////////////////////////////////////
 def Init():
     with open('config.json', encoding="utf-8") as f:
