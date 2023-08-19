@@ -140,6 +140,7 @@ async def ch_pr():
         await bot.change_presence(activity=discord.Game(name=status))
         await asyncio.sleep(10)
 
+
 bot.loop.create_task(ch_pr())
 start_time = time.time()
 
@@ -678,13 +679,19 @@ async def sinfo(ctx):
 
 @slash.slash(name="info", description="Displays info about the bot.")
 async def info(ctx):
+    total = 0
+    for guild in bot.guilds:
+        total += guild.member_count
+    formatted_total = '{:,}'.format(total)
     embed = discord.Embed(title="Info", description=f"This is a information page about my bot", colour=0x007bff)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
     embed.add_field(name="Total Commands:", value = f"```{len(slash.commands)}```", inline=True)
-    embed.add_field(name="Prefix:", value=f"```{prefix}```", inline=True)
+    embed.add_field(name="Prefix:", value=f"```[{prefix}] [/]```", inline=True)
     embed.add_field(name="Version:", value=f"```{version}```", inline=True)
-    embed.add_field(name="Creator:", value="```This bot was made by jxkk (New username system for discord) this is a little project i wanted todo```", inline=False)
+    embed.add_field(name="Total Members:", value=f"```{formatted_total}```", inline=True)
+    embed.add_field(name="Total Servers:", value=f"```{len(bot.guilds)}```", inline=False)
+    embed.add_field(name="Creator:", value="```This bot was made by jcxk ```", inline=False)
     embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
@@ -1341,7 +1348,7 @@ async def slot(ctx: commands.Context):
     resp = f"{ctx.author.mention} spun the slot machine:\n\n"
     resp += " ".join(slot_results)
     if len(set(slot_results)) == 1:
-        resp += "\n\nYou Won The Jackpot! 🎉 +10 Reputation"
+        resp += "\n\nYou Won The Jackpot! 🎉 +100 Reputation"
     else:
         resp += "\n\nF You failed -5 Reputation"
     await ctx.send(resp)
@@ -1709,7 +1716,7 @@ async def deepfry(ctx: SlashContext, member: discord.Member = None):
                      icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_image(url=stuff['message'])
     await ctx.send(embed=embed)
-
+    
 #//////////////////////////////////////////////////////////////////////////
 def Init():
     with open('config.json', encoding="utf-8") as f:
