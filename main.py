@@ -1710,34 +1710,6 @@ async def deepfry(ctx: SlashContext, member: discord.Member = None):
     embed.set_image(url=stuff['message'])
     await ctx.send(embed=embed)
 
-# @slash.slash(name="steaminfo",
-#              description="Gathers Information about a user on steam",
-#              options=[
-#                  create_option(
-#                      name="user",
-#                      description="The URL of the Roblox game.",
-#                      option_type=3,
-#                      required=True
-#                  )
-#              ])
-# async def steaminfo(ctx: SlashContext, user = str):
-#         user1 = user
-#         URL3 = f"https://steamcommunity.com/id/{user1}/"
-#         requestURL = requests.get(URL3)
-#         content = requestURL.content
-#         soup = BeautifulSoup(content, "html.parser")
-#         soup.find('span', id = "commentthread_Profile_76561199245137935_totalcount").text
-
-#         embed = discord.Embed(title="steaminfo", url="https://steamcommunity.com/id/{user1}/", color=0x007bff)
-#         embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-#         embed.add_field(name= "Copies", value="1★", inline=False)
-#         embed.add_field(name= "How To Obtain", value="This cape was given to JulianClark in return for bringing Notch the TV presenter and actor Ray Cokes.", inline=False)
-#         embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/5e68fa78bd9df310)", inline=False)
-#         embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
-#         embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119977734920216666/AVz81T4j9v8HAAAAAElFTkSuQmCC.png")
-#         embed.timestamp = datetime.datetime.utcnow()
-#         await ctx.send(f"{URL3}")
-
 #//////////////////////////////////////////////////////////////////////////
 def Init():
     with open('config.json', encoding="utf-8") as f:
