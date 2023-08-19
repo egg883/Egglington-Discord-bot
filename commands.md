@@ -2,7 +2,7 @@
 
 "General", /whois, /yt, /vote, /choose, /poll
 
-"Fun", /coinflip, /rps, /dice, /pp, /8ball
+"Fun", /coinflip, /rps, /dice, /pp, /8ball, /slot
 
 "Moderation", /kick, /ban, /unban, /purge, /mute, /unmute, /lock, /unlock, /slowmode
 
