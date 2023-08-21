@@ -8,6 +8,8 @@ import discord
 from colorama import Fore
 import random
 import string
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
 import re
 from datetime import datetime, timedelta
 import sys
@@ -30,6 +32,7 @@ import datetime
 import time
 from discord import Message
 import typing
+import sqlite3
 #////////////////////////////////////////////////////////////////////////// COLOR DEFINING
 client1 = Client()
 class Colours:
@@ -58,7 +61,7 @@ intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix = prefix, intents=intents, help_command=None)
 cmds = {len(bot.commands)}
-version = "1.1.8"
+version = "1.1.9"
 slash = SlashCommand(bot, sync_commands=True)
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
@@ -70,12 +73,21 @@ allowed_guild_ids = [config['serverid']]
 total_members = sum([guild.member_count for guild in bot.guilds])
 def restart_bot(): 
   os.execv(sys.executable,sys.argv)
+
+conn = sqlite3.connect('reputation.db')
+cursor = conn.cursor()
 #////////////////////////////////////////////////////////////////////////// EVENT STUFF
 def new_splash():
     print(f'{Colours.Magenta}If you need assistance dont hesitate to join our support server! https://discord.gg/EdfyJ47xYe')
     print(f'{Colours.Magenta}Egglington is now Listening to {len(bot.guilds)} servers')
     print(f"{Colours.Magenta}Egglington's Prefix is /")
     print(f"{Colours.Magenta}Do /help for the help commands")
+
+cursor.execute('''CREATE TABLE IF NOT EXISTS user_reputation (
+                  user_id TEXT PRIMARY KEY,
+                  reputation INTEGER DEFAULT 1000
+               )''')
+conn.commit()
 
 verified_roles = {}
 
@@ -167,7 +179,7 @@ async def help(ctx: SlashContext):
         embed.add_field(name="General", value="`/whois`, `/yt`, `/vote`, `/choose`, `/poll`", inline=False)
         embed.add_field(name="Fun", value="`/coinflip`, `/rps`, `/dice`, `/pp`, `/8ball`, `/slot`", inline=False)
         embed.add_field(name="Moderation", value=f"`/kick`, `/ban`, `/unban`, `/purge`, `/mute`, `/unmute`, `/lock`, `/unlock`, `/slowmode`", inline=False)
-        embed.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`, `/setup`", inline=False)
+        embed.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`, `/setup`, `/balance`, `/resetcoins`, `/leaderboard`, `/addcoins`", inline=False)
         embed.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`, `/newticket`, `/closeticket`, `/support`, `/uptime`", inline=False)
         embed.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`, `/change`, `/deepfry`", inline=False)
         embed.add_field(name="Roblox", value=f"`/rgame`, `/ruser`, `/routfit`, `{prefix}rvalue`, `/ruserhis`, `/template`", inline=False)
@@ -185,7 +197,7 @@ async def help(ctx: SlashContext):
         embed1.add_field(name="General", value="`/whois`, `/yt`, `/vote`, `/choose`, `/poll`", inline=False)
         embed1.add_field(name="Fun", value="`/coinflip`, `/rps`, `/dice`, `/pp`, `/8ball`, `/slot`", inline=False)
         embed1.add_field(name="Moderation", value=f"`/kick`, `/ban`, `/unban`, `/purge`, `/mute`, `/unmute`, `/lock`, `/unlock`, `/slowmode`", inline=False)
-        embed1.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`, `/setup`", inline=False)
+        embed1.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`, `/setup`, `/balance`, `/resetcoins`, `/leaderboard`, `/addcoins`", inline=False)
         embed1.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`, `/newticket`, `/closeticket`, `/support`, `/uptime`", inline=False)
         embed1.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`, `/change`, `/deepfry`", inline=False)
         embed1.add_field(name="Roblox", value=f"`/rgame`, `/ruser`, `/routfit`, `{prefix}rvalue`, `/ruserhis`, `/template`", inline=False)
@@ -653,8 +665,10 @@ async def news(ctx: SlashContext):
     embed = discord.Embed(title=f"Update V{version}", description=f"This is the latest news about our bot Update", url=f"{githuburl}", colour=0x007bff)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.add_field(name="[+] Added setup command", value="```You can now protect your server using verification with egglington```", inline=False)
-    embed.add_field(name="[+] Added Slots Command", value="```Do /slot to try your luck```", inline=False)
+    embed.add_field(name="[+] Added resetcoins command", value="```Resets everyones eggcoins (Bot owner only)```", inline=False)
+    embed.add_field(name="[+] Added addcoins command", value="```adds eggcoins to user (Bot owner only)```", inline=False)
+    embed.add_field(name="[+] Added balance Command", value="```Do /balance to see your Eggcoins```", inline=False)
+    embed.add_field(name="[+] Added leaderboard Command", value="```Do /leaderboard to see whos the most with eggcoins```", inline=False)
     embed.add_field(name="[-] Removed nothing", value="```Empty for once yay```", inline=False)
     embed.add_field(name="Our Website", value="```https://eggbot.site```", inline=False)
     await ctx.send(embed=embed)
@@ -1391,13 +1405,102 @@ symb = ["🍒", "🍊", "🍋", "🍇", "🔔", "💎"]
 )
 async def slot(ctx: commands.Context):
     slot_results = [random.choice(symb) for _ in range(3)]
-    resp = f"{ctx.author.mention} spun the slot machine:\n\n"
-    resp += " ".join(slot_results)
     if len(set(slot_results)) == 1:
-        resp += "\n\nYou Won The Jackpot! 🎉 +100 Reputation"
+        reputation_change = 20300
     else:
-        resp += "\n\nF You failed -5 Reputation"
+        reputation_change = -50
+    user_id = str(ctx.author.id)
+    cursor.execute("INSERT OR IGNORE INTO user_reputation (user_id, reputation) VALUES (?, 0)", (user_id,))
+    cursor.execute("UPDATE user_reputation SET reputation = reputation + ? WHERE user_id = ?", (reputation_change, user_id,))
+    conn.commit()
+    resp = f"{ctx.author.mention} spun the slot machine:\n\n"
+    resp += " ".join(slot_results)   
+    if reputation_change > 0:
+        resp += f"\n\nYou Won The Jackpot! 🎉 +{reputation_change} EggCoins"
+    else:
+        resp += f"\n\nF You failed {reputation_change} EggCoins"
     await ctx.send(resp)
+
+@slash.slash(
+    name="leaderboard",
+    description="Show the top EggCoins users",
+)
+async def leaderboard(ctx: commands.Context):
+    cursor.execute("SELECT user_id, reputation FROM user_reputation ORDER BY reputation DESC LIMIT 10")
+    top_users = cursor.fetchall()
+    
+    if top_users:
+        resp = "**Top 10 Users with the Most EggCoins:**\n"
+        for index, (user_id, reputation) in enumerate(top_users, start=1):
+            user = ctx.guild.get_member(int(user_id))
+            if user:
+                resp += f"{index}. {user.display_name} - EggCoins: {reputation}\n"
+            else:
+                resp += f"{index}. Unknown User - EggCoins: {reputation}\n"
+    else:
+        resp = "No users found on the leaderboard."
+    
+    await ctx.send(resp)
+
+@slash.slash(
+    name="balance",
+    description="Check your EggCoins",
+)
+async def balance(ctx: commands.Context):
+    user_id = str(ctx.author.id)
+    cursor.execute("SELECT reputation FROM user_reputation WHERE user_id = ?", (user_id,))
+    result = cursor.fetchone()
+    
+    if result:
+        reputation = result[0]
+        resp = f"{ctx.author.mention}, your balance is {reputation}."
+    else:
+        resp = f"{ctx.author.mention}, you don't have any EggCoins yet."
+    
+    await ctx.send(resp)
+
+@slash.slash(
+    name="resetcoins",
+    description="Reset everyone's coins to default (1000)",
+)
+async def resetcoins(ctx: commands.Context):
+    allowed_user_id = botowner
+    if ctx.author.id != allowed_user_id:
+        await ctx.send("You are not authorized to use this command.")
+        return
+    cursor.execute("UPDATE user_reputation SET reputation = 1000")
+    conn.commit()
+    
+    await ctx.send("All user coins have been reset to 1000.")
+
+@slash.slash(
+    name="addcoins",
+    description="Add eggcoins to a user",
+    options=[
+        create_option(
+            name="user",
+            description="User to add eggcoins to",
+            option_type=SlashCommandOptionType.USER,
+            required=True
+        ),
+        create_option(
+            name="amount",
+            description="Amount of eggcoins to add",
+            option_type=SlashCommandOptionType.INTEGER,
+            required=True
+        )
+    ]
+)
+async def add_coins(ctx: commands.Context, user: discord.User, amount: int):
+    allowed_user_id = botowner
+    if ctx.author.id != allowed_user_id:
+        await ctx.send("You are not authorized to use this command.")
+        return
+    user_id = str(user.id)
+    cursor.execute("UPDATE user_reputation SET reputation = reputation + ? WHERE user_id = ?", (amount, user_id,))
+    conn.commit()
+    
+    await ctx.send(f"eggcoins added! {user.mention} now has {amount} more eggcoins.")
 
 @slash.slash(name="8ball", description="Ask the magic 8ball a question.")
 async def eightball(ctx: SlashContext, *, question):
