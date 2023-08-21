@@ -8,8 +8,6 @@ import discord
 from colorama import Fore
 import random
 import string
-from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
 import re
 from datetime import datetime, timedelta
 import sys
@@ -1499,7 +1497,6 @@ async def add_coins(ctx: commands.Context, user: discord.User, amount: int):
     user_id = str(user.id)
     cursor.execute("UPDATE user_reputation SET reputation = reputation + ? WHERE user_id = ?", (amount, user_id,))
     conn.commit()
-    
     await ctx.send(f"eggcoins added! {user.mention} now has {amount} more eggcoins.")
 
 @slash.slash(name="8ball", description="Ask the magic 8ball a question.")
@@ -1865,7 +1862,7 @@ async def deepfry(ctx: SlashContext, member: discord.Member = None):
                      icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_image(url=stuff['message'])
     await ctx.send(embed=embed)
-
+    
 #//////////////////////////////////////////////////////////////////////////
 def Init():
     with open('config.json', encoding="utf-8") as f:
