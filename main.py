@@ -114,6 +114,8 @@ async def on_member_update(before, after):
         embed = discord.Embed(title="Role Update", description=f"{after.mention} had the following roles removed: {removed_roles_str}", color=discord.Color.red())
         await log(embed)
 
+cooldowns = {}
+
 @bot.event
 async def on_member_join(member):
     channel = bot.get_channel(welc)
@@ -177,7 +179,7 @@ async def help(ctx: SlashContext):
         embed.add_field(name="General", value="`/whois`, `/yt`, `/vote`, `/choose`, `/poll`", inline=False)
         embed.add_field(name="Fun", value="`/coinflip`, `/rps`, `/dice`, `/pp`, `/8ball`, `/slot`", inline=False)
         embed.add_field(name="Moderation", value=f"`/kick`, `/ban`, `/unban`, `/purge`, `/mute`, `/unmute`, `/lock`, `/unlock`, `/slowmode`", inline=False)
-        embed.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`, `/setup`, `/balance`, `/resetcoins`, `/leaderboard`, `/addcoins`", inline=False)
+        embed.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`, `/setup`, `/balance`, `/resetcoins`, `/leaderboard`, `/addcoins`, `/beg`", inline=False)
         embed.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`, `/newticket`, `/closeticket`, `/support`, `/uptime`", inline=False)
         embed.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`, `/change`, `/deepfry`", inline=False)
         embed.add_field(name="Roblox", value=f"`/rgame`, `/ruser`, `/routfit`, `{prefix}rvalue`, `/ruserhis`, `/template`", inline=False)
@@ -195,7 +197,7 @@ async def help(ctx: SlashContext):
         embed1.add_field(name="General", value="`/whois`, `/yt`, `/vote`, `/choose`, `/poll`", inline=False)
         embed1.add_field(name="Fun", value="`/coinflip`, `/rps`, `/dice`, `/pp`, `/8ball`, `/slot`", inline=False)
         embed1.add_field(name="Moderation", value=f"`/kick`, `/ban`, `/unban`, `/purge`, `/mute`, `/unmute`, `/lock`, `/unlock`, `/slowmode`", inline=False)
-        embed1.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`, `/setup`, `/balance`, `/resetcoins`, `/leaderboard`, `/addcoins`", inline=False)
+        embed1.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`, `/setup`, `/balance`, `/resetcoins`, `/leaderboard`, `/addcoins`, `/beg`", inline=False)
         embed1.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`, `/newticket`, `/closeticket`, `/support`, `/uptime`", inline=False)
         embed1.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`, `/change`, `/deepfry`", inline=False)
         embed1.add_field(name="Roblox", value=f"`/rgame`, `/ruser`, `/routfit`, `{prefix}rvalue`, `/ruserhis`, `/template`", inline=False)
@@ -667,6 +669,7 @@ async def news(ctx: SlashContext):
     embed.add_field(name="[+] Added addcoins command", value="```adds eggcoins to user (Bot owner only)```", inline=False)
     embed.add_field(name="[+] Added balance Command", value="```Do /balance to see your Eggcoins```", inline=False)
     embed.add_field(name="[+] Added leaderboard Command", value="```Do /leaderboard to see whos the most with eggcoins```", inline=False)
+    embed.add_field(name="[+] Added beg Command", value="```Do /beg to beg people for eggcoins!```", inline=False)
     embed.add_field(name="[-] Removed nothing", value="```Empty for once yay```", inline=False)
     embed.add_field(name="Our Website", value="```https://eggbot.site```", inline=False)
     await ctx.send(embed=embed)
@@ -1396,7 +1399,6 @@ async def github(ctx: SlashContext):
 
 symb = ["🍒", "🍊", "🍋", "🍇", "🔔", "💎"]
 
-
 @slash.slash(
     name="slot",
     description="Spin a slot",
@@ -1418,6 +1420,28 @@ async def slot(ctx: commands.Context):
     else:
         resp += f"\n\nF You failed {reputation_change} EggCoins"
     await ctx.send(resp)
+
+
+@slash.slash(
+    name="beg",
+    description="beg for eggcoins",
+)
+async def beg(ctx: commands.Context):
+    if ctx.author.id in cooldowns:
+        await ctx.send(f"You are on cooldown. Try again in {cooldowns[ctx.author.id]:.2f} seconds.")
+    else:
+        failure_chance = random.random()
+        if failure_chance <= 0.45:
+            await ctx.send("You begged, but no one was generous enough to give you eggcoins this time.")
+        else:
+            reputation_change = random.randint(35, 250)
+            user_id = str(ctx.author.id)
+            cursor.execute("UPDATE user_reputation SET reputation = reputation + ? WHERE user_id = ?", (reputation_change, user_id,))
+            conn.commit()
+            await ctx.send(f"You begged and received {reputation_change} eggcoins!")
+            cooldowns[ctx.author.id] = 30.0
+            await asyncio.sleep(30)
+            del cooldowns[ctx.author.id]
 
 @slash.slash(
     name="leaderboard",
@@ -1862,7 +1886,7 @@ async def deepfry(ctx: SlashContext, member: discord.Member = None):
                      icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_image(url=stuff['message'])
     await ctx.send(embed=embed)
-    
+
 #//////////////////////////////////////////////////////////////////////////
 def Init():
     with open('config.json', encoding="utf-8") as f:
