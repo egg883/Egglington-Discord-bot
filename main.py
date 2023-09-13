@@ -7,9 +7,8 @@ import os
 import discord
 from colorama import Fore
 import random
-import string
 import re
-from datetime import datetime, timedelta
+from datetime import datetime
 import sys
 from discord_interactions import *
 from discord.ext import commands
@@ -17,7 +16,6 @@ from discord_slash import SlashCommand, SlashContext, ComponentContext, SlashCom
 from discord_slash.utils.manage_components import create_button, create_actionrow
 from discord_slash.model import ButtonStyle
 from discord_slash.utils.manage_commands import create_option, create_choice
-from discord_slash.utils.manage_commands import create_option
 from discord_slash.utils.manage_components import create_select, create_select_option
 from roblox import Client
 import asyncio
@@ -28,7 +26,6 @@ import urllib
 import urllib.request
 import datetime
 import time
-from discord import Message
 import typing
 import sqlite3
 #////////////////////////////////////////////////////////////////////////// COLOR DEFINING
@@ -59,7 +56,7 @@ intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix = prefix, intents=intents, help_command=None)
 cmds = {len(bot.commands)}
-version = "1.1.9"
+version = "1.2.0"
 slash = SlashCommand(bot, sync_commands=True)
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
@@ -135,6 +132,7 @@ async def on_connect():
 
 def Clear():
     os.system('cls')
+
 #//////////////////////////////////////////////////////////////////////////
 async def ch_pr():
     await bot.wait_until_ready()
@@ -179,7 +177,7 @@ async def help(ctx: SlashContext):
         embed.add_field(name="General", value="`/whois`, `/yt`, `/vote`, `/choose`, `/poll`", inline=False)
         embed.add_field(name="Fun", value="`/coinflip`, `/rps`, `/dice`, `/pp`, `/8ball`, `/slot`", inline=False)
         embed.add_field(name="Moderation", value=f"`/kick`, `/ban`, `/unban`, `/purge`, `/mute`, `/unmute`, `/lock`, `/unlock`, `/slowmode`", inline=False)
-        embed.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`, `/setup`, `/balance`, `/resetcoins`, `/leaderboard`, `/addcoins`, `/beg`", inline=False)
+        embed.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`, `/setup`, `/balance`, `/resetcoins`, `/leaderboard`, `/addcoins`, `/beg`, `/supportchan`", inline=False)
         embed.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`, `/newticket`, `/closeticket`, `/support`, `/uptime`", inline=False)
         embed.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`, `/change`, `/deepfry`", inline=False)
         embed.add_field(name="Roblox", value=f"`/rgame`, `/ruser`, `/routfit`, `{prefix}rvalue`, `/ruserhis`, `/template`", inline=False)
@@ -197,7 +195,7 @@ async def help(ctx: SlashContext):
         embed1.add_field(name="General", value="`/whois`, `/yt`, `/vote`, `/choose`, `/poll`", inline=False)
         embed1.add_field(name="Fun", value="`/coinflip`, `/rps`, `/dice`, `/pp`, `/8ball`, `/slot`", inline=False)
         embed1.add_field(name="Moderation", value=f"`/kick`, `/ban`, `/unban`, `/purge`, `/mute`, `/unmute`, `/lock`, `/unlock`, `/slowmode`", inline=False)
-        embed1.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`, `/setup`, `/balance`, `/resetcoins`, `/leaderboard`, `/addcoins`, `/beg`", inline=False)
+        embed1.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`, `/setup`, `/balance`, `/resetcoins`, `/leaderboard`, `/addcoins`, `/beg`, `/supportchan`", inline=False)
         embed1.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`, `/newticket`, `/closeticket`, `/support`, `/uptime`", inline=False)
         embed1.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`, `/change`, `/deepfry`", inline=False)
         embed1.add_field(name="Roblox", value=f"`/rgame`, `/ruser`, `/routfit`, `{prefix}rvalue`, `/ruserhis`, `/template`", inline=False)
@@ -665,11 +663,8 @@ async def news(ctx: SlashContext):
     embed = discord.Embed(title=f"Update V{version}", description=f"This is the latest news about our bot Update", url=f"{githuburl}", colour=0x007bff)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.add_field(name="[+] Added resetcoins command", value="```Resets everyones eggcoins (Bot owner only)```", inline=False)
-    embed.add_field(name="[+] Added addcoins command", value="```adds eggcoins to user (Bot owner only)```", inline=False)
-    embed.add_field(name="[+] Added balance Command", value="```Do /balance to see your Eggcoins```", inline=False)
-    embed.add_field(name="[+] Added leaderboard Command", value="```Do /leaderboard to see whos the most with eggcoins```", inline=False)
-    embed.add_field(name="[+] Added beg Command", value="```Do /beg to beg people for eggcoins!```", inline=False)
+    embed.add_field(name="[+] recreated ticket sys should be better for now", value="```revamped ticket sys should be working a little```", inline=False)
+    embed.add_field(name="[/] Made the winning values random", value="```you will no longer get 23k all the time```", inline=False)
     embed.add_field(name="[-] Removed nothing", value="```Empty for once yay```", inline=False)
     embed.add_field(name="Our Website", value="```https://eggbot.site```", inline=False)
     await ctx.send(embed=embed)
@@ -1306,51 +1301,91 @@ async def on_command_error(ctx, error:commands.CommandError):
             embed.timestamp = datetime.datetime.utcnow()
             print(Fore.RED+f"[ERR] The Command {cmd} Does not exist"+Fore.RESET)
             await ctx.send(embed=embed, delete_after=30)
-open_tickets = {}
+tickets = {}
 
-@slash.slash(name="newticket", description="Create a new ticket.")
-async def new_ticket(ctx: SlashContext):
-    if ctx.channel.id != config['botcmds']:
-        await ctx.send(f"This command can only be used in <#{config['botcmds']}>.", delete_after= 15)
+@bot.event
+async def on_raw_reaction_add(payload):
+    if payload.member.bot:
         return
-    if ctx.author.id in open_tickets:
-        await ctx.send("You already have a ticket open.", delete_after=15)
-        return
-    category_name = "Tickets"
-    category = discord.utils.get(ctx.guild.categories, name=category_name)
-    if not category:
-        category = await ctx.guild.create_category(category_name)
-    ticket_name = "Ticket-" + ''.join(random.choices(string.ascii_letters + string.digits, k=8))
-    ticket_channel = await ctx.guild.create_text_channel(ticket_name, category=category)
-    await ticket_channel.set_permissions(ctx.guild.default_role, read_messages=False)
-    await ticket_channel.set_permissions(ctx.author, read_messages=True, send_messages=True)
-    allowed_roles = [config['mod'], config['owner'], config['admin']]
-    for role_id in allowed_roles:
-        role = ctx.guild.get_role(role_id)
-        if role is not None:
-            await ticket_channel.set_permissions(role, read_messages=True, send_messages=True)
-    embed = discord.Embed(title="Ticket Created", description=f"Ticket created in {ticket_channel.mention}", color=discord.Color.green())
-    await ctx.send(embed=embed)
-    embed = discord.Embed(title="Welcome to Your Ticket", description=f"Thank you for contacting support, {ctx.author.mention}. We will assist you as soon as possible.", color=discord.Color.blue())
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.timestamp = datetime.datetime.utcnow()
-    await ticket_channel.send(embed=embed)
-    open_tickets[ctx.author.id] = ticket_channel
+    if payload.message_id in tickets and payload.emoji.name == '🎫':
+        ticket_data = tickets[payload.message_id]
+        user = bot.get_user(payload.user_id)
+        guild = bot.get_guild(payload.guild_id)
+        overwrites = {
+            guild.default_role: discord.PermissionOverwrite(read_messages=False),
+            user: discord.PermissionOverwrite(read_messages=True),
+        }
+        support_role = discord.utils.get(guild.roles, name="Support Team")
+        if not support_role:
+            support_role = await guild.create_role(name="Support Team")
 
-@slash.slash(name="closeticket", description="Close your ticket.")
+        overwrites[support_role] = discord.PermissionOverwrite(read_messages=True)
+
+        ticket_channel = await guild.create_text_channel(name=f'ticket-{user.display_name}', overwrites=overwrites)
+        await ticket_channel.send(f"Support Ticket for {user.mention} - React with 📥 to close this ticket.")
+        await ticket_channel.send(f"{user.mention} Please describe your issue here.")
+        channel = bot.get_channel(payload.channel_id)
+        message = await channel.fetch_message(payload.message_id)
+        await message.remove_reaction('🎫', user)
+
+@bot.event
+async def on_raw_reaction_add(payload):
+    if payload.member.bot:
+        return
+    if payload.message_id in tickets and payload.emoji.name == '🎫':
+        ticket_data = tickets[payload.message_id]
+        user = bot.get_user(payload.user_id)
+        guild = bot.get_guild(payload.guild_id)
+        overwrites = {
+            guild.default_role: discord.PermissionOverwrite(read_messages=False),
+            user: discord.PermissionOverwrite(read_messages=True),
+        }
+        support_role = discord.utils.get(guild.roles, name="Support Team")
+        if not support_role:
+            support_role = await guild.create_role(name="Support Team")
+
+        overwrites[support_role] = discord.PermissionOverwrite(read_messages=True)
+
+        ticket_channel = await guild.create_text_channel(name=f'ticket-{user.display_name}', overwrites=overwrites)
+        await ticket_channel.send(f"Support Ticket for {user.mention} ")
+        channel = bot.get_channel(payload.channel_id)
+        message = await channel.fetch_message(payload.message_id)
+        await message.remove_reaction('🎫', user)
+
+@slash.slash(
+    name="supportchan",
+    description="Open a support ticket",
+    options=[
+        {
+            "name": "support_channel",
+            "description": "Select a support channel",
+            "type": 7,
+            "required": True
+        }
+    ]
+)
+async def supportchan(ctx: SlashContext, support_channel: discord.TextChannel):
+    support_embed = discord.Embed(
+        title="Support Ticket",
+        description="Click the 🎫 emoji below to open a support ticket.",
+        color=discord.Color.blue()
+    )
+    support_message = await support_channel.send(embed=support_embed)
+    await support_message.add_reaction('🎫')
+    tickets[support_message.id] = {}
+
+@slash.slash(
+    name="closeticket",
+    description="Close the current support ticket",
+)
 async def close_ticket(ctx: SlashContext):
-    if ctx.author.id not in open_tickets:
-        await ctx.send("You don't have any tickets open.")
-        return
-    ticket_channel = open_tickets[ctx.author.id]
-    await ctx.send("I hope we could help. Closing your ticket in 3 seconds...")
-    for i in range(3, 0, -1):
-        await asyncio.sleep(1)
-        await ctx.message.edit(content=f"I hope we could help. Closing your ticket in {i} seconds...")
-    await ticket_channel.delete()
-    del open_tickets[ctx.author.id]
-
+    message_id = ctx.channel.last_message_id
+    if message_id in tickets and tickets[message_id]["user"] == ctx.author:
+        await ctx.send(f'Ticket closed by {ctx.author.mention}')
+        await tickets[message_id]["channel"].delete()
+        del tickets[message_id]
+    else:
+        await ctx.send("You don't have an open support ticket.")
 
 @slash.slash(name="ping", description="Check bot latency.")
 async def ping(ctx: SlashContext):
@@ -1406,7 +1441,7 @@ symb = ["🍒", "🍊", "🍋", "🍇", "🔔", "💎"]
 async def slot(ctx: commands.Context):
     slot_results = [random.choice(symb) for _ in range(3)]
     if len(set(slot_results)) == 1:
-        reputation_change = 20300
+        reputation_change = random.randint(5000, 15000)
     else:
         reputation_change = -50
     user_id = str(ctx.author.id)
@@ -1450,7 +1485,6 @@ async def beg(ctx: commands.Context):
 async def leaderboard(ctx: commands.Context):
     cursor.execute("SELECT user_id, reputation FROM user_reputation ORDER BY reputation DESC LIMIT 10")
     top_users = cursor.fetchall()
-    
     if top_users:
         resp = "**Top 10 Users with the Most EggCoins:**\n"
         for index, (user_id, reputation) in enumerate(top_users, start=1):
@@ -1494,6 +1528,7 @@ async def resetcoins(ctx: commands.Context):
     conn.commit()
     
     await ctx.send("All user coins have been reset to 1000.")
+
 
 @slash.slash(
     name="addcoins",
@@ -1886,7 +1921,6 @@ async def deepfry(ctx: SlashContext, member: discord.Member = None):
                      icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
     embed.set_image(url=stuff['message'])
     await ctx.send(embed=embed)
-
 #//////////////////////////////////////////////////////////////////////////
 def Init():
     with open('config.json', encoding="utf-8") as f:
