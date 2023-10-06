@@ -1,17 +1,1 @@
-# Egglington Commands:
-
-"General", /whois, /yt, /vote, /choose, /poll
-
-"Fun", /coinflip, /rps, /dice, /pp, /8ball, /slot
-
-"Moderation", /kick, /ban, /unban, /purge, /mute, /unmute, /lock, /unlock, /slowmode
-
-"Server", /role, /deleterole, /first, /spfp, /avatar, /afk
-
-"Utility", /ping, /help, /invite, /sinfo, /whois, /info, /news, /newticket, /closeticket, /support, /uptime
-
-"Memes", /jail, /wasted, /horny, /lolice, /pixel, /clyde, /trump, /change, /deepfry
-
-"Roblox", /rgame, /ruser, /routfit, {prefix}rvalue, /ruserhis, /template
-
-"Minecraft", /migrator, /vanilla, /minecon, /realmsmapmaker, /mojang, /mojangstudios, /translator, /cobalt, /scrolls, /turtle, /valentine, /birthday, /dB, /Prismarine, /snowman, /spade
+![image](https://github.com/egg883/Egglington-Discord-bot/assets/106391253/31628327-b63f-4dbf-81f0-46cb25edae2f)
