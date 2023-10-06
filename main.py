@@ -49,14 +49,13 @@ logs = config['logs']
 playingstatus = config['status']
 playingstatus2 = config['status2']
 welc = config['welcome']
-nsfwonoroff = config['nsfw_enabled']
 #////////////////////////////////////////////////////////////////////////// GENERIC SH*T 
 embed_color = 0xfcd005
 intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix = prefix, intents=intents, help_command=None)
 cmds = {len(bot.commands)}
-version = "1.2.0"
+version = "1.2.1"
 slash = SlashCommand(bot, sync_commands=True)
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
@@ -68,7 +67,6 @@ allowed_guild_ids = [config['serverid']]
 total_members = sum([guild.member_count for guild in bot.guilds])
 def restart_bot(): 
   os.execv(sys.executable,sys.argv)
-
 conn = sqlite3.connect('reputation.db')
 cursor = conn.cursor()
 #////////////////////////////////////////////////////////////////////////// EVENT STUFF
@@ -167,12 +165,10 @@ async def clearconsole(ctx):
 
 @slash.slash(name="help", description="Shows this message.")
 async def help(ctx: SlashContext):
-    nsfw_enabled = config.get('nsfw_enabled', False)
-    if not nsfw_enabled:
-        embed = discord.Embed(title="Help Panel", description="This is the Help Panel Below will be commands:", color=discord.Color.blue())
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.set_footer(text="Egglington", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+        embed = discord.Embed(title="Help Panel", description="This is the Help Panel Below will be commands:", color=discord.Color.green())
+        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
+        embed.set_footer(text="Egglington", icon_url = "https://i.imgur.com/qrogvhd.png")
+        embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
         embed.timestamp = datetime.datetime.utcnow()
         embed.add_field(name="General", value="`/whois`, `/yt`, `/vote`, `/choose`, `/poll`", inline=False)
         embed.add_field(name="Fun", value="`/coinflip`, `/rps`, `/dice`, `/pp`, `/8ball`, `/slot`", inline=False)
@@ -184,33 +180,13 @@ async def help(ctx: SlashContext):
         embed.add_field(name="Minecraft", value=f"`/migrator`, `/vanilla`, `/minecon`, `/realmsmapmaker`, `/mojang`, `/mojangstudios`, `/translator`, `/cobalt`, `/scrolls`, `/turtle`, `/valentine`, `/birthday`, `/dB`, `/Prismarine`, `/snowman`, `/spade`", inline=False)
         embed.add_field(name="https://eggbot.site", value=" ", inline=True)
         await ctx.send(embed=embed)
-        return
-    nsfw_enabled1 = config.get('nsfw_enabled', True)
-    if nsfw_enabled1:
-        embed1 = discord.Embed(title="Help Panel ", description="This is the Help Panel Below will be commands:", color=discord.Color.blue())
-        embed1.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed1.set_footer(text="Egglington", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed1.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-        embed1.timestamp = datetime.datetime.utcnow()
-        embed1.add_field(name="General", value="`/whois`, `/yt`, `/vote`, `/choose`, `/poll`", inline=False)
-        embed1.add_field(name="Fun", value="`/coinflip`, `/rps`, `/dice`, `/pp`, `/8ball`, `/slot`", inline=False)
-        embed1.add_field(name="Moderation", value=f"`/kick`, `/ban`, `/unban`, `/purge`, `/mute`, `/unmute`, `/lock`, `/unlock`, `/slowmode`", inline=False)
-        embed1.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`, `/setup`, `/balance`, `/resetcoins`, `/leaderboard`, `/addcoins`, `/beg`, `/supportchan`", inline=False)
-        embed1.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`, `/newticket`, `/closeticket`, `/support`, `/uptime`", inline=False)
-        embed1.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`, `/change`, `/deepfry`", inline=False)
-        embed1.add_field(name="Roblox", value=f"`/rgame`, `/ruser`, `/routfit`, `{prefix}rvalue`, `/ruserhis`, `/template`", inline=False)
-        embed1.add_field(name="NSFW", value="`/tentacle`, `/hass`, `/hmidriff`, `/pgif`, `/4k`, `/holo`, `/hboobs`, `/pussy`, `/hthigh`, `/thigh`, `/hentai`, `/wallpaper`", inline=False)
-        embed1.add_field(name="Minecraft", value=f"`/migrator`, `/vanilla`, `/minecon`, `/realmsmapmaker`, `/mojang`, `/mojangstudios`, `/translator`, `/cobalt`, `/scrolls`, `/turtle`, `/valentine`, `/birthday`, `/dB`, `/Prismarine`, `/snowman`, `/spade`", inline=False)
-        embed1.add_field(name="https://eggbot.site", value=" ", inline=True)
-        await ctx.send(embed=embed1)
-        return
 
 @slash.slash(name="uptime", description="Get the uptime of the bot.")
 async def uptime(ctx: SlashContext):
-    embed=discord.Embed(title="Uptime", url="https://eggbot.site", color=0x007bff)
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed=discord.Embed(title="Uptime", url="https://eggbot.site", color=discord.Color.green)
+    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
+    embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
+    embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
     embed.timestamp = datetime.datetime.utcnow()
     embed.add_field(name="Uptime", value=f"{str(datetime.timedelta(seconds=round(time.time() - start_time)))}", inline=False)
     await ctx.send(embed=embed)
@@ -228,10 +204,10 @@ async def slowmode(ctx: SlashContext, seconds: int):
         await ctx.send("You can't set the slowmode to more than 21600 seconds.")
         return
     await ctx.channel.edit(slowmode_delay=seconds)
-    embed=discord.Embed(title="Slowmode command", url="https://eggbot.site", color=0x007bff)
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed=discord.Embed(title="Slowmode command", url="https://eggbot.site", color=discord.Color.green)
+    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.add_field(name="Slowmode set to:", value=f"{seconds} seconds", inline=False)
-    embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
     await ctx.send(embed=embed, delete_after=deletein)
 
 @slash.slash(name="lock", description="Lock the channel.")
@@ -243,26 +219,11 @@ async def lock(ctx: SlashContext):
         await ctx.send("You are not allowed to use this command.")
         return
     await ctx.channel.set_permissions(ctx.guild.default_role, send_messages=False)
-    embed=discord.Embed(title="Lock command", url="https://eggbot.site", color=0x007bff)
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed=discord.Embed(title="Lock command", url="https://eggbot.site", color=discord.Color.green)
+    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.add_field(name="Channel locked", value=f"{ctx.channel.mention}", inline=False)
-    embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
     await ctx.send(embed=embed, delete_after=deletein)
-
-@slash.slash(name="wallpaper", description="Shows a random wallpaper (Chance of NSFW)")
-async def wallpaper(ctx: SlashContext):
-    nsfw_enabled = config.get('nsfw_enabled', False)
-    if not nsfw_enabled:
-        await ctx.send("NSFW commands are disabled.")
-        return
-    if not ctx.channel.is_nsfw():
-        await ctx.send("This command can only be used in NSFW channels.")
-        return
-    r = requests.get("https://nekos.life/api/v2/img/wallpaper")
-    res = r.json()
-    embed = discord.Embed(title=f"Generated A Random Wallpaper", color=0x007bff)
-    embed.set_image(url= f"{res['url']}" )
-    await ctx.send(embed=embed,delete_after=config['deletetime'])
 
 
 @slash.slash(name="unlock", description="Unlock the channel.")
@@ -274,10 +235,10 @@ async def unlock(ctx: SlashContext):
         await ctx.send("You are not allowed to use this command.")
         return
     await ctx.channel.set_permissions(ctx.guild.default_role, send_messages=True)
-    embed=discord.Embed(title="Unlock command", url="https://eggbot.site", color=0x007bff)
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed=discord.Embed(title="Unlock command", url="https://eggbot.site", color=discord.Color.green)
+    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.add_field(name="Channel unlocked", value=f"{ctx.channel.mention}", inline=False)
-    embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
     await ctx.send(embed=embed, delete_after=deletein)
 
 @slash.slash(
@@ -296,8 +257,8 @@ async def unlock(ctx: SlashContext):
 @commands.has_any_role(ownerrole, modrole, adminrole) 
 async def purge(ctx: SlashContext, limit: int):
     await ctx.channel.purge(limit=limit+1)
-    embed=discord.Embed(title="Purge command", url="https://eggbot.site", color=0x007bff)
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed=discord.Embed(title="Purge command", url="https://eggbot.site", color=discord.Color.green)
+    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.add_field(name="Purged", value=f"I have purged {limit} messages.")
     await ctx.send(embed=embed,delete_after=config['deletetime'])
 
@@ -363,7 +324,7 @@ async def on_message(message):
 async def avatar(ctx: SlashContext, member: discord.Member = None):
     if member is None:
         member = ctx.author
-    embed = discord.Embed(title=f"{member.name}'s avatar", color=0x007bff)
+    embed = discord.Embed(title=f"{member.name}'s avatar", color=discord.Color.green)
     embed.set_image(url=member.avatar_url)
     await ctx.send(embed=embed)
 
@@ -393,8 +354,8 @@ async def mute(ctx, member: discord.Member, reason: str = None):
         mutedRole = await guild.create_role(name="Muted")
         for channel in guild.channels:
             await channel.set_permissions(mutedRole, speak=False, send_messages=False, read_message_history=True, read_messages=False)
-    embed = discord.Embed(title="Muted", description=f"{member.mention} was muted ", colour=0x007bff)
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed = discord.Embed(title="Muted", description=f"{member.mention} was muted ", colour=discord.Color.green)
+    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.add_field(name="reason:", value=reason, inline=False)
     await ctx.send(embed=embed, delete_after=config['deletetime'])
     await member.add_roles(mutedRole, reason=reason)
@@ -422,8 +383,8 @@ async def unmute(ctx: SlashContext, member: discord.Member, reason: str = None):
     await ctx.defer()
     guild = ctx.guild
     mutedRole = discord.utils.get(guild.roles, name="Muted")
-    embed = discord.Embed(title="Unmuted", description=f"{member.mention} was unmuted ", colour=0x007bff)
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url=f"https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed = discord.Embed(title="Unmuted", description=f"{member.mention} was unmuted ", colour=discord.Color.green)
+    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url=f"https://i.imgur.com/qrogvhd.png")
     embed.add_field(name="reason:", value=reason, inline=False)
     await ctx.send(embed=embed,delete_after=config['deletetime'])
     await member.remove_roles(mutedRole, reason=reason)
@@ -462,9 +423,9 @@ async def get_shirt(ctx: SlashContext, id: str):
                  )
              ])
 async def whois(ctx: SlashContext, member: discord.Member):
-    embed = discord.Embed(title=f"Info about **{member.display_name}**", colour=0x007bff)
+    embed = discord.Embed(title=f"Info about **{member.display_name}**", colour=discord.Color.green)
     embed.set_thumbnail(url=f"{member.avatar_url}")
-    embed.set_author(name=f"Egglington", url="https://eggbot.site", icon_url=f"https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_author(name=f"Egglington", url="https://eggbot.site", icon_url=f"https://i.imgur.com/qrogvhd.png")
     embed.add_field(name="User ID:", value=f"```{member.id}```", inline=False)
     embed.add_field(name="Users Discriminator:", value=f"```#{member.discriminator}```", inline=True)
     embed.add_field(name="Creation Date:", value=f"```{member.created_at.strftime('%d/%m/%Y')}```", inline=True)
@@ -498,8 +459,8 @@ async def give_role(ctx: SlashContext, member: discord.Member, rname: str):
         role = await guild.create_role(name=rname)
         for channel in guild.channels:
             await channel.set_permissions(role, speak=True, send_messages=True, read_message_history=True, read_messages=True)
-        embed = discord.Embed(title="Created Role", colour=0x007bff)
-        embed.set_author(name=f"Egglington", url="https://eggbot.site", icon_url=f"https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed = discord.Embed(title="Created Role", colour=discord.Color.green)
+        embed.set_author(name=f"Egglington", url="https://eggbot.site", icon_url=f"https://i.imgur.com/qrogvhd.png")
         embed.add_field(name="Created role:", value=f"The Role: {rname} Has successfully been given to {member.display_name}", inline=False)
     await member.add_roles(role)
     await ctx.send(embed=embed, delete_after=config['deletetime'])
@@ -541,8 +502,8 @@ async def pp(ctx: SlashContext, user: discord.Member = None):
     dong = ""
     for _i in range(0, size):
         dong += "="
-    embed = discord.Embed(title=F"PP command executed!", url="https://eggbot.site", colour=0x007bff)
-    embed.set_author(name=f"Egglington", url="https://eggbot.site", icon_url=f"https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed = discord.Embed(title=F"PP command executed!", url="https://eggbot.site", colour=discord.Color.green)
+    embed.set_author(name=f"Egglington", url="https://eggbot.site", icon_url=f"https://i.imgur.com/qrogvhd.png")
     embed.add_field(name=f"{user}'s PP size is: ", value=f"8{dong}D", inline=False)
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed, delete_after=deletein)
@@ -567,10 +528,10 @@ async def unban(ctx: SlashContext, member: str):
     try:
         member_obj = await guild.fetch_member(int(member.strip("<@!>")))
         await guild.unban(member_obj)
-        embed = discord.Embed(title="Unbanned", description=f"{member_obj.mention} was unbanned", colour=0x007bff)
+        embed = discord.Embed(title="Unbanned", description=f"{member_obj.mention} was unbanned", colour=discord.Color.green)
     except discord.errors.NotFound:
         await guild.unban(discord.Object(id=int(member)))
-        embed = discord.Embed(title="Unbanned", description=f"User with ID {member} was unbanned", colour=0x007bff)
+        embed = discord.Embed(title="Unbanned", description=f"User with ID {member} was unbanned", colour=discord.Color.green)
 
     await ctx.send(embed=embed, delete_after=config['deletetime'])
 
@@ -648,9 +609,9 @@ async def kick(ctx: SlashContext, member: discord.Member, reason: str = "No reas
 @commands.has_any_role(botowner)
 async def restart(ctx: SlashContext):
     await ctx.defer()
-    embed=discord.Embed(title="Command Executed", colour=0x007bff)
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1072208453323460790/giphy.gif")
+    embed=discord.Embed(title="Command Executed", colour=discord.Color.green)
+    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
+    embed.set_thumbnail(url="https://i.imgur.com/RhaVXcL.gif")
     embed.add_field(name="**Please Wait**", value="Bot Is Restarting.", inline=False)
     await ctx.send(embed=embed, delete_after=deletein)
     print("restarting bot")
@@ -660,12 +621,12 @@ async def restart(ctx: SlashContext):
 @slash.slash(name="news", description="Displays the latest news about the bot.")
 async def news(ctx: SlashContext):
     await ctx.defer()
-    embed = discord.Embed(title=f"Update V{version}", description=f"This is the latest news about our bot Update", url=f"{githuburl}", colour=0x007bff)
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed = discord.Embed(title=f"Update V{version}", description=f"This is the latest news about our bot Update", url=f"{githuburl}", colour=discord.Color.green)
+    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
+    embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
     embed.add_field(name="[+] recreated ticket sys should be better for now", value="```revamped ticket sys should be working a little```", inline=False)
-    embed.add_field(name="[/] Made the winning values random", value="```you will no longer get 23k all the time```", inline=False)
-    embed.add_field(name="[-] Removed nothing", value="```Empty for once yay```", inline=False)
+    embed.add_field(name="[/] Replaced every single image link with a reliable image source", value="```you will no longer get 23k all the time```", inline=False)
+    embed.add_field(name="[-] Removed anything NSFW related.", value="```All was removed to talor towards more ppl !```", inline=False)
     embed.add_field(name="Our Website", value="```https://eggbot.site```", inline=False)
     await ctx.send(embed=embed)
 
@@ -678,8 +639,8 @@ async def sinfo(ctx):
     categories = len(ctx.guild.categories)
     member_count = len(ctx.guild.members)
     channels = text_channels + voice_channels
-    embed = discord.Embed(title="Server Info", description=f"This is info about **{guild.name}**", colour=0x007bff)
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed = discord.Embed(title="Server Info", description=f"This is info about **{guild.name}**", colour=discord.Color.green)
+    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.set_thumbnail(url=f"{guild.icon_url}")
     embed.add_field(name="Server ID", value=f"```{ctx.guild.id}```", inline=False)
     embed.add_field(name="Channel Count", value=f"```{channels} Channels {text_channels} Text, {voice_channels} Voice, {categories}```", inline=False)
@@ -694,16 +655,16 @@ async def info(ctx):
     for guild in bot.guilds:
         total += guild.member_count
     formatted_total = '{:,}'.format(total)
-    embed = discord.Embed(title="Info", description=f"This is a information page about my bot", colour=0x007bff)
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed = discord.Embed(title="Info", description=f"This is a information page about my bot", colour=discord.Color.green)
+    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
+    embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
     embed.add_field(name="Total Commands:", value = f"```{len(slash.commands)}```", inline=True)
     embed.add_field(name="Prefix:", value=f"```[{prefix}] [/]```", inline=True)
     embed.add_field(name="Version:", value=f"```{version}```", inline=True)
     embed.add_field(name="Total Members:", value=f"```{formatted_total}```", inline=True)
     embed.add_field(name="Total Servers:", value=f"```{len(bot.guilds)}```", inline=False)
     embed.add_field(name="Creator:", value="```This bot was made by jcxk ```", inline=False)
-    embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
 
@@ -712,9 +673,9 @@ async def first(ctx):
     await ctx.defer()
     channel = ctx.channel
     first_message = (await channel.history(limit = 1, oldest_first = True).flatten())[0]
-    embed = discord.Embed(title="First message", description=f"This is the first ever message sent in this channel", colour=0x007bff)
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed = discord.Embed(title="First message", description=f"This is the first ever message sent in this channel", colour=discord.Color.green)
+    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
+    embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
     embed.add_field(name="First Message Content", value = f"{first_message.content}", inline=False)
     embed.add_field(name="First Message link", value = f"{first_message.jump_url}", inline=False)
     await ctx.send(embed=embed)
@@ -739,17 +700,17 @@ async def first(ctx):
     ],
 )
 async def setup(ctx: SlashContext, verification_channel: discord.TextChannel, verified_role: discord.Role):
-    if ctx.author.guild_permissions.administrator or verification_channel.permissions_for(ctx.author).send_messages:
+    if ctx.author.guild_permissions.administrator:
         verified_roles[ctx.guild.id] = verified_role
         embed = discord.Embed(title=f"Verification Setup for {ctx.guild.name}",description=f"Type `/verify` to verify for **{ctx.guild.name}**.", color=discord.Color.green(),)
         embed.add_field(name="You must read rules before entering", value=f"Make sure to read the rules before typing `/verify`")
-        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
+        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
+        embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
         await verification_channel.send(embed=embed)
         await ctx.send(content=f"Verification setup message sent to {verification_channel.mention}.", hidden=True)
     else:
-        await ctx.send(content="You do not have permission to set up verification.", hidden=True)
+        await ctx.send(content="You must have administrator permissions to set up verification.", hidden=True)
 
 @slash.slash(name="verify", description="Verify yourself")
 async def verify(ctx: SlashContext):
@@ -768,11 +729,11 @@ async def verify(ctx: SlashContext):
 async def spfp(ctx):
     await ctx.defer()
     guild = ctx.guild
-    embed = discord.Embed(title=f"{guild.name}'s Server Icon", colour=0x007bff)
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed = discord.Embed(title=f"{guild.name}'s Server Icon", colour=discord.Color.green)
+    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.set_image(url=f"{guild.icon_url}")
     embed.timestamp = datetime.datetime.utcnow()
-    embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
     await ctx.send(embed=embed, delete_after=deletein)
 
 @slash.slash(name="jail", 
@@ -823,8 +784,8 @@ async def ruser(ctx, username):
         following = soup.find('div', class_="hidden")["data-followingscount"]
         friends = soup.find('div', class_="hidden")["data-friendscount"]
         placevisits = soup.find('div', class_="text-lead text-overflow slide-item-my-rank games").text
-        embed=discord.Embed(title=f"Found Info for {user.name} ", url=f"https://www.roblox.com/users/{user.id}/profile", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed=discord.Embed(title=f"Found Info for {user.name} ", url=f"https://www.roblox.com/users/{user.id}/profile", color=discord.Color.green)
+        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.set_thumbnail(url=f"{user_thumbnail.image_url}")
         embed.add_field(name=f"Display name:", value=f"```{user.display_name}```", inline=False)
         embed.add_field(name=f"User ID:", value=f"```{user.id}```", inline=True)
@@ -836,7 +797,7 @@ async def ruser(ctx, username):
         embed.add_field(name=f"Premium:", value=f"```{listofusers['premium']}```", inline=True)
         embed.add_field(name=f"Is banned:", value=f"```{user.is_banned}```", inline=True)
         embed.add_field(name=f"Description:", value=f"```{user.description}```", inline=False)
-        embed.set_footer(text=f"{username}'s Information", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
+        embed.set_footer(text=f"{username}'s Information", icon_url= "https://i.imgur.com/BcCoAWb.png")
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
@@ -860,11 +821,11 @@ async def routfit(ctx: SlashContext, username: str):
     )
     if len(user_thumbnails) > 0:
         user_thumbnail = user_thumbnails[0]
-        embed=discord.Embed(title=f"Found current outfit for {user.name} ", url=f"https://www.roblox.com/users/{user.id}/profile", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed=discord.Embed(title=f"Found current outfit for {user.name} ", url=f"https://www.roblox.com/users/{user.id}/profile", color=discord.Color.green)
+        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name=f"Username:", value=f"{user.name}", inline=False)
         embed.set_image(url = f"{user_thumbnail.image_url}")
-        embed.set_footer(text=f"{username}'s current outfit", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
+        embed.set_footer(text=f"{username}'s current outfit", icon_url= "https://i.imgur.com/BcCoAWb.png")
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
@@ -936,12 +897,12 @@ async def _trump(ctx, msg: str):
     response = requests.get(f"https://nekobot.xyz/api/imagegen?type=trumptweet&text={msg}")
     stuff = json.loads(response.text)
     embed = discord.Embed(title="Meanwhile on twitter:",
-                          color=0x007bff)
+                          color=discord.Color.green)
     embed.set_author(name="Egglington",
                      url="https://eggbot.site",
-                     icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+                     icon_url="https://i.imgur.com/qrogvhd.png")
     embed.set_footer(text="https://eggbot.site",
-                     icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+                     icon_url="https://i.imgur.com/qrogvhd.png")
     embed.set_image(url=stuff['message'])
     await ctx.send(embed=embed)
 
@@ -951,12 +912,12 @@ async def _changemymind(ctx, msg: str):
     response = requests.get(f"https://nekobot.xyz/api/imagegen?type=changemymind&text={msg}")
     stuff = json.loads(response.text)
     embed = discord.Embed(title="Meanwhile In London:",
-                          color=0x007bff)
+                          color=discord.Color.green)
     embed.set_author(name="Egglington",
                      url="https://eggbot.site",
-                     icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+                     icon_url="https://i.imgur.com/qrogvhd.png")
     embed.set_footer(text="https://eggbot.site",
-                     icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+                     icon_url="https://i.imgur.com/qrogvhd.png")
     embed.set_image(url=stuff['message'])
     await ctx.send(embed=embed)
 
@@ -994,9 +955,9 @@ async def clyde(ctx: SlashContext, msg: str):
     await ctx.defer()
     response = requests.get(f"https://nekobot.xyz/api/imagegen?type=clyde&text={msg}")
     stuff = json.loads(response.text)
-    embed=discord.Embed(title="Clyde has a message for you", color=0x007bff)
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed=discord.Embed(title="Clyde has a message for you", color=discord.Color.green)
+    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
+    embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
     embed.set_image(url = stuff['message'])
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
@@ -1020,121 +981,6 @@ async def pixel(ctx: SlashContext, member: discord.Member = None):
             image_data = io.BytesIO(await img.read())
             await session.close()
             await ctx.send(file=discord.File(image_data, 'eggui.gif'))
-
-@slash.slash(name="nsfw", description="NSFW commands", options=[
-    create_option(
-        name="category",
-        description="Category name",
-        option_type=3,
-        required=False,
-        choices=[
-            create_choice(name="tentacle", value="tentacle"),
-            create_choice(name="hass", value="hass"),
-            create_choice(name="hmidriff", value="hmidriff"),
-            create_choice(name="pgif", value="pgif"),
-            create_choice(name="4k", value="4k"),
-            create_choice(name="holo", value="holo"),
-            create_choice(name="hboobs", value="hboobs"),
-            create_choice(name="pussy", value="pussy"),
-            create_choice(name="hthigh", value="hthigh"),
-            create_choice(name="thigh", value="thigh"),
-            create_choice(name="hentai", value="hentai")
-        ]
-    )
-])
-async def nsfw(ctx: SlashContext, category: str = None):
-    nsfw_enabled = config.get('nsfw_enabled', False)
-    if not nsfw_enabled:
-        await ctx.send("NSFW commands are disabled.")
-        return
-    if not ctx.channel.is_nsfw():
-        await ctx.send("This command can only be used in NSFW channels.")
-        return
-    await ctx.defer()
-    if category is None:
-        embed=discord.Embed(title="NSFW Commands", description = "**THESE MUST BE SENT IN AN NSFW CHANNEL**", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.add_field(name="NSFW Command Usage", value = f"/nsfw (category name)", inline=False)
-        embed.add_field(name="**NSFW Categories**", value=f"tentacle\nhass\nhmidriff\npgif\n4k\nholo\nhboobs\npussy\nhthigh\nthigh\nhentai", inline=True)
-        await ctx.send(embed=embed, delete_after=deletein)
-
-    elif category.lower() == "tentacle":    
-        r = requests.get(f'https://nekobot.xyz/api/image?type=tentacle')
-        res = r.json()
-        embed=discord.Embed(title="Tentacle", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.set_image(url=res['message'])
-        await ctx.send(embed=embed, delete_after=deletein)
-
-    elif category.lower() == "hass":    
-        r = requests.get(f'https://nekobot.xyz/api/image?type=hass')
-        res = r.json()
-        embed=discord.Embed(title="Hentai Ass", color=0x007bff)
-        embed.set_author(name ="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.set_image(url=res['message'])
-        await ctx.send(embed=embed, delete_after=deletein)
-
-    elif category.lower() == "hmidriff":    
-        r = requests.get(f'https://nekobot.xyz/api/image?type=hmidriff')
-        res = r.json()
-        embed=discord.Embed(title="Hentai Midriff", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.set_image(url=res['message'])
-        await ctx.send(embed=embed, delete_after=deletein)
-    elif category.lower() == "pgif":    
-        r = requests.get(f'https://nekobot.xyz/api/image?type=pgif')
-        res = r.json()
-        embed=discord.Embed(title="Porn Gif", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.set_image(url=res['message'])
-        await ctx.send(embed=embed, delete_after=deletein)
-    elif category.lower() == "4k":    
-        r = requests.get(f'https://nekobot.xyz/api/image?type=4k')
-        res = r.json()
-        embed=discord.Embed(title="4K Porn", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.set_image(url=res['message'])
-        await ctx.send(embed=embed, delete_after=deletein)
-    elif category.lower() == "holo":    
-        r = requests.get(f'https://nekobot.xyz/api/image?type=holo')
-        res = r.json()
-        embed=discord.Embed(title="Holo", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.set_image(url=res['message'])
-        await ctx.send(embed=embed, delete_after=deletein)
-    elif category.lower() == "hentai":
-        r = requests.get(f'https://nekobot.xyz/api/image?type=hentai')
-        res = r.json()
-        embed=discord.Embed(title="Hentai", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.set_image(url=res['message'])
-        await ctx.send(embed=embed, delete_after=deletein)
-    elif category.lower() == "tits":
-        r = requests.get(f'https://nekobot.xyz/api/image?type=tits')
-        res = r.json()
-        embed=discord.Embed(title="Tits", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.set_image(url=res['message'])
-        await ctx.send(embed=embed, delete_after=deletein)
-    elif category.lower() == "waifu":
-        r = requests.get(f'https://nekobot.xyz/api/image?type=waifu')
-        res = r.json()
-        embed=discord.Embed(title="Waifu", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-        embed.set_image(url=res['message'])
-        await ctx.send(embed=embed, delete_after=deletein)
-    else:
-        await ctx.send(f"Sorry {ctx.author.mention}, I couldn't find any results for that category. Please use one of the following categories: anal, ass, boobs, hentai, hmidriff, pgif, 4k, holo, tits, waifu.")
 
 @slash.slash(name="ruserhis",
              description="Gets Roblox user's past usernames.",
@@ -1160,11 +1006,11 @@ async def ruserhis(ctx,username):
     if len(user_thumbnails) > 0:
         user_thumbnail = user_thumbnails[0]
         users = soup.find('span',  class_="tooltip-pastnames")['title']
-        embed=discord.Embed(title=f"Past usernames for {user.name} ", url=f"https://www.roblox.com/users/{user.id}/profile", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed=discord.Embed(title=f"Past usernames for {user.name} ", url=f"https://www.roblox.com/users/{user.id}/profile", color=discord.Color.green)
+        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.set_thumbnail(url=f"{user_thumbnail.image_url}")
         embed.add_field(name=f"Past usernames", value=f"```{users}```", inline=False)
-        embed.set_footer(text=f"{username}'s Past Usernames", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
+        embed.set_footer(text=f"{username}'s Past Usernames", icon_url= "https://i.imgur.com/BcCoAWb.png")
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
@@ -1205,8 +1051,8 @@ async def rvalue(ctx, username):
                     count += len(data['data'])
         except:
             pass
-    embed=discord.Embed(title=f"Rolimons Info for {user.name} ", url=f"https://www.rolimons.com/player/{userid}", color=0x007bff)
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed=discord.Embed(title=f"Rolimons Info for {user.name} ", url=f"https://www.rolimons.com/player/{userid}", color=discord.Color.green)
+    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.set_thumbnail(url=f"{user_thumbnail.image_url}")
     embed.add_field(name=f"Username:", value=f"```{listofusers1['name']}```", inline=True)
     embed.add_field(name=f"Rank:", value=f"```{listofusers1['rank']}```", inline=True)
@@ -1218,7 +1064,7 @@ async def rvalue(ctx, username):
     embed.add_field(name=f"Terminated:", value=f"```{listofusers1['terminated']}```", inline=True)
     embed.add_field(name=f"Private:", value=f"```{listofusers1['privacy_enabled']}```", inline=True)
     embed.add_field(name=f"Last Location:", value=f"```{listofusers1['last_location']}```", inline=True)
-    embed.set_footer(text=f"{username}'s rolimons", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1079482029776842812/JCiYruAM_400x400.png")
+    embed.set_footer(text=f"{username}'s rolimons", icon_url= "https://i.imgur.com/RmEitTn.png")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
 
@@ -1245,46 +1091,36 @@ async def rgame(ctx: SlashContext, url: str):
     created = soup.find('p',class_="text-lead font-caption-body").text
     updated = soup.find_all('p', class_='text-lead font-caption-body')[1].text
     size = soup.find_all('p',class_="text-lead font-caption-body wait-for-i18n-format-render")[3].text
-    embed=discord.Embed(title=f"Game info for {name} ", url=f"{url}", color=0x007bff)
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url=f"https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
+    embed=discord.Embed(title=f"Game info for {name} ", url=f"{url}", color=discord.Color.green)
+    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
+    embed.set_thumbnail(url=f"https://i.imgur.com/BcCoAWb.png")
     embed.add_field(name=f"visits:", value=f"```{visit}```", inline=True)
     embed.add_field(name=f"favorites:", value=f"```{fav}```", inline=True)
     embed.add_field(name=f"player count:", value=f"```{player}```", inline=True)
     embed.add_field(name=f"Server Size:", value=f"```{size}```", inline=True)
     embed.add_field(name=f"Created:", value=f"```{created}```", inline=True)
     embed.add_field(name=f"Last Updated:", value=f"```{updated}```", inline=True)
-    embed.set_footer(text=f"{name}'s Info", icon_url= "https://cdn.discordapp.com/attachments/1063774865729007616/1064493888921948200/gamer-logo-roblox-6_1.png")
+    embed.set_footer(text=f"{name}'s Info", icon_url= "https://i.imgur.com/BcCoAWb.png")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
-
-@nsfw.error
-async def nsfw(ctx,error):
-    embed=discord.Embed(title="NSFW COMMAND ERROR", color=0xFF0400)
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.add_field(name="THIS IS NOT AN NSFW CHANNEL", value=f"This command is NSFW and will need to be sent in NSFW channel", inline=True)
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1064570023437422743/1195445329999867155jean_victor_balin_cross.svg.thumb.png")
-    embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.timestamp = datetime.datetime.utcnow()
-    await ctx.send(embed=embed, delete_after=deletein)
 
 @_changemymind.error
 async def changemymind(ctx,error):
     embed=discord.Embed(title="COMMAND ERROR", color=0xFF0400)
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.add_field(name="Required Field is too long", value=f"Try shortening your reponse", inline=True)
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1064570023437422743/1195445329999867155jean_victor_balin_cross.svg.thumb.png")
-    embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_thumbnail(url="https://i.imgur.com/DyHqR2S.png")
+    embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed, delete_after=deletein)
 
 @restart.error
 async def restart(ctx,error):
     embed=discord.Embed(title="RESTART COMMAND ERROR", color=0xFF0400)
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.add_field(name="Owner Only Command", value=f"You must be the owner of the server to use command.", inline=True)
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1064570023437422743/1195445329999867155jean_victor_balin_cross.svg.thumb.png")
-    embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
+    embed.add_field(name="bot Owner Only Command", value=f"You must be the bot owner to use command.", inline=True)
+    embed.set_thumbnail(url="https://i.imgur.com/DyHqR2S.png")
+    embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed, delete_after=deletein)
 
@@ -1294,10 +1130,10 @@ async def on_command_error(ctx, error:commands.CommandError):
             cmd = ctx.message.content.split()[0]
             cmd = cmd.lstrip(prefix)
             embed=discord.Embed(title="COMMAND ERROR", color=0xFF0400)
-            embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+            embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
             embed.add_field(name="COMMAND NOT FOUND", value=f"The command {cmd} does not exist", inline=True)
-            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1064570023437422743/1195445329999867155jean_victor_balin_cross.svg.thumb.png")
-            embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+            embed.set_thumbnail(url="https://i.imgur.com/DyHqR2S.png")
+            embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
             embed.timestamp = datetime.datetime.utcnow()
             print(Fore.RED+f"[ERR] The Command {cmd} Does not exist"+Fore.RESET)
             await ctx.send(embed=embed, delete_after=30)
@@ -1368,7 +1204,7 @@ async def supportchan(ctx: SlashContext, support_channel: discord.TextChannel):
     support_embed = discord.Embed(
         title="Support Ticket",
         description="Click the 🎫 emoji below to open a support ticket.",
-        color=discord.Color.blue()
+        color=discord.Color.green()
     )
     support_message = await support_channel.send(embed=support_embed)
     await support_message.add_reaction('🎫')
@@ -1389,46 +1225,46 @@ async def close_ticket(ctx: SlashContext):
 
 @slash.slash(name="ping", description="Check bot latency.")
 async def ping(ctx: SlashContext):
-    embed = discord.Embed(title="Pong!", description=f"Latency: {round(bot.latency * 1000)}ms", color=discord.Color.blue())
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed = discord.Embed(title="Pong!", description=f"Latency: {round(bot.latency * 1000)}ms", color=discord.Color.green())
+    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
+    embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
+    embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
 
 @slash.slash(name="invite", description="Invite the bot to your server.")
 async def invite(ctx: SlashContext):
-    embed = discord.Embed(title="Invite Egglington", description="Click [here](https://discord.com/api/oauth2/authorize?client_id=1063758752160960573&permissions=8&scope=bot%20applications.commands) to invite the bot to your server.", color=discord.Color.blue())
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
-    embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+    embed = discord.Embed(title="Invite Egglington", description="Click [here](https://discord.com/api/oauth2/authorize?client_id=1063758752160960573&permissions=8&scope=bot%20applications.commands) to invite the bot to your server.", color=discord.Color.green())
+    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
+    embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
+    embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
 
 @slash.slash(name="support", description="Join the support server.")
 async def support(ctx: SlashContext):
-    embed = discord.Embed(title="Support Server", description="Click [here](https://discord.gg/EdfyJ47xYe) to join the support server.", color=discord.Color.blue())
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed = discord.Embed(title="Support Server", description="Click [here](https://discord.gg/EdfyJ47xYe) to join the support server.", color=discord.Color.green())
+    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
+    embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
+    embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
 
 @slash.slash(name="vote", description="Vote for the bot.")
 async def vote(ctx: SlashContext):
-    embed = discord.Embed(title="Vote for Egglington", description="Click [here](https://top.gg/bot/1063758752160960573/vote) to vote for the bot.", color=discord.Color.blue())
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed = discord.Embed(title="Vote for Egglington", description="Click [here](https://top.gg/bot/1063758752160960573/vote) to vote for the bot.", color=discord.Color.green())
+    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
+    embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
+    embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
 
 @slash.slash(name="github", description="View the bot's source code.")
 async def github(ctx: SlashContext):
-    embed = discord.Embed(title="Egglington's GitHub", description="Click [here](https://github.com/egg883/Egglington-Discord-bot) to view the bot's source code.", color=discord.Color.blue())
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed = discord.Embed(title="Egglington's GitHub", description="Click [here](https://github.com/egg883/Egglington-Discord-bot) to view the bot's source code.", color=discord.Color.green())
+    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
+    embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
+    embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
 
@@ -1583,10 +1419,10 @@ async def eightball(ctx: SlashContext, *, question):
         "Very doubtful.",
         "You Smell"
     ]
-    embed = discord.Embed(title="8ball", description=f"Question: {question}\nAnswer: {random.choice(responses)}", color=discord.Color.blue())
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed = discord.Embed(title="8ball", description=f"Question: {question}\nAnswer: {random.choice(responses)}", color=discord.Color.green())
+    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
+    embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
+    embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
 
@@ -1596,10 +1432,10 @@ async def coinflip(ctx: SlashContext):
         "Heads",
         "Tails"
     ]
-    embed = discord.Embed(title="Coinflip", description=f"{random.choice(responses)}", color=discord.Color.blue())
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed = discord.Embed(title="Coinflip", description=f"{random.choice(responses)}", color=discord.Color.green())
+    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
+    embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
+    embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
 
@@ -1610,10 +1446,10 @@ async def rps(ctx: SlashContext, *, choice):
         "Paper",
         "Scissors"
     ]
-    embed = discord.Embed(title="Rock Paper Scissors", description=f"Your choice: {choice}\nMy choice: {random.choice(responses)}", color=discord.Color.blue())
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed = discord.Embed(title="Rock Paper Scissors", description=f"Your choice: {choice}\nMy choice: {random.choice(responses)}", color=discord.Color.green())
+    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
+    embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
+    embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
 
@@ -1627,270 +1463,272 @@ async def dice(ctx: SlashContext):
         "5",
         "6"
     ]
-    embed = discord.Embed(title="Dice", description=f"{random.choice(responses)}", color=discord.Color.blue())
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed = discord.Embed(title="Dice", description=f"{random.choice(responses)}", color=discord.Color.green())
+    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
+    embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
+    embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
 
 @slash.slash(name="choose", description="Choose between multiple options.")
 async def choose(ctx: SlashContext, *, options):
-    embed = discord.Embed(title="Choose", description=f"{random.choice(options.split())}", color=discord.Color.blue())
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed = discord.Embed(title="Choose", description=f"{random.choice(options.split())}", color=discord.Color.green())
+    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
+    embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
+    embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
 
 @slash.slash(name="poll", description="Create a poll.")
 async def poll(ctx: SlashContext, *, question):
-    embed = discord.Embed(title="Poll", description=f"{question}", color=discord.Color.blue())
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_footer(text="https://eggbot.site", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
-    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774978018906112/yoshi-wave.gif")
+    embed = discord.Embed(title="Poll", description=f"{question}", color=discord.Color.green())
+    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
+    embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
+    embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
     embed.timestamp = datetime.datetime.utcnow()
     message = await ctx.send(embed=embed)
     await message.add_reaction("👍")
     await message.add_reaction("👎")
 
+
+
 @slash.slash(name="Migrator", description="Migrator Cape")
 async def mig(ctx: SlashContext):
-        embed = discord.Embed(title="Migrator", url="https://namemc.com/cape/8a6cc02cc86e43f1", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed = discord.Embed(title="Migrator", url="https://namemc.com/cape/8a6cc02cc86e43f1", color=discord.Color.green)
+        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="3682264★", inline=False)
         embed.add_field(name= "How To Obtain", value="The Migrator cape in Minecraft is given to players who have migrated their Mojang or legacy account to the new Microsoft account system before December 1, 2020.", inline=False)
         embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/8a6cc02cc86e43f1)", inline=False)
-        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
-        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119945994545680404/vPfs6AAAAAElFTkSuQmCC.png")
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://i.imgur.com/VsCPCZY.png")
+        embed.set_thumbnail(url="https://i.imgur.com/YqohpU1.png")
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
 @slash.slash(name="Vanilla", description="Vanilla Cape")
 async def van(ctx: SlashContext):
-        embed = discord.Embed(title="Vanilla", url="https://namemc.com/cape/3c1a1e7e50fce5f0", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed = discord.Embed(title="Vanilla", url="https://namemc.com/cape/3c1a1e7e50fce5f0", color=discord.Color.green)
+        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="276967★", inline=False)
         embed.add_field(name= "How To Obtain", value="The vanilla cape in Minecraft Java Edition can be obtained by owning both Java Edition and Bedrock Edition in the same Microsoft account before June 6, 2022.", inline=False)
         embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/3c1a1e7e50fce5f0)", inline=False)
-        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
-        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119960504383848488/H2GnHkAOdD3CAAAAAElFTkSuQmCC.png")
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://i.imgur.com/VsCPCZY.png")
+        embed.set_thumbnail(url="https://i.imgur.com/5rl3xVh.png")
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
 @slash.slash(name="MineCon2016", description="MineCon 2016 Cape")
 async def min016(ctx: SlashContext):
-        embed = discord.Embed(title="MineCon 2016", url="https://namemc.com/cape/1981aad373fa9754", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed = discord.Embed(title="MineCon 2016", url="https://namemc.com/cape/1981aad373fa9754", color=discord.Color.green)
+        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="7268★", inline=False)
         embed.add_field(name= "How To Obtain", value="A redemption link for the cape was emailed to people attending minecon.", inline=False)
         embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/1981aad373fa9754)", inline=False)
-        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
-        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119961465277919262/F0Zp3iEW1jQAAAAASUVORK5CYII.png")
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://i.imgur.com/VsCPCZY.png")
+        embed.set_thumbnail(url="https://i.imgur.com/RnqdVEn.png")
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
 @slash.slash(name="MineCon2015", description="MineCon 2015 Cape")
 async def min015(ctx: SlashContext):
-        embed = discord.Embed(title="MineCon 2015", url="https://namemc.com/cape/72ee2cfcefbfc081", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed = discord.Embed(title="MineCon 2015", url="https://namemc.com/cape/72ee2cfcefbfc081", color=discord.Color.green)
+        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="6732★", inline=False)
         embed.add_field(name= "How To Obtain", value="A redemption link for the cape was emailed to people attending minecon.", inline=False)
         embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/72ee2cfcefbfc081)", inline=False)
-        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
-        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119962687275814932/GCoq3qOmK0gAAAABJRU5ErkJggg.png")
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://i.imgur.com/VsCPCZY.png")
+        embed.set_thumbnail(url="https://i.imgur.com/14QVUP2.png")
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
 @slash.slash(name="MineCon2013", description="MineCon 2013 Cape")
 async def min013(ctx: SlashContext):
-        embed = discord.Embed(title="MineCon 2013", url="https://namemc.com/cape/0e4cc75a5f8a886d", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed = discord.Embed(title="MineCon 2013", url="https://namemc.com/cape/0e4cc75a5f8a886d", color=discord.Color.green)
+        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="6104★", inline=False)
         embed.add_field(name= "How To Obtain", value="A redemption link for the cape was emailed to people attending minecon.", inline=False)
         embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/0e4cc75a5f8a886d)", inline=False)
-        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
-        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119963343894089798/8BVVbPjGKR4AAAAASUVORK5CYII.png")
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://i.imgur.com/VsCPCZY.png")
+        embed.set_thumbnail(url="https://i.imgur.com/FxjT2Ll.png")
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
 @slash.slash(name="MineCon2012", description="MineCon 2012 Cape")
 async def min012(ctx: SlashContext):
-        embed = discord.Embed(title="MineCon 2012", url="https://namemc.com/cape/ebc798c3f7eca2a3", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed = discord.Embed(title="MineCon 2012", url="https://namemc.com/cape/ebc798c3f7eca2a3", color=discord.Color.green)
+        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="3987★", inline=False)
         embed.add_field(name= "How To Obtain", value="A redemption link for the cape was emailed to people attending minecon.", inline=False)
         embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/ebc798c3f7eca2a3)", inline=False)
-        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
-        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119963713034780733/Aiq0gFfOp6n0AAAAAElFTkSuQmCC.png")
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://i.imgur.com/VsCPCZY.png")
+        embed.set_thumbnail(url="https://i.imgur.com/I2QgzGt.png")
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
 @slash.slash(name="MineCon2011", description="MineCon 2011 Cape")
 async def min011(ctx: SlashContext):
-        embed = discord.Embed(title="MineCon 2011", url="https://namemc.com/cape/9349fa25c64ae935", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed = discord.Embed(title="MineCon 2011", url="https://namemc.com/cape/9349fa25c64ae935", color=discord.Color.green)
+        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="3480★", inline=False)
         embed.add_field(name= "How To Obtain", value="This cape was automatically added to all MINECON 2011 attendees' registered username.", inline=False)
         embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/9349fa25c64ae935)", inline=False)
-        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
-        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119964176522170398/AzJwbLCpxwQWAAAAAElFTkSuQmCC.png")
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://i.imgur.com/VsCPCZY.png")
+        embed.set_thumbnail(url="https://i.imgur.com/T9aXsHI.png")
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
 @slash.slash(name="RealmsMapMaker", description="Realms MapMaker Cape")
 async def REALMS(ctx: SlashContext):
-        embed = discord.Embed(title="Realms MapMaker", url="https://namemc.com/cape/11a3dcc4d826d0a1", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed = discord.Embed(title="Realms MapMaker", url="https://namemc.com/cape/11a3dcc4d826d0a1", color=discord.Color.green)
+        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="315★", inline=False)
         embed.add_field(name= "How To Obtain", value="This cape was automatically added to all MINECON 2011 attendees' registered username.", inline=False)
         embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/11a3dcc4d826d0a1)", inline=False)
-        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
-        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119964721345462322/Efimx5FeCt8AAAAASUVORK5CYII.png")
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://i.imgur.com/VsCPCZY.png")
+        embed.set_thumbnail(url="https://i.imgur.com/Mah2xqS.png")
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
 @slash.slash(name="Mojang", description="Mojang Cape")
 async def mojang(ctx: SlashContext):
-        embed = discord.Embed(title="Mojang", url="https://namemc.com/cape/cb5dd34bee340182", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed = discord.Embed(title="Mojang", url="https://namemc.com/cape/cb5dd34bee340182", color=discord.Color.green)
+        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="204★", inline=False)
         embed.add_field(name= "How To Obtain", value="This cape was given to employees of Mojang Studios. This design was used from October 7, 2015 to July 25, 2021.", inline=False)
         embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/cb5dd34bee340182)", inline=False)
-        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
-        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119966246084022312/8ESfkwAAAABJRU5ErkJggg.png")
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://i.imgur.com/VsCPCZY.png")
+        embed.set_thumbnail(url="https://i.imgur.com/P4iRwuG.png")
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
 @slash.slash(name="MojangStudios", description="Mojang Studios Cape")
 async def mojangstu(ctx: SlashContext):
-        embed = discord.Embed(title="Mojang Studios", url="https://namemc.com/cape/c00df589ebea3ad6", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed = discord.Embed(title="Mojang Studios", url="https://namemc.com/cape/c00df589ebea3ad6", color=discord.Color.green)
+        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="103★", inline=False)
         embed.add_field(name= "How To Obtain", value="This cape was given to employees of Mojang Studios. This design has been used since July 25, 2021. It was made by Johan Aronson and it resembles the Mojangs or gizmos that make up the Mojang Studios logo.", inline=False)
         embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/c00df589ebea3ad6)", inline=False)
-        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
-        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119966364271136819/SsHFDeKQIgbRVccgfhPgyjFzsGYDYsBQuDtOS2f4KoDLIW39SBi5jHIy2UJMCRVW0AXVK7ciq5iPmgWIJKyLaAbl9eD9wAS2gmMb2tW3QAAAABJRU5ErkJggg.png")
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://i.imgur.com/VsCPCZY.png")
+        embed.set_thumbnail(url="https://i.imgur.com/CpDcyYa.png")
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
 @slash.slash(name="Translator", description="Translator Cape")
 async def transla(ctx: SlashContext):
-        embed = discord.Embed(title="Translator", url="https://namemc.com/cape/129a4675704fa3b8", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed = discord.Embed(title="Translator", url="https://namemc.com/cape/129a4675704fa3b8", color=discord.Color.green)
+        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="88★", inline=False)
         embed.add_field(name= "How To Obtain", value="This cape was given to some proofreaders (experienced translators with moderation permissions for their language) on the Minecraft translation project in Crowdin.", inline=False)
         embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/129a4675704fa3b8)", inline=False)
-        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
-        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119967103676588112/6dSfs4CE1BEtSouQjWfyd4fc7706hMwAI6PSk8z3UFSERCrB0QGvHnhAwWhUIWKty1uaKnxLgXq8peN4eQQPXCk0cDrEkBcHpJKCmehX34rYmTlDwX9QMrRMpfRdAAAAAElFTkSuQmCC.png")
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://i.imgur.com/VsCPCZY.png")
+        embed.set_thumbnail(url="https://i.imgur.com/rTYFXy1.png")
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
 @slash.slash(name="Cobalt", description="Cobalt Cape")
 async def Cobaltc(ctx: SlashContext):
-        embed = discord.Embed(title="Cobalt", url="https://namemc.com/cape/696b6cc29946b968", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed = discord.Embed(title="Cobalt", url="https://namemc.com/cape/696b6cc29946b968", color=discord.Color.green)
+        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="18★", inline=False)
         embed.add_field(name= "How To Obtain", value="This cape was given to participants/winners of level-making competitions and the Cobalt League tournaments in 2016.", inline=False)
         embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/696b6cc29946b968)", inline=False)
-        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
-        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119969316494901389/4pBpOHacDmYjujfGuGCCpI9C8F1c8W1wlGQAAAABJRU5ErkJggg.png")
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://i.imgur.com/VsCPCZY.png")
+        embed.set_thumbnail(url="https://i.imgur.com/0zV2MRB.png")
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
 @slash.slash(name="Scrolls", description="Scrolls Cape")
 async def Scrollsss(ctx: SlashContext):
-        embed = discord.Embed(title="Scrolls", url="https://namemc.com/cape/116bacd62b233157", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed = discord.Embed(title="Scrolls", url="https://namemc.com/cape/116bacd62b233157", color=discord.Color.green)
+        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="9★", inline=False)
         embed.add_field(name= "How To Obtain", value="Scrolls Cape	This cape was given to players who earned the Weekly First Place winner badge five times in Scrolls starting on November 7, 2014", inline=False)
         embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/116bacd62b233157)", inline=False)
-        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
-        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119970401754304543/8PJaW9ZHBYiqIAAAAASUVORK5CYII.png")
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://i.imgur.com/VsCPCZY.png")
+        embed.set_thumbnail(url="https://i.imgur.com/REJzbZL.png")
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
 @slash.slash(name="Turtle", description="Turtle Cape")
 async def turtlec(ctx: SlashContext):
-        embed = discord.Embed(title="Turtle", url="https://namemc.com/cape/8c05ef3c54870d04", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed = discord.Embed(title="Turtle", url="https://namemc.com/cape/8c05ef3c54870d04", color=discord.Color.green)
+        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="3★", inline=False)
         embed.add_field(name= "How To Obtain", value="This cape was given to billyK_ for his suggestion to add turtles into the game.", inline=False)
         embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/8c05ef3c54870d04)", inline=False)
-        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
-        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119971331488895007/kovdUAAAAASUVORK5CYII.png")
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://i.imgur.com/VsCPCZY.png")
+        embed.set_thumbnail(url="https://i.imgur.com/SOjzoSt.png")
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
 @slash.slash(name="Valentine", description="Valentine Cape")
 async def valentinec(ctx: SlashContext):
-        embed = discord.Embed(title="Valentine", url="https://namemc.com/cape/3d528060ab734868", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed = discord.Embed(title="Valentine", url="https://namemc.com/cape/3d528060ab734868", color=discord.Color.green)
+        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="2★", inline=False)
         embed.add_field(name= "How To Obtain", value="This cape was given to LolFoxy2 by a Mojang employee after resolving LolFoxy2's problems with migration to a Microsoft account. However, the cape was later removed after the Mojang employee realizing its rarity.", inline=False)
         embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/3d528060ab734868)", inline=False)
-        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
-        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119971762210349086/coUMZQogCqIaoNbhj0lfUqkFDsCFE56nAnY9ASgAnv0dXCYwQhAfELzh01zM7ifAdABgBhOJU0OQJz1josZwP8A6XnGUmG4qNcAAAAASUVORK5CYII.png")
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://i.imgur.com/VsCPCZY.png")
+        embed.set_thumbnail(url="https://i.imgur.com/QRbfxP7.png")
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
 @slash.slash(name="Birthday", description="Birthday Cape")
 async def birthdayc(ctx: SlashContext):
-        embed = discord.Embed(title="Birthday", url="https://namemc.com/cape/aab5a23c7495fc70", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed = discord.Embed(title="Birthday", url="https://namemc.com/cape/aab5a23c7495fc70", color=discord.Color.green)
+        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="1★", inline=False)
         embed.add_field(name= "How To Obtain", value="This cape was given to Mojang employee Gr8Bizzo (formerly Gr8_Escape).", inline=False)
         embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/aab5a23c7495fc70)", inline=False)
-        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
-        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119972599317938206/h8MNVkNFZf2agAAAABJRU5ErkJggg.png")
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://i.imgur.com/VsCPCZY.png")
+        embed.set_thumbnail(url="https://i.imgur.com/5hYslyk.png")
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
 @slash.slash(name="dB", description="dB Cape")
 async def dbc(ctx: SlashContext):
-        embed = discord.Embed(title="dB", url="https://namemc.com/cape/77421d9cf72e07e9", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed = discord.Embed(title="dB", url="https://namemc.com/cape/77421d9cf72e07e9", color=discord.Color.green)
+        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="1★", inline=False)
         embed.add_field(name= "How To Obtain", value="This cape was given to dannyBstyle, a video game music composer, as Notch was a fan of his music.", inline=False)
         embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/77421d9cf72e07e9)", inline=False)
-        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
-        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119972943825481878/M2GASDweG1tpEAaVzreJOAD8FwaLKnTsqwxcAAAAAElFTkSuQmCC.png")
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://i.imgur.com/VsCPCZY.png")
+        embed.set_thumbnail(url="https://i.imgur.com/gRDQv0X.png")
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
 @slash.slash(name="Prismarine", description="Prismarine Cape")
 async def dbcz(ctx: SlashContext):
-        embed = discord.Embed(title="Prismarine", url="https://namemc.com/cape/88f1509813f4e324", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed = discord.Embed(title="Prismarine", url="https://namemc.com/cape/88f1509813f4e324", color=discord.Color.green)
+        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="1★", inline=False)
         embed.add_field(name= "How To Obtain", value="This cape was given to Drullkus by Jeb for recreating the prismarine block for use in his Chisel mod rather than modifying Mojang's texture.", inline=False)
         embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/88f1509813f4e324)", inline=False)
-        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
-        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119977242953527316/Lady4K7orAAAAAElFTkSuQmCC.png")
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://i.imgur.com/VsCPCZY.png")
+        embed.set_thumbnail(url="https://i.imgur.com/cJDnpld.png")
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
 @slash.slash(name="Snowman", description="Snowman Cape")
 async def dbccc(ctx: SlashContext):
-        embed = discord.Embed(title="Snowman", url="https://namemc.com/cape/5e68fa78bd9df310", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed = discord.Embed(title="Snowman", url="https://namemc.com/cape/5e68fa78bd9df310", color=discord.Color.green)
+        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="1★", inline=False)
         embed.add_field(name= "How To Obtain", value="This cape was given to JulianClark in return for bringing Notch the TV presenter and actor Ray Cokes.", inline=False)
         embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/5e68fa78bd9df310)", inline=False)
-        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
-        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119977734920216666/AVz81T4j9v8HAAAAAElFTkSuQmCC.png")
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://i.imgur.com/VsCPCZY.png")
+        embed.set_thumbnail(url="https://i.imgur.com/hrj9hlA.png")
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
 @slash.slash(name="Spade", description="Spade Cape")
 async def Spadec(ctx: SlashContext):
-        embed = discord.Embed(title="Spade", url="https://namemc.com/cape/7a939dc1a7ad4505", color=0x007bff)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+        embed = discord.Embed(title="Spade", url="https://namemc.com/cape/7a939dc1a7ad4505", color=discord.Color.green)
+        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="1★", inline=False)
         embed.add_field(name= "How To Obtain", value="This cape was given to MrMessiah as a thank you for creating the BetterLight mod,", inline=False)
         embed.add_field(name= "Preview", value="Click [here](https://namemc.com/cape/7a939dc1a7ad4505)", inline=False)
-        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://cdn.discordapp.com/attachments/1063774865729007616/1119957128313061446/free-minecraft-2752120-2284937.png")
-        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1063774865729007616/1119978178283327538/wwdWnDoHAZRAAAAAElFTkSuQmCC.png")
+        embed.set_footer(text="https://namemc.com/capes", icon_url = "https://i.imgur.com/VsCPCZY.png")
+        embed.set_thumbnail(url="https://i.imgur.com/bYYta09.png")
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
@@ -1913,12 +1751,12 @@ async def deepfry(ctx: SlashContext, member: discord.Member = None):
     response = requests.get(f"https://nekobot.xyz/api/imagegen?type=deepfry&image={url1}")
     stuff = json.loads(response.text)
     embed = discord.Embed(title="DEEPFRY",
-                          color=0x007bff)
+                          color=discord.Color.green)
     embed.set_author(name="Egglington",
                      url="https://eggbot.site",
-                     icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+                     icon_url="https://i.imgur.com/qrogvhd.png")
     embed.set_footer(text="https://eggbot.site",
-                     icon_url="https://cdn.discordapp.com/attachments/1063774865729007616/1063774966111285289/as.png")
+                     icon_url="https://i.imgur.com/qrogvhd.png")
     embed.set_image(url=stuff['message'])
     await ctx.send(embed=embed)
 #//////////////////////////////////////////////////////////////////////////
