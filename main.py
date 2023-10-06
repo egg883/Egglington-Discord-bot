@@ -101,7 +101,7 @@ async def on_member_update(before, after):
 
     if added_roles:
         added_roles_str = ", ".join(role.name for role in added_roles)
-        embed = discord.Embed(title="Role Update", description=f"{after.mention} was given the following roles: {added_roles_str}", color=discord.Color.green())
+        embed = discord.Embed(title="Role Update", description=f"{after.mention} was given the following roles: {added_roles_str}", color=0x19AC00)
         await log(embed)
 
     if removed_roles:
@@ -165,7 +165,7 @@ async def clearconsole(ctx):
 
 @slash.slash(name="help", description="Shows this message.")
 async def help(ctx: SlashContext):
-        embed = discord.Embed(title="Help Panel", description="This is the Help Panel Below will be commands:", color=discord.Color.green())
+        embed = discord.Embed(title="Help Panel", description="This is the Help Panel Below will be commands:", color=0x19AC00)
         embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.set_footer(text="Egglington", icon_url = "https://i.imgur.com/qrogvhd.png")
         embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
@@ -183,7 +183,7 @@ async def help(ctx: SlashContext):
 
 @slash.slash(name="uptime", description="Get the uptime of the bot.")
 async def uptime(ctx: SlashContext):
-    embed=discord.Embed(title="Uptime", url="https://eggbot.site", color=discord.Color.green)
+    embed=discord.Embed(title="Uptime", url="https://eggbot.site", color=0x19AC00)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
     embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
@@ -204,7 +204,7 @@ async def slowmode(ctx: SlashContext, seconds: int):
         await ctx.send("You can't set the slowmode to more than 21600 seconds.")
         return
     await ctx.channel.edit(slowmode_delay=seconds)
-    embed=discord.Embed(title="Slowmode command", url="https://eggbot.site", color=discord.Color.green)
+    embed=discord.Embed(title="Slowmode command", url="https://eggbot.site", color=0x19AC00)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.add_field(name="Slowmode set to:", value=f"{seconds} seconds", inline=False)
     embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
@@ -219,7 +219,7 @@ async def lock(ctx: SlashContext):
         await ctx.send("You are not allowed to use this command.")
         return
     await ctx.channel.set_permissions(ctx.guild.default_role, send_messages=False)
-    embed=discord.Embed(title="Lock command", url="https://eggbot.site", color=discord.Color.green)
+    embed=discord.Embed(title="Lock command", url="https://eggbot.site", color=0x19AC00)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.add_field(name="Channel locked", value=f"{ctx.channel.mention}", inline=False)
     embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
@@ -235,7 +235,7 @@ async def unlock(ctx: SlashContext):
         await ctx.send("You are not allowed to use this command.")
         return
     await ctx.channel.set_permissions(ctx.guild.default_role, send_messages=True)
-    embed=discord.Embed(title="Unlock command", url="https://eggbot.site", color=discord.Color.green)
+    embed=discord.Embed(title="Unlock command", url="https://eggbot.site", color=0x19AC00)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.add_field(name="Channel unlocked", value=f"{ctx.channel.mention}", inline=False)
     embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
@@ -257,7 +257,7 @@ async def unlock(ctx: SlashContext):
 @commands.has_any_role(ownerrole, modrole, adminrole) 
 async def purge(ctx: SlashContext, limit: int):
     await ctx.channel.purge(limit=limit+1)
-    embed=discord.Embed(title="Purge command", url="https://eggbot.site", color=discord.Color.green)
+    embed=discord.Embed(title="Purge command", url="https://eggbot.site", color=0x19AC00)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.add_field(name="Purged", value=f"I have purged {limit} messages.")
     await ctx.send(embed=embed,delete_after=config['deletetime'])
@@ -324,7 +324,7 @@ async def on_message(message):
 async def avatar(ctx: SlashContext, member: discord.Member = None):
     if member is None:
         member = ctx.author
-    embed = discord.Embed(title=f"{member.name}'s avatar", color=discord.Color.green)
+    embed = discord.Embed(title=f"{member.name}'s avatar", color=0x19AC00)
     embed.set_image(url=member.avatar_url)
     await ctx.send(embed=embed)
 
@@ -354,7 +354,7 @@ async def mute(ctx, member: discord.Member, reason: str = None):
         mutedRole = await guild.create_role(name="Muted")
         for channel in guild.channels:
             await channel.set_permissions(mutedRole, speak=False, send_messages=False, read_message_history=True, read_messages=False)
-    embed = discord.Embed(title="Muted", description=f"{member.mention} was muted ", colour=discord.Color.green)
+    embed = discord.Embed(title="Muted", description=f"{member.mention} was muted ", colour=0x19AC00)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.add_field(name="reason:", value=reason, inline=False)
     await ctx.send(embed=embed, delete_after=config['deletetime'])
@@ -383,7 +383,7 @@ async def unmute(ctx: SlashContext, member: discord.Member, reason: str = None):
     await ctx.defer()
     guild = ctx.guild
     mutedRole = discord.utils.get(guild.roles, name="Muted")
-    embed = discord.Embed(title="Unmuted", description=f"{member.mention} was unmuted ", colour=discord.Color.green)
+    embed = discord.Embed(title="Unmuted", description=f"{member.mention} was unmuted ", colour=0x19AC00)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url=f"https://i.imgur.com/qrogvhd.png")
     embed.add_field(name="reason:", value=reason, inline=False)
     await ctx.send(embed=embed,delete_after=config['deletetime'])
@@ -423,7 +423,7 @@ async def get_shirt(ctx: SlashContext, id: str):
                  )
              ])
 async def whois(ctx: SlashContext, member: discord.Member):
-    embed = discord.Embed(title=f"Info about **{member.display_name}**", colour=discord.Color.green)
+    embed = discord.Embed(title=f"Info about **{member.display_name}**", colour=0x19AC00)
     embed.set_thumbnail(url=f"{member.avatar_url}")
     embed.set_author(name=f"Egglington", url="https://eggbot.site", icon_url=f"https://i.imgur.com/qrogvhd.png")
     embed.add_field(name="User ID:", value=f"```{member.id}```", inline=False)
@@ -459,7 +459,7 @@ async def give_role(ctx: SlashContext, member: discord.Member, rname: str):
         role = await guild.create_role(name=rname)
         for channel in guild.channels:
             await channel.set_permissions(role, speak=True, send_messages=True, read_message_history=True, read_messages=True)
-        embed = discord.Embed(title="Created Role", colour=discord.Color.green)
+        embed = discord.Embed(title="Created Role", colour=0x19AC00)
         embed.set_author(name=f"Egglington", url="https://eggbot.site", icon_url=f"https://i.imgur.com/qrogvhd.png")
         embed.add_field(name="Created role:", value=f"The Role: {rname} Has successfully been given to {member.display_name}", inline=False)
     await member.add_roles(role)
@@ -502,7 +502,7 @@ async def pp(ctx: SlashContext, user: discord.Member = None):
     dong = ""
     for _i in range(0, size):
         dong += "="
-    embed = discord.Embed(title=F"PP command executed!", url="https://eggbot.site", colour=discord.Color.green)
+    embed = discord.Embed(title=F"PP command executed!", url="https://eggbot.site", colour=0x19AC00)
     embed.set_author(name=f"Egglington", url="https://eggbot.site", icon_url=f"https://i.imgur.com/qrogvhd.png")
     embed.add_field(name=f"{user}'s PP size is: ", value=f"8{dong}D", inline=False)
     embed.timestamp = datetime.datetime.utcnow()
@@ -528,10 +528,10 @@ async def unban(ctx: SlashContext, member: str):
     try:
         member_obj = await guild.fetch_member(int(member.strip("<@!>")))
         await guild.unban(member_obj)
-        embed = discord.Embed(title="Unbanned", description=f"{member_obj.mention} was unbanned", colour=discord.Color.green)
+        embed = discord.Embed(title="Unbanned", description=f"{member_obj.mention} was unbanned", colour=0x19AC00)
     except discord.errors.NotFound:
         await guild.unban(discord.Object(id=int(member)))
-        embed = discord.Embed(title="Unbanned", description=f"User with ID {member} was unbanned", colour=discord.Color.green)
+        embed = discord.Embed(title="Unbanned", description=f"User with ID {member} was unbanned", colour=0x19AC00)
 
     await ctx.send(embed=embed, delete_after=config['deletetime'])
 
@@ -609,7 +609,7 @@ async def kick(ctx: SlashContext, member: discord.Member, reason: str = "No reas
 @commands.has_any_role(botowner)
 async def restart(ctx: SlashContext):
     await ctx.defer()
-    embed=discord.Embed(title="Command Executed", colour=discord.Color.green)
+    embed=discord.Embed(title="Command Executed", colour=0x19AC00)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.set_thumbnail(url="https://i.imgur.com/RhaVXcL.gif")
     embed.add_field(name="**Please Wait**", value="Bot Is Restarting.", inline=False)
@@ -621,7 +621,7 @@ async def restart(ctx: SlashContext):
 @slash.slash(name="news", description="Displays the latest news about the bot.")
 async def news(ctx: SlashContext):
     await ctx.defer()
-    embed = discord.Embed(title=f"Update V{version}", description=f"This is the latest news about our bot Update", url=f"{githuburl}", colour=discord.Color.green)
+    embed = discord.Embed(title=f"Update V{version}", description=f"This is the latest news about our bot Update", url=f"{githuburl}", colour=0x19AC00)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
     embed.add_field(name="[+] recreated ticket sys should be better for now", value="```revamped ticket sys should be working a little```", inline=False)
@@ -639,7 +639,7 @@ async def sinfo(ctx):
     categories = len(ctx.guild.categories)
     member_count = len(ctx.guild.members)
     channels = text_channels + voice_channels
-    embed = discord.Embed(title="Server Info", description=f"This is info about **{guild.name}**", colour=discord.Color.green)
+    embed = discord.Embed(title="Server Info", description=f"This is info about **{guild.name}**", colour=0x19AC00)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.set_thumbnail(url=f"{guild.icon_url}")
     embed.add_field(name="Server ID", value=f"```{ctx.guild.id}```", inline=False)
@@ -655,7 +655,7 @@ async def info(ctx):
     for guild in bot.guilds:
         total += guild.member_count
     formatted_total = '{:,}'.format(total)
-    embed = discord.Embed(title="Info", description=f"This is a information page about my bot", colour=discord.Color.green)
+    embed = discord.Embed(title="Info", description=f"This is a information page about my bot", colour=0x19AC00)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
     embed.add_field(name="Total Commands:", value = f"```{len(slash.commands)}```", inline=True)
@@ -673,7 +673,7 @@ async def first(ctx):
     await ctx.defer()
     channel = ctx.channel
     first_message = (await channel.history(limit = 1, oldest_first = True).flatten())[0]
-    embed = discord.Embed(title="First message", description=f"This is the first ever message sent in this channel", colour=discord.Color.green)
+    embed = discord.Embed(title="First message", description=f"This is the first ever message sent in this channel", colour=0x19AC00)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
     embed.add_field(name="First Message Content", value = f"{first_message.content}", inline=False)
@@ -702,7 +702,7 @@ async def first(ctx):
 async def setup(ctx: SlashContext, verification_channel: discord.TextChannel, verified_role: discord.Role):
     if ctx.author.guild_permissions.administrator:
         verified_roles[ctx.guild.id] = verified_role
-        embed = discord.Embed(title=f"Verification Setup for {ctx.guild.name}",description=f"Type `/verify` to verify for **{ctx.guild.name}**.", color=discord.Color.green(),)
+        embed = discord.Embed(title=f"Verification Setup for {ctx.guild.name}",description=f"Type `/verify` to verify for **{ctx.guild.name}**.", color=0x19AC00,)
         embed.add_field(name="You must read rules before entering", value=f"Make sure to read the rules before typing `/verify`")
         embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
         embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
@@ -729,7 +729,7 @@ async def verify(ctx: SlashContext):
 async def spfp(ctx):
     await ctx.defer()
     guild = ctx.guild
-    embed = discord.Embed(title=f"{guild.name}'s Server Icon", colour=discord.Color.green)
+    embed = discord.Embed(title=f"{guild.name}'s Server Icon", colour=0x19AC00)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.set_image(url=f"{guild.icon_url}")
     embed.timestamp = datetime.datetime.utcnow()
@@ -784,7 +784,7 @@ async def ruser(ctx, username):
         following = soup.find('div', class_="hidden")["data-followingscount"]
         friends = soup.find('div', class_="hidden")["data-friendscount"]
         placevisits = soup.find('div', class_="text-lead text-overflow slide-item-my-rank games").text
-        embed=discord.Embed(title=f"Found Info for {user.name} ", url=f"https://www.roblox.com/users/{user.id}/profile", color=discord.Color.green)
+        embed=discord.Embed(title=f"Found Info for {user.name} ", url=f"https://www.roblox.com/users/{user.id}/profile", color=0x19AC00)
         embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.set_thumbnail(url=f"{user_thumbnail.image_url}")
         embed.add_field(name=f"Display name:", value=f"```{user.display_name}```", inline=False)
@@ -821,7 +821,7 @@ async def routfit(ctx: SlashContext, username: str):
     )
     if len(user_thumbnails) > 0:
         user_thumbnail = user_thumbnails[0]
-        embed=discord.Embed(title=f"Found current outfit for {user.name} ", url=f"https://www.roblox.com/users/{user.id}/profile", color=discord.Color.green)
+        embed=discord.Embed(title=f"Found current outfit for {user.name} ", url=f"https://www.roblox.com/users/{user.id}/profile", color=0x19AC00)
         embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name=f"Username:", value=f"{user.name}", inline=False)
         embed.set_image(url = f"{user_thumbnail.image_url}")
@@ -897,7 +897,7 @@ async def _trump(ctx, msg: str):
     response = requests.get(f"https://nekobot.xyz/api/imagegen?type=trumptweet&text={msg}")
     stuff = json.loads(response.text)
     embed = discord.Embed(title="Meanwhile on twitter:",
-                          color=discord.Color.green)
+                          color=0x19AC00)
     embed.set_author(name="Egglington",
                      url="https://eggbot.site",
                      icon_url="https://i.imgur.com/qrogvhd.png")
@@ -912,7 +912,7 @@ async def _changemymind(ctx, msg: str):
     response = requests.get(f"https://nekobot.xyz/api/imagegen?type=changemymind&text={msg}")
     stuff = json.loads(response.text)
     embed = discord.Embed(title="Meanwhile In London:",
-                          color=discord.Color.green)
+                          color=0x19AC00)
     embed.set_author(name="Egglington",
                      url="https://eggbot.site",
                      icon_url="https://i.imgur.com/qrogvhd.png")
@@ -955,7 +955,7 @@ async def clyde(ctx: SlashContext, msg: str):
     await ctx.defer()
     response = requests.get(f"https://nekobot.xyz/api/imagegen?type=clyde&text={msg}")
     stuff = json.loads(response.text)
-    embed=discord.Embed(title="Clyde has a message for you", color=discord.Color.green)
+    embed=discord.Embed(title="Clyde has a message for you", color=0x19AC00)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
     embed.set_image(url = stuff['message'])
@@ -1006,7 +1006,7 @@ async def ruserhis(ctx,username):
     if len(user_thumbnails) > 0:
         user_thumbnail = user_thumbnails[0]
         users = soup.find('span',  class_="tooltip-pastnames")['title']
-        embed=discord.Embed(title=f"Past usernames for {user.name} ", url=f"https://www.roblox.com/users/{user.id}/profile", color=discord.Color.green)
+        embed=discord.Embed(title=f"Past usernames for {user.name} ", url=f"https://www.roblox.com/users/{user.id}/profile", color=0x19AC00)
         embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.set_thumbnail(url=f"{user_thumbnail.image_url}")
         embed.add_field(name=f"Past usernames", value=f"```{users}```", inline=False)
@@ -1051,7 +1051,7 @@ async def rvalue(ctx, username):
                     count += len(data['data'])
         except:
             pass
-    embed=discord.Embed(title=f"Rolimons Info for {user.name} ", url=f"https://www.rolimons.com/player/{userid}", color=discord.Color.green)
+    embed=discord.Embed(title=f"Rolimons Info for {user.name} ", url=f"https://www.rolimons.com/player/{userid}", color=0x19AC00)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.set_thumbnail(url=f"{user_thumbnail.image_url}")
     embed.add_field(name=f"Username:", value=f"```{listofusers1['name']}```", inline=True)
@@ -1091,7 +1091,7 @@ async def rgame(ctx: SlashContext, url: str):
     created = soup.find('p',class_="text-lead font-caption-body").text
     updated = soup.find_all('p', class_='text-lead font-caption-body')[1].text
     size = soup.find_all('p',class_="text-lead font-caption-body wait-for-i18n-format-render")[3].text
-    embed=discord.Embed(title=f"Game info for {name} ", url=f"{url}", color=discord.Color.green)
+    embed=discord.Embed(title=f"Game info for {name} ", url=f"{url}", color=0x19AC00)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.set_thumbnail(url=f"https://i.imgur.com/BcCoAWb.png")
     embed.add_field(name=f"visits:", value=f"```{visit}```", inline=True)
@@ -1204,7 +1204,7 @@ async def supportchan(ctx: SlashContext, support_channel: discord.TextChannel):
     support_embed = discord.Embed(
         title="Support Ticket",
         description="Click the 🎫 emoji below to open a support ticket.",
-        color=discord.Color.green()
+        color=0x19AC00
     )
     support_message = await support_channel.send(embed=support_embed)
     await support_message.add_reaction('🎫')
@@ -1225,7 +1225,7 @@ async def close_ticket(ctx: SlashContext):
 
 @slash.slash(name="ping", description="Check bot latency.")
 async def ping(ctx: SlashContext):
-    embed = discord.Embed(title="Pong!", description=f"Latency: {round(bot.latency * 1000)}ms", color=discord.Color.green())
+    embed = discord.Embed(title="Pong!", description=f"Latency: {round(bot.latency * 1000)}ms", color=0x19AC00)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
     embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
@@ -1234,7 +1234,7 @@ async def ping(ctx: SlashContext):
 
 @slash.slash(name="invite", description="Invite the bot to your server.")
 async def invite(ctx: SlashContext):
-    embed = discord.Embed(title="Invite Egglington", description="Click [here](https://discord.com/api/oauth2/authorize?client_id=1063758752160960573&permissions=8&scope=bot%20applications.commands) to invite the bot to your server.", color=discord.Color.green())
+    embed = discord.Embed(title="Invite Egglington", description="Click [here](https://discord.com/api/oauth2/authorize?client_id=1063758752160960573&permissions=8&scope=bot%20applications.commands) to invite the bot to your server.", color=0x19AC00)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
     embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
@@ -1243,7 +1243,7 @@ async def invite(ctx: SlashContext):
 
 @slash.slash(name="support", description="Join the support server.")
 async def support(ctx: SlashContext):
-    embed = discord.Embed(title="Support Server", description="Click [here](https://discord.gg/EdfyJ47xYe) to join the support server.", color=discord.Color.green())
+    embed = discord.Embed(title="Support Server", description="Click [here](https://discord.gg/EdfyJ47xYe) to join the support server.", color=0x19AC00)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
     embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
@@ -1252,7 +1252,7 @@ async def support(ctx: SlashContext):
 
 @slash.slash(name="vote", description="Vote for the bot.")
 async def vote(ctx: SlashContext):
-    embed = discord.Embed(title="Vote for Egglington", description="Click [here](https://top.gg/bot/1063758752160960573/vote) to vote for the bot.", color=discord.Color.green())
+    embed = discord.Embed(title="Vote for Egglington", description="Click [here](https://top.gg/bot/1063758752160960573/vote) to vote for the bot.", color=0x19AC00)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
     embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
@@ -1261,7 +1261,7 @@ async def vote(ctx: SlashContext):
 
 @slash.slash(name="github", description="View the bot's source code.")
 async def github(ctx: SlashContext):
-    embed = discord.Embed(title="Egglington's GitHub", description="Click [here](https://github.com/egg883/Egglington-Discord-bot) to view the bot's source code.", color=discord.Color.green())
+    embed = discord.Embed(title="Egglington's GitHub", description="Click [here](https://github.com/egg883/Egglington-Discord-bot) to view the bot's source code.", color=0x19AC00)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
     embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
@@ -1419,7 +1419,7 @@ async def eightball(ctx: SlashContext, *, question):
         "Very doubtful.",
         "You Smell"
     ]
-    embed = discord.Embed(title="8ball", description=f"Question: {question}\nAnswer: {random.choice(responses)}", color=discord.Color.green())
+    embed = discord.Embed(title="8ball", description=f"Question: {question}\nAnswer: {random.choice(responses)}", color=0x19AC00)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
     embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
@@ -1432,7 +1432,7 @@ async def coinflip(ctx: SlashContext):
         "Heads",
         "Tails"
     ]
-    embed = discord.Embed(title="Coinflip", description=f"{random.choice(responses)}", color=discord.Color.green())
+    embed = discord.Embed(title="Coinflip", description=f"{random.choice(responses)}", color=0x19AC00)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
     embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
@@ -1446,7 +1446,7 @@ async def rps(ctx: SlashContext, *, choice):
         "Paper",
         "Scissors"
     ]
-    embed = discord.Embed(title="Rock Paper Scissors", description=f"Your choice: {choice}\nMy choice: {random.choice(responses)}", color=discord.Color.green())
+    embed = discord.Embed(title="Rock Paper Scissors", description=f"Your choice: {choice}\nMy choice: {random.choice(responses)}", color=0x19AC00)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
     embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
@@ -1463,7 +1463,7 @@ async def dice(ctx: SlashContext):
         "5",
         "6"
     ]
-    embed = discord.Embed(title="Dice", description=f"{random.choice(responses)}", color=discord.Color.green())
+    embed = discord.Embed(title="Dice", description=f"{random.choice(responses)}", color=0x19AC00)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
     embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
@@ -1472,7 +1472,7 @@ async def dice(ctx: SlashContext):
 
 @slash.slash(name="choose", description="Choose between multiple options.")
 async def choose(ctx: SlashContext, *, options):
-    embed = discord.Embed(title="Choose", description=f"{random.choice(options.split())}", color=discord.Color.green())
+    embed = discord.Embed(title="Choose", description=f"{random.choice(options.split())}", color=0x19AC00)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
     embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
@@ -1481,7 +1481,7 @@ async def choose(ctx: SlashContext, *, options):
 
 @slash.slash(name="poll", description="Create a poll.")
 async def poll(ctx: SlashContext, *, question):
-    embed = discord.Embed(title="Poll", description=f"{question}", color=discord.Color.green())
+    embed = discord.Embed(title="Poll", description=f"{question}", color=0x19AC00)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
     embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
@@ -1494,7 +1494,7 @@ async def poll(ctx: SlashContext, *, question):
 
 @slash.slash(name="Migrator", description="Migrator Cape")
 async def mig(ctx: SlashContext):
-        embed = discord.Embed(title="Migrator", url="https://namemc.com/cape/8a6cc02cc86e43f1", color=discord.Color.green)
+        embed = discord.Embed(title="Migrator", url="https://namemc.com/cape/8a6cc02cc86e43f1", color=0x19AC00)
         embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="3682264★", inline=False)
         embed.add_field(name= "How To Obtain", value="The Migrator cape in Minecraft is given to players who have migrated their Mojang or legacy account to the new Microsoft account system before December 1, 2020.", inline=False)
@@ -1506,7 +1506,7 @@ async def mig(ctx: SlashContext):
 
 @slash.slash(name="Vanilla", description="Vanilla Cape")
 async def van(ctx: SlashContext):
-        embed = discord.Embed(title="Vanilla", url="https://namemc.com/cape/3c1a1e7e50fce5f0", color=discord.Color.green)
+        embed = discord.Embed(title="Vanilla", url="https://namemc.com/cape/3c1a1e7e50fce5f0", color=0x19AC00)
         embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="276967★", inline=False)
         embed.add_field(name= "How To Obtain", value="The vanilla cape in Minecraft Java Edition can be obtained by owning both Java Edition and Bedrock Edition in the same Microsoft account before June 6, 2022.", inline=False)
@@ -1518,7 +1518,7 @@ async def van(ctx: SlashContext):
 
 @slash.slash(name="MineCon2016", description="MineCon 2016 Cape")
 async def min016(ctx: SlashContext):
-        embed = discord.Embed(title="MineCon 2016", url="https://namemc.com/cape/1981aad373fa9754", color=discord.Color.green)
+        embed = discord.Embed(title="MineCon 2016", url="https://namemc.com/cape/1981aad373fa9754", color=0x19AC00)
         embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="7268★", inline=False)
         embed.add_field(name= "How To Obtain", value="A redemption link for the cape was emailed to people attending minecon.", inline=False)
@@ -1530,7 +1530,7 @@ async def min016(ctx: SlashContext):
 
 @slash.slash(name="MineCon2015", description="MineCon 2015 Cape")
 async def min015(ctx: SlashContext):
-        embed = discord.Embed(title="MineCon 2015", url="https://namemc.com/cape/72ee2cfcefbfc081", color=discord.Color.green)
+        embed = discord.Embed(title="MineCon 2015", url="https://namemc.com/cape/72ee2cfcefbfc081", color=0x19AC00)
         embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="6732★", inline=False)
         embed.add_field(name= "How To Obtain", value="A redemption link for the cape was emailed to people attending minecon.", inline=False)
@@ -1542,7 +1542,7 @@ async def min015(ctx: SlashContext):
 
 @slash.slash(name="MineCon2013", description="MineCon 2013 Cape")
 async def min013(ctx: SlashContext):
-        embed = discord.Embed(title="MineCon 2013", url="https://namemc.com/cape/0e4cc75a5f8a886d", color=discord.Color.green)
+        embed = discord.Embed(title="MineCon 2013", url="https://namemc.com/cape/0e4cc75a5f8a886d", color=0x19AC00)
         embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="6104★", inline=False)
         embed.add_field(name= "How To Obtain", value="A redemption link for the cape was emailed to people attending minecon.", inline=False)
@@ -1554,7 +1554,7 @@ async def min013(ctx: SlashContext):
 
 @slash.slash(name="MineCon2012", description="MineCon 2012 Cape")
 async def min012(ctx: SlashContext):
-        embed = discord.Embed(title="MineCon 2012", url="https://namemc.com/cape/ebc798c3f7eca2a3", color=discord.Color.green)
+        embed = discord.Embed(title="MineCon 2012", url="https://namemc.com/cape/ebc798c3f7eca2a3", color=0x19AC00)
         embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="3987★", inline=False)
         embed.add_field(name= "How To Obtain", value="A redemption link for the cape was emailed to people attending minecon.", inline=False)
@@ -1566,7 +1566,7 @@ async def min012(ctx: SlashContext):
 
 @slash.slash(name="MineCon2011", description="MineCon 2011 Cape")
 async def min011(ctx: SlashContext):
-        embed = discord.Embed(title="MineCon 2011", url="https://namemc.com/cape/9349fa25c64ae935", color=discord.Color.green)
+        embed = discord.Embed(title="MineCon 2011", url="https://namemc.com/cape/9349fa25c64ae935", color=0x19AC00)
         embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="3480★", inline=False)
         embed.add_field(name= "How To Obtain", value="This cape was automatically added to all MINECON 2011 attendees' registered username.", inline=False)
@@ -1578,7 +1578,7 @@ async def min011(ctx: SlashContext):
 
 @slash.slash(name="RealmsMapMaker", description="Realms MapMaker Cape")
 async def REALMS(ctx: SlashContext):
-        embed = discord.Embed(title="Realms MapMaker", url="https://namemc.com/cape/11a3dcc4d826d0a1", color=discord.Color.green)
+        embed = discord.Embed(title="Realms MapMaker", url="https://namemc.com/cape/11a3dcc4d826d0a1", color=0x19AC00)
         embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="315★", inline=False)
         embed.add_field(name= "How To Obtain", value="This cape was automatically added to all MINECON 2011 attendees' registered username.", inline=False)
@@ -1590,7 +1590,7 @@ async def REALMS(ctx: SlashContext):
 
 @slash.slash(name="Mojang", description="Mojang Cape")
 async def mojang(ctx: SlashContext):
-        embed = discord.Embed(title="Mojang", url="https://namemc.com/cape/cb5dd34bee340182", color=discord.Color.green)
+        embed = discord.Embed(title="Mojang", url="https://namemc.com/cape/cb5dd34bee340182", color=0x19AC00)
         embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="204★", inline=False)
         embed.add_field(name= "How To Obtain", value="This cape was given to employees of Mojang Studios. This design was used from October 7, 2015 to July 25, 2021.", inline=False)
@@ -1602,7 +1602,7 @@ async def mojang(ctx: SlashContext):
 
 @slash.slash(name="MojangStudios", description="Mojang Studios Cape")
 async def mojangstu(ctx: SlashContext):
-        embed = discord.Embed(title="Mojang Studios", url="https://namemc.com/cape/c00df589ebea3ad6", color=discord.Color.green)
+        embed = discord.Embed(title="Mojang Studios", url="https://namemc.com/cape/c00df589ebea3ad6", color=0x19AC00)
         embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="103★", inline=False)
         embed.add_field(name= "How To Obtain", value="This cape was given to employees of Mojang Studios. This design has been used since July 25, 2021. It was made by Johan Aronson and it resembles the Mojangs or gizmos that make up the Mojang Studios logo.", inline=False)
@@ -1614,7 +1614,7 @@ async def mojangstu(ctx: SlashContext):
 
 @slash.slash(name="Translator", description="Translator Cape")
 async def transla(ctx: SlashContext):
-        embed = discord.Embed(title="Translator", url="https://namemc.com/cape/129a4675704fa3b8", color=discord.Color.green)
+        embed = discord.Embed(title="Translator", url="https://namemc.com/cape/129a4675704fa3b8", color=0x19AC00)
         embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="88★", inline=False)
         embed.add_field(name= "How To Obtain", value="This cape was given to some proofreaders (experienced translators with moderation permissions for their language) on the Minecraft translation project in Crowdin.", inline=False)
@@ -1626,7 +1626,7 @@ async def transla(ctx: SlashContext):
 
 @slash.slash(name="Cobalt", description="Cobalt Cape")
 async def Cobaltc(ctx: SlashContext):
-        embed = discord.Embed(title="Cobalt", url="https://namemc.com/cape/696b6cc29946b968", color=discord.Color.green)
+        embed = discord.Embed(title="Cobalt", url="https://namemc.com/cape/696b6cc29946b968", color=0x19AC00)
         embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="18★", inline=False)
         embed.add_field(name= "How To Obtain", value="This cape was given to participants/winners of level-making competitions and the Cobalt League tournaments in 2016.", inline=False)
@@ -1638,7 +1638,7 @@ async def Cobaltc(ctx: SlashContext):
 
 @slash.slash(name="Scrolls", description="Scrolls Cape")
 async def Scrollsss(ctx: SlashContext):
-        embed = discord.Embed(title="Scrolls", url="https://namemc.com/cape/116bacd62b233157", color=discord.Color.green)
+        embed = discord.Embed(title="Scrolls", url="https://namemc.com/cape/116bacd62b233157", color=0x19AC00)
         embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="9★", inline=False)
         embed.add_field(name= "How To Obtain", value="Scrolls Cape	This cape was given to players who earned the Weekly First Place winner badge five times in Scrolls starting on November 7, 2014", inline=False)
@@ -1650,7 +1650,7 @@ async def Scrollsss(ctx: SlashContext):
 
 @slash.slash(name="Turtle", description="Turtle Cape")
 async def turtlec(ctx: SlashContext):
-        embed = discord.Embed(title="Turtle", url="https://namemc.com/cape/8c05ef3c54870d04", color=discord.Color.green)
+        embed = discord.Embed(title="Turtle", url="https://namemc.com/cape/8c05ef3c54870d04", color=0x19AC00)
         embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="3★", inline=False)
         embed.add_field(name= "How To Obtain", value="This cape was given to billyK_ for his suggestion to add turtles into the game.", inline=False)
@@ -1662,7 +1662,7 @@ async def turtlec(ctx: SlashContext):
 
 @slash.slash(name="Valentine", description="Valentine Cape")
 async def valentinec(ctx: SlashContext):
-        embed = discord.Embed(title="Valentine", url="https://namemc.com/cape/3d528060ab734868", color=discord.Color.green)
+        embed = discord.Embed(title="Valentine", url="https://namemc.com/cape/3d528060ab734868", color=0x19AC00)
         embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="2★", inline=False)
         embed.add_field(name= "How To Obtain", value="This cape was given to LolFoxy2 by a Mojang employee after resolving LolFoxy2's problems with migration to a Microsoft account. However, the cape was later removed after the Mojang employee realizing its rarity.", inline=False)
@@ -1674,7 +1674,7 @@ async def valentinec(ctx: SlashContext):
 
 @slash.slash(name="Birthday", description="Birthday Cape")
 async def birthdayc(ctx: SlashContext):
-        embed = discord.Embed(title="Birthday", url="https://namemc.com/cape/aab5a23c7495fc70", color=discord.Color.green)
+        embed = discord.Embed(title="Birthday", url="https://namemc.com/cape/aab5a23c7495fc70", color=0x19AC00)
         embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="1★", inline=False)
         embed.add_field(name= "How To Obtain", value="This cape was given to Mojang employee Gr8Bizzo (formerly Gr8_Escape).", inline=False)
@@ -1686,7 +1686,7 @@ async def birthdayc(ctx: SlashContext):
 
 @slash.slash(name="dB", description="dB Cape")
 async def dbc(ctx: SlashContext):
-        embed = discord.Embed(title="dB", url="https://namemc.com/cape/77421d9cf72e07e9", color=discord.Color.green)
+        embed = discord.Embed(title="dB", url="https://namemc.com/cape/77421d9cf72e07e9", color=0x19AC00)
         embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="1★", inline=False)
         embed.add_field(name= "How To Obtain", value="This cape was given to dannyBstyle, a video game music composer, as Notch was a fan of his music.", inline=False)
@@ -1698,7 +1698,7 @@ async def dbc(ctx: SlashContext):
 
 @slash.slash(name="Prismarine", description="Prismarine Cape")
 async def dbcz(ctx: SlashContext):
-        embed = discord.Embed(title="Prismarine", url="https://namemc.com/cape/88f1509813f4e324", color=discord.Color.green)
+        embed = discord.Embed(title="Prismarine", url="https://namemc.com/cape/88f1509813f4e324", color=0x19AC00)
         embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="1★", inline=False)
         embed.add_field(name= "How To Obtain", value="This cape was given to Drullkus by Jeb for recreating the prismarine block for use in his Chisel mod rather than modifying Mojang's texture.", inline=False)
@@ -1710,7 +1710,7 @@ async def dbcz(ctx: SlashContext):
 
 @slash.slash(name="Snowman", description="Snowman Cape")
 async def dbccc(ctx: SlashContext):
-        embed = discord.Embed(title="Snowman", url="https://namemc.com/cape/5e68fa78bd9df310", color=discord.Color.green)
+        embed = discord.Embed(title="Snowman", url="https://namemc.com/cape/5e68fa78bd9df310", color=0x19AC00)
         embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="1★", inline=False)
         embed.add_field(name= "How To Obtain", value="This cape was given to JulianClark in return for bringing Notch the TV presenter and actor Ray Cokes.", inline=False)
@@ -1722,7 +1722,7 @@ async def dbccc(ctx: SlashContext):
 
 @slash.slash(name="Spade", description="Spade Cape")
 async def Spadec(ctx: SlashContext):
-        embed = discord.Embed(title="Spade", url="https://namemc.com/cape/7a939dc1a7ad4505", color=discord.Color.green)
+        embed = discord.Embed(title="Spade", url="https://namemc.com/cape/7a939dc1a7ad4505", color=0x19AC00)
         embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
         embed.add_field(name= "Copies", value="1★", inline=False)
         embed.add_field(name= "How To Obtain", value="This cape was given to MrMessiah as a thank you for creating the BetterLight mod,", inline=False)
@@ -1751,7 +1751,7 @@ async def deepfry(ctx: SlashContext, member: discord.Member = None):
     response = requests.get(f"https://nekobot.xyz/api/imagegen?type=deepfry&image={url1}")
     stuff = json.loads(response.text)
     embed = discord.Embed(title="DEEPFRY",
-                          color=discord.Color.green)
+                          color=0x19AC00)
     embed.set_author(name="Egglington",
                      url="https://eggbot.site",
                      icon_url="https://i.imgur.com/qrogvhd.png")
