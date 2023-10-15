@@ -213,25 +213,6 @@ async def clearconsole(ctx):
     Clear()
     new_splash()
 
-# @slash.slash(name="help", description="Shows this message.")
-# async def help(ctx: SlashContext):
-#         embed = discord.Embed(title="Help Panel", description="This is the Help Panel Below will be commands:", color=0x19AC00)
-#         embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
-#         embed.set_footer(text="Egglington", icon_url = "https://i.imgur.com/qrogvhd.png")
-#         embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
-#         embed.timestamp = datetime.datetime.utcnow()
-#         embed.add_field(name="General", value="`/whois`, `/yt`, `/vote`, `/choose`, `/poll`", inline=False)
-#         embed.add_field(name="Fun", value="`/coinflip`, `/rps`, `/dice`, `/pp`, `/8ball`, `/slot`", inline=False)
-#         embed.add_field(name="Moderation", value=f"`/kick`, `/ban`, `/unban`, `/purge`, `/mute`, `/unmute`, `/lock`, `/unlock`, `/slowmode`", inline=False)
-#         embed.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`, `/setup`, `/balance`, `/resetcoins`, `/leaderboard`, `/addcoins`, `/beg`, `/supportchan`", inline=False)
-#         embed.add_field(name="Economy", value=f"`/additem`, `/buy`, `/deleteitem`, `/remove_balance`, `/profile`, `/setprofile`, `/seteveryonebalance`, `/balance`, `/resetcoins`, `/leaderboard`, `/addcoins`, `/beg`, `/inventory`, `/shop`, `/sell`, `/pay`", inline=False)
-#         embed.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/newticket`, `/closeticket`, `/support`, `/uptime`", inline=False)
-#         embed.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`, `/change`, `/deepfry`", inline=False)
-#         embed.add_field(name="Roblox", value=f"`/rgame`, `/ruser`, `/routfit`, `{prefix}rvalue`, `/ruserhis`, `/template`", inline=False)
-#         embed.add_field(name="Minecraft", value=f"`/migrator`, `/vanilla`, `/minecon`, `/realmsmapmaker`, `/mojang`, `/mojangstudios`, `/translator`, `/cobalt`, `/scrolls`, `/turtle`, `/valentine`, `/birthday`, `/dB`, `/Prismarine`, `/snowman`, `/spade`", inline=False)
-#         embed.add_field(name="https://eggbot.site", value=" ", inline=True)
-#         await ctx.send(embed=embed)
-
 @slash.slash(name="help", description="Shows this message.")
 async def help(ctx: SlashContext):
     # Define the list of help pages
@@ -1431,7 +1412,7 @@ async def slot(ctx: SlashContext):
     if is_winning:
         reputation_change = random.randint(1000, 5000)
     else:
-        reputation_change = -50
+        reputation_change = -600
 
     cursor.execute("UPDATE user_reputation SET reputation = reputation + ? WHERE user_id = ?", (reputation_change, user_id))
     conn.commit()
