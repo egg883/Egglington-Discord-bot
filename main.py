@@ -16,6 +16,8 @@ from discord_slash import SlashCommand, SlashContext, ComponentContext, SlashCom
 from discord_slash.utils.manage_components import create_button, create_actionrow
 from discord_slash.model import ButtonStyle
 from discord_slash.utils.manage_commands import create_option, create_choice
+from discord.ext.commands import CommandOnCooldown
+from discord.ext.commands.cooldowns import BucketType
 from discord_slash.utils.manage_components import create_select, create_select_option
 from roblox import Client
 import asyncio
@@ -24,15 +26,13 @@ from bs4 import BeautifulSoup
 import random
 import urllib
 import urllib.request
+import googletrans
 import datetime
 import time
 import typing
 import sqlite3
 #////////////////////////////////////////////////////////////////////////// COLOR DEFINING
 client1 = Client()
-class Colours:
-    White = "\x1b[38;2;250;250;250m"
-    Magenta = "\x1b[38;2;255;94;255m"
 #////////////////////////////////////////////////////////////////////////// CONFIG DEFINING#
 with open('config.json', 'r') as f:
     config = json.load(f)
@@ -55,11 +55,8 @@ intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix = prefix, intents=intents, help_command=None)
 cmds = {len(bot.commands)}
-version = "1.2.1"
+version = "1.2.2"
 slash = SlashCommand(bot, sync_commands=True)
-intents = discord.Intents.default()
-client = discord.Client(intents=intents)
-intents.members = True
 MIN_DATE = datetime.datetime(1970, 1, 1)
 githuburl = "https://github.com/egg883/Egglington-Discord-bot"
 CHANNEL_ID = config['logs']
@@ -67,22 +64,76 @@ allowed_guild_ids = [config['serverid']]
 total_members = sum([guild.member_count for guild in bot.guilds])
 def restart_bot(): 
   os.execv(sys.executable,sys.argv)
+#////////////////////////////////////////////////////////////////////////// EVENT STUFF
+
+def new_splash():
+    print(f"""{Fore.GREEN}
+ _______   _______   _______  __       __  .__   __.   _______ .___________.  ______   .__   __. 
+|   ____| /  _____| /  _____||  |     |  | |  \ |  |  /  _____||           | /  __  \  |  \ |  | 
+|  |__   |  |  __  |  |  __  |  |     |  | |   \|  | |  |  __  `---|  |----`|  |  |  | |   \|  |                                        
+|   __|  |  | |_ | |  | |_ | |  |     |  | |  . `  | |  | |_ |     |  |     |  |  |  | |  . `  | 
+|  |____ |  |__| | |  |__| | |  `----.|  | |  |\   | |  |__| |     |  |     |  `--'  | |  |\   | 
+|_______| \______|  \______| |_______||__| |__| \__|  \______|     |__|      \______/  |__| \__|                                                                                                                  
+================================================================================================
+""")
+    print(f'{Fore.GREEN}If you need assistance dont hesitate to join our support server! https://discord.gg/EdfyJ47xYe')
+    print(f'{Fore.GREEN}{bot.user.name} is now Listening to {len(bot.guilds)} servers')
+    print(f"{Fore.GREEN}{bot.user.name}'s Prefix is /")
+    print(f"{Fore.GREEN}Do /help for the help commands")
+
 conn = sqlite3.connect('reputation.db')
 cursor = conn.cursor()
-#////////////////////////////////////////////////////////////////////////// EVENT STUFF
-def new_splash():
-    print(f'{Colours.Magenta}If you need assistance dont hesitate to join our support server! https://discord.gg/EdfyJ47xYe')
-    print(f'{Colours.Magenta}Egglington is now Listening to {len(bot.guilds)} servers')
-    print(f"{Colours.Magenta}Egglington's Prefix is /")
-    print(f"{Colours.Magenta}Do /help for the help commands")
-
 cursor.execute('''CREATE TABLE IF NOT EXISTS user_reputation (
                   user_id TEXT PRIMARY KEY,
                   reputation INTEGER DEFAULT 1000
                )''')
 conn.commit()
 
+
+conn2 = sqlite3.connect('shop.db')
+cursor2 = conn.cursor()
+cursor2.execute('''CREATE TABLE IF NOT EXISTS shop (
+                id INTEGER PRIMARY KEY,
+                name TEXT,
+                description TEXT,
+                price INTEGER,
+                quantity INTEGER
+                )''')
+conn2.commit()
+
+conn3 = sqlite3.connect('inventory.db')
+cursor3 = conn.cursor()
+cursor3.execute('''CREATE TABLE IF NOT EXISTS user_inventory (
+                user_id TEXT,
+                item_id INTEGER,
+                FOREIGN KEY (user_id) REFERENCES user_reputation (user_id),
+                FOREIGN KEY (item_id) REFERENCES shop (id)
+                )''')
+conn3.commit()
+
+conn_profile = sqlite3.connect('profiles.db')
+cursor_profile = conn_profile.cursor()
+cursor_profile.execute('''
+    CREATE TABLE IF NOT EXISTS user_profile (
+        user_id TEXT PRIMARY KEY,
+        profile_icon TEXT,
+        username TEXT,
+        bio TEXT
+    )
+''')
+conn_profile.commit()
+
 verified_roles = {}
+
+@bot.event
+async def on_member_join(member):
+    user_id = str(member.id)
+    cursor.execute("SELECT received_coins FROM user_join WHERE user_id = ?", (user_id,))
+    result = cursor.fetchone()
+    if not result or not result[0]:
+        cursor.execute("INSERT OR REPLACE INTO user_join (user_id, received_coins) VALUES (?, 1)", (user_id,))
+        conn.commit()
+        print(f"gave {member} coins")
 
 async def log(embed):
     channel = bot.get_channel(CHANNEL_ID)
@@ -163,23 +214,82 @@ async def clearconsole(ctx):
     Clear()
     new_splash()
 
+# @slash.slash(name="help", description="Shows this message.")
+# async def help(ctx: SlashContext):
+#         embed = discord.Embed(title="Help Panel", description="This is the Help Panel Below will be commands:", color=0x19AC00)
+#         embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
+#         embed.set_footer(text="Egglington", icon_url = "https://i.imgur.com/qrogvhd.png")
+#         embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
+#         embed.timestamp = datetime.datetime.utcnow()
+#         embed.add_field(name="General", value="`/whois`, `/yt`, `/vote`, `/choose`, `/poll`", inline=False)
+#         embed.add_field(name="Fun", value="`/coinflip`, `/rps`, `/dice`, `/pp`, `/8ball`, `/slot`", inline=False)
+#         embed.add_field(name="Moderation", value=f"`/kick`, `/ban`, `/unban`, `/purge`, `/mute`, `/unmute`, `/lock`, `/unlock`, `/slowmode`", inline=False)
+#         embed.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`, `/setup`, `/balance`, `/resetcoins`, `/leaderboard`, `/addcoins`, `/beg`, `/supportchan`", inline=False)
+#         embed.add_field(name="Economy", value=f"`/additem`, `/buy`, `/deleteitem`, `/remove_balance`, `/profile`, `/setprofile`, `/seteveryonebalance`, `/balance`, `/resetcoins`, `/leaderboard`, `/addcoins`, `/beg`, `/inventory`, `/shop`, `/sell`, `/pay`", inline=False)
+#         embed.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/newticket`, `/closeticket`, `/support`, `/uptime`", inline=False)
+#         embed.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`, `/change`, `/deepfry`", inline=False)
+#         embed.add_field(name="Roblox", value=f"`/rgame`, `/ruser`, `/routfit`, `{prefix}rvalue`, `/ruserhis`, `/template`", inline=False)
+#         embed.add_field(name="Minecraft", value=f"`/migrator`, `/vanilla`, `/minecon`, `/realmsmapmaker`, `/mojang`, `/mojangstudios`, `/translator`, `/cobalt`, `/scrolls`, `/turtle`, `/valentine`, `/birthday`, `/dB`, `/Prismarine`, `/snowman`, `/spade`", inline=False)
+#         embed.add_field(name="https://eggbot.site", value=" ", inline=True)
+#         await ctx.send(embed=embed)
+
 @slash.slash(name="help", description="Shows this message.")
 async def help(ctx: SlashContext):
-        embed = discord.Embed(title="Help Panel", description="This is the Help Panel Below will be commands:", color=0x19AC00)
-        embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
-        embed.set_footer(text="Egglington", icon_url = "https://i.imgur.com/qrogvhd.png")
-        embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
-        embed.timestamp = datetime.datetime.utcnow()
-        embed.add_field(name="General", value="`/whois`, `/yt`, `/vote`, `/choose`, `/poll`", inline=False)
-        embed.add_field(name="Fun", value="`/coinflip`, `/rps`, `/dice`, `/pp`, `/8ball`, `/slot`", inline=False)
-        embed.add_field(name="Moderation", value=f"`/kick`, `/ban`, `/unban`, `/purge`, `/mute`, `/unmute`, `/lock`, `/unlock`, `/slowmode`", inline=False)
-        embed.add_field(name="Server", value=f"`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`, `/setup`, `/balance`, `/resetcoins`, `/leaderboard`, `/addcoins`, `/beg`, `/supportchan`", inline=False)
-        embed.add_field(name="Utility", value=f"`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/news`, `/newticket`, `/closeticket`, `/support`, `/uptime`", inline=False)
-        embed.add_field(name="Memes", value="`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`, `/change`, `/deepfry`", inline=False)
-        embed.add_field(name="Roblox", value=f"`/rgame`, `/ruser`, `/routfit`, `{prefix}rvalue`, `/ruserhis`, `/template`", inline=False)
-        embed.add_field(name="Minecraft", value=f"`/migrator`, `/vanilla`, `/minecon`, `/realmsmapmaker`, `/mojang`, `/mojangstudios`, `/translator`, `/cobalt`, `/scrolls`, `/turtle`, `/valentine`, `/birthday`, `/dB`, `/Prismarine`, `/snowman`, `/spade`", inline=False)
-        embed.add_field(name="https://eggbot.site", value=" ", inline=True)
-        await ctx.send(embed=embed)
+    # Define the list of help pages
+    help_pages = [
+        {
+            "title": "Help Panel 1/2",
+            "description": "This is the Help Panel. Below are commands:",
+            "thumbnail_url": "https://i.imgur.com/dSMCKNx.gif",
+            "fields": [
+                {"name": "🔰 General", "value": "`/whois`, `/yt`, `/vote`, `/choose`, `/poll`", "inline": False},
+                {"name": "💥 Fun", "value": "`/coinflip`, `/rps`, `/dice`, `/pp`, `/8ball`", "inline": False},
+                {"name": "🛡️ Moderation", "value": "`/kick`, `/ban`, `/unban`, `/purge`, `/mute`, `/unmute`, `/lock`, `/unlock`, `/slowmode`", "inline": False},
+                {"name": "🤖 Server", "value": "`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`, `/setup`, `/balance`, `/resetcoins`,, `/supportchan`", "inline": False},
+                {"name": "💰 Economy", "value": "`/slot`, `/additem`, `/buy`, `/deleteitem`, `/remove_balance`, `/profile`, `/setprofile`, `/seteveryonebalance`, `/balance`, `/resetcoins`, `/leaderboard`, `/addcoins`, `/beg`, `/inventory`, `/shop`, `/sell`, `/pay`", "inline": False},
+                {"name": "https://eggbot.site", "value": " ", "inline": True}
+            ]
+        },
+        {
+            "title": "Help Panel 2/2",
+            "description": "This is the second page of the Help Panel.",
+            "thumbnail_url": "https://i.imgur.com/dSMCKNx.gif",
+            "fields": [
+                {"name": "⚙️ Utility", "value": "`/ping`, `/help`, `/invite`, `/sinfo`, `/whois`, `/info`, `/newticket`, `/closeticket`, `/support`, `/uptime`", "inline": False},
+                {"name": "👽 Memes", "value": "`/jail`, `/wasted`, `/horny`, `/lolice`, `/pixel`, `/clyde`, `/trump`, `/change`, `/deepfry`", "inline": False},
+                {"name": "🎮 Roblox", "value": "`/rgame`, `/ruser`, `/routfit`, `{prefix}rvalue`, `/ruserhis`, `/template`", "inline": False},
+                {"name": "⛏️ Minecraft", "value": "`/migrator`, `/vanilla`, `/minecon`, `/realmsmapmaker`, `/mojang`, `/mojangstudios`, `/translator`, `/cobalt`, `/scrolls`, `/turtle`, `/valentine`, `/birthday`, `/dB`, `/Prismarine`, `/snowman`, `/spade`", "inline": False},
+                {"name": "https://eggbot.site", "value": " ", "inline": True}
+            ]
+        }
+    ]
+    current_page = 0
+    message = await ctx.send(embed=get_help_embed(help_pages[current_page]))
+    reactions = ["⬅️", "➡️"]
+    for reaction in reactions:
+        await message.add_reaction(reaction)
+    def check(reaction, user):
+        return user == ctx.author and str(reaction.emoji) in reactions
+    while True:
+        try:
+            reaction, _ = await bot.wait_for("reaction_add", timeout=30, check=check)
+            await message.remove_reaction(reaction, ctx.author)
+
+            if str(reaction.emoji) == "⬅️":
+                current_page = (current_page - 1) % len(help_pages)
+            elif str(reaction.emoji) == "➡️":
+                current_page = (current_page + 1) % len(help_pages)
+            await message.edit(embed=get_help_embed(help_pages[current_page]))
+
+        except TimeoutError:
+            break
+
+def get_help_embed(page):
+    embed = discord.Embed(title=page["title"], description=page["description"], color=0x19AC00)
+    embed.set_thumbnail(url=page["thumbnail_url"])
+    for field in page["fields"]:
+        embed.add_field(name=field["name"], value=field["value"], inline=field["inline"])
+    return embed
 
 @slash.slash(name="uptime", description="Get the uptime of the bot.")
 async def uptime(ctx: SlashContext):
@@ -209,6 +319,7 @@ async def slowmode(ctx: SlashContext, seconds: int):
     embed.add_field(name="Slowmode set to:", value=f"{seconds} seconds", inline=False)
     embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
     await ctx.send(embed=embed, delete_after=deletein)
+
 
 @slash.slash(name="lock", description="Lock the channel.")
 @commands.has_permissions(manage_channels=True)
@@ -618,19 +729,6 @@ async def restart(ctx: SlashContext):
     restart_bot()
 
 
-@slash.slash(name="news", description="Displays the latest news about the bot.")
-async def news(ctx: SlashContext):
-    await ctx.defer()
-    embed = discord.Embed(title=f"Update V{version}", description=f"This is the latest news about our bot Update", url=f"{githuburl}", colour=0x19AC00)
-    embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
-    embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
-    embed.add_field(name="[+] recreated ticket sys should be better for now", value="```revamped ticket sys should be working a little```", inline=False)
-    embed.add_field(name="[/] Replaced every single image link with a reliable image source", value="```you will no longer get 23k all the time```", inline=False)
-    embed.add_field(name="[-] Removed anything NSFW related.", value="```All was removed to talor towards more ppl !```", inline=False)
-    embed.add_field(name="Our Website", value="```https://eggbot.site```", inline=False)
-    await ctx.send(embed=embed)
-
-
 @slash.slash(name="sinfo", description="Get information about the server")
 async def sinfo(ctx):
     text_channels = len(ctx.guild.text_channels)
@@ -649,21 +747,64 @@ async def sinfo(ctx):
     embed.add_field(name="Server Verification", value=f"```{str(ctx.guild.verification_level).upper()}```", inline=False)
     await ctx.send(embed=embed)
 
+@slash.slash(
+    name="sell",
+    description="Sell an item from your inventory",
+    options=[
+        create_option(
+            name="item_name",
+            description="Name of the item to sell",
+            option_type=3,
+            required=True
+        )
+    ]
+)
+async def sell_item(ctx: SlashContext, item_name: str):
+    user_id = str(ctx.author.id)
+    cursor2.execute("SELECT id, price FROM shop WHERE name = ?", (item_name,))
+    item_data = cursor2.fetchone()
+
+    if not item_data:
+        await ctx.send(f"The item '{item_name}' does not exist in the shop.")
+        return
+    item_id, item_price = item_data
+    cursor3.execute("SELECT item_id FROM user_inventory WHERE user_id = ? AND item_id = ?", (user_id, item_id))
+    user_has_item = cursor3.fetchone()
+
+    if not user_has_item:
+        await ctx.send(f"You don't have the item '{item_name}' in your inventory.")
+        return
+    cursor.execute("SELECT reputation FROM user_reputation WHERE user_id = ?", (user_id,))
+    user_balance = cursor.fetchone()[0]
+
+    if user_balance >= item_price:
+        selling_price = item_price // 2
+        user_balance -= item_price
+        cursor.execute("UPDATE user_reputation SET reputation = ? WHERE user_id = ?", (user_balance, user_id))
+        cursor3.execute("DELETE FROM user_inventory WHERE rowid IN (SELECT rowid FROM user_inventory WHERE user_id = ? AND item_id = ? LIMIT 1)", (user_id, item_id))
+        
+        conn.commit()
+
+        await ctx.send(f"You have sold one item of '{item_name}' for {selling_price} EggCoins. Your new balance is {user_balance}.")
+    else:
+        await ctx.send("You don't have enough balance to sell this item.")
+
 @slash.slash(name="info", description="Displays info about the bot.")
 async def info(ctx):
     total = 0
     for guild in bot.guilds:
         total += guild.member_count
     formatted_total = '{:,}'.format(total)
-    embed = discord.Embed(title="Info", description=f"This is a information page about my bot", colour=0x19AC00)
+    embed=discord.Embed(title="Info Panel", color=0x19AC00)
+    embed.set_thumbnail(url= "https://i.imgur.com/dSMCKNx.gif")
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
-    embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
-    embed.add_field(name="Total Commands:", value = f"```{len(slash.commands)}```", inline=True)
-    embed.add_field(name="Prefix:", value=f"```[{prefix}] [/]```", inline=True)
-    embed.add_field(name="Version:", value=f"```{version}```", inline=True)
-    embed.add_field(name="Total Members:", value=f"```{formatted_total}```", inline=True)
-    embed.add_field(name="Total Servers:", value=f"```{len(bot.guilds)}```", inline=False)
-    embed.add_field(name="Creator:", value="```This bot was made by jcxk ```", inline=False)
+    embed.add_field(name="About Egglington:", value=f"Egglington is a multi-purpose discord bot developed by Jcxk, It is an open source project on Github that you can easily host yourself. Egglington is a easy to use bot for many things, roblox, minecraft, moderation, memes anything egglington is fun to use with its economy commands for extra fun.", inline=False)
+    embed.add_field(name="Total Commands:", value=f"{len(slash.commands)}", inline=True)
+    embed.add_field(name="Prefix:", value=f"[{prefix}] [/]", inline=True)
+    embed.add_field(name="Version:", value=f"{version}", inline=True)
+    embed.add_field(name="Total Members:", value=f"{formatted_total}", inline=True)
+    embed.add_field(name="Total Servers:", value=f"{len(bot.guilds)}", inline=True)
+    embed.add_field(name="Github:", value=f"Click [here](https://github.com/egg883/Egglington-Discord-bot)", inline=True)
     embed.set_footer(text="https://eggbot.site", icon_url = "https://i.imgur.com/qrogvhd.png")
     embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed)
@@ -1275,21 +1416,31 @@ symb = ["🍒", "🍊", "🍋", "🍇", "🔔", "💎"]
     description="Spin a slot",
 )
 async def slot(ctx: commands.Context):
+    user_id = str(ctx.author.id)
+    cursor.execute("SELECT reputation FROM user_reputation WHERE user_id = ?", (user_id,))
+    result = cursor.fetchone()
+    if not result:
+        await ctx.send("You don't have any EggCoins yet.")
+        return
+    reputation = result[0]
+    if reputation < 10:
+        await ctx.send("You need at least 10 EggCoins to play the slot machine.")
+        return
+    cursor.execute("UPDATE user_reputation SET reputation = reputation - 10 WHERE user_id = ?", (user_id,))
+    conn.commit()
     slot_results = [random.choice(symb) for _ in range(3)]
     if len(set(slot_results)) == 1:
         reputation_change = random.randint(5000, 15000)
     else:
         reputation_change = -50
-    user_id = str(ctx.author.id)
-    cursor.execute("INSERT OR IGNORE INTO user_reputation (user_id, reputation) VALUES (?, 0)", (user_id,))
     cursor.execute("UPDATE user_reputation SET reputation = reputation + ? WHERE user_id = ?", (reputation_change, user_id,))
     conn.commit()
     resp = f"{ctx.author.mention} spun the slot machine:\n\n"
-    resp += " ".join(slot_results)   
+    resp += " ".join(slot_results)
     if reputation_change > 0:
         resp += f"\n\nYou Won The Jackpot! 🎉 +{reputation_change} EggCoins"
     else:
-        resp += f"\n\nF You failed {reputation_change} EggCoins"
+        resp += f"\n\nYou failed {reputation_change} EggCoins"
     await ctx.send(resp)
 
 
@@ -1335,6 +1486,392 @@ async def leaderboard(ctx: commands.Context):
     await ctx.send(resp)
 
 @slash.slash(
+    name="additem",
+    description="Add an item to the shop",
+    options=[
+        {
+            "name": "name",
+            "description": "Item name",
+            "type": 3,
+            "required": True
+        },
+        {
+            "name": "description",
+            "description": "Item description",
+            "type": 3,
+            "required": True
+        },
+        {
+            "name": "price",
+            "description": "Item price",
+            "type": 4,
+            "required": True
+        }
+    ]
+)
+async def add_item(ctx: SlashContext, name: str, description: str, price: int):
+    if ctx.author.id == botowner:
+        cursor.execute('INSERT INTO shop (name, description, price) VALUES (?, ?, ?)', (name, description, price))
+        conn.commit()
+        await ctx.send(f"Item added to the shop: {name} - {description} - Price: {price}")
+    else:
+        await ctx.send("Only the bot owner can use this command.")
+
+@slash.slash(
+    name="buy",
+    description="Buy an item from the shop",
+    options=[
+        {
+            "name": "item_name",
+            "description": "Name of the item you want to buy",
+            "type": 3,
+            "required": True
+        }
+    ]
+)
+async def buy_item(ctx: SlashContext, item_name: str):
+    user_id = str(ctx.author.id)
+    cursor.execute('SELECT id, name, description, price FROM shop WHERE name = ?', (item_name,))
+    item = cursor.fetchone()
+
+    if item:
+        item_id, item_name, item_description, item_price = item
+        item_price = int(item_price)
+        cursor.execute('SELECT reputation FROM user_reputation WHERE user_id = ?', (user_id,))
+        user_balance = cursor.fetchone()
+        
+        if user_balance:
+            user_balance = int(user_balance[0])
+            if user_balance >= item_price:
+                cursor.execute('UPDATE user_reputation SET reputation = reputation - ? WHERE user_id = ?', (item_price, user_id))
+                cursor.execute('INSERT INTO user_inventory (user_id, item_id) VALUES (?, ?)', (user_id, item_id))
+                conn.commit()
+
+                await ctx.send(f"You've purchased {item_name} - {item_description} for {item_price} balance.")
+            else:
+                await ctx.send("You don't have enough balance to buy this item.")
+        else:
+            await ctx.send("You don't have a balance. Please earn reputation first.")
+    else:
+        await ctx.send(f"Item '{item_name}' not found in the shop.")
+
+@slash.slash(
+    name="inventory",
+    description="View your inventory"
+)
+async def view_inventory(ctx: SlashContext):
+    user_id = str(ctx.author.id)
+    cursor.execute('''
+        SELECT shop.name, shop.description, shop.price, COUNT(user_inventory.item_id)
+        FROM user_inventory
+        INNER JOIN shop ON user_inventory.item_id = shop.id
+        WHERE user_id = ?
+        GROUP BY user_inventory.item_id, shop.name, shop.description, shop.price
+    ''', (user_id,))
+    items = cursor.fetchall()
+
+    total_value = 0
+
+    if not items:
+        await ctx.send("Your inventory is currently empty.")
+    else:
+        paginated_embeds = []
+        current_page = 1
+
+        for (name, description, price, quantity) in items:
+            item_value = price * quantity
+            total_value += item_value
+
+        current_embed = discord.Embed(
+            title="Your Inventory",
+            description=f"Total Value: {total_value} eggcoins",
+            color=0x00FF00
+        )
+        current_embed.set_thumbnail(url="https://images.vexels.com/media/users/3/152838/isolated/preview/2c1e567e0df96c142a12dec74c0eb314-school-backpack-flat-icon-by-vexels.png")
+
+        current_embed.set_footer(text=f"Page {current_page}")
+
+        for (name, description, price, quantity) in items:
+            if quantity > 1:
+                name = f"{name} (x{quantity})"
+            current_embed.add_field(name=name, value=description, inline=False)
+
+            if len(current_embed.fields) == 10:
+                paginated_embeds.append(current_embed)
+                current_page += 1
+                current_embed = discord.Embed(
+                    title="Your Inventory",
+                    color=0x00FF00
+                )
+                current_embed.set_thumbnail(url="https://images.vexels.com/media/users/3/152838/isolated/preview/2c1e567e0df96c142a12dec74c0eb314-school-backpack-flat-icon-by-vexels.png")
+
+                current_embed.set_footer(text=f"Page {current_page}")
+
+        if len(current_embed.fields) > 0:
+            paginated_embeds.append(current_embed)
+
+        current_page = 0
+        msg = await ctx.send(embed=paginated_embeds[current_page])
+
+        reactions = ['⬅️', '➡️']
+
+        for reaction in reactions:
+            await msg.add_reaction(reaction)
+
+        def check(reaction, user):
+            return user == ctx.author and str(reaction.emoji) in reactions
+
+        while True:
+            try:
+                reaction, user = await bot.wait_for('reaction_add', timeout=60, check=check)
+                if str(reaction.emoji) == '➡️' and current_page < len(paginated_embeds) - 1:
+                    current_page += 1
+                elif str(reaction.emoji) == '⬅️' and current_page > 0:
+                    current_page -= 1
+
+                await msg.edit(embed=paginated_embeds[current_page])
+                await msg.remove_reaction(reaction, user)
+
+            except TimeoutError:
+                break
+
+        await msg.clear_reactions()
+
+@slash.slash(
+    name="deleteitem",
+    description="Delete an item from the shop",
+    options=[
+        create_option(
+            name="item_name",
+            description="Name of the item to delete",
+            option_type=3,
+            required=True
+        )
+    ]
+)
+async def delete_item(ctx: SlashContext, item_name: str):
+    if ctx.author.id != botowner:
+        await ctx.send("You do not have permission to delete items from the shop.")
+        return
+    cursor.execute('SELECT * FROM shop WHERE name = ?', (item_name,))
+    item = cursor.fetchone()
+
+    if not item:
+        await ctx.send(f"The item with the name '{item_name}' does not exist in the shop.")
+        return
+    cursor.execute('DELETE FROM shop WHERE name = ?', (item_name,))
+    conn.commit()
+
+    await ctx.send(f"Item with the name '{item_name}' has been successfully deleted from the shop.")
+
+@slash.slash(
+    name="setprofile",
+    description="Set your profile data",
+    options=[
+        create_option(
+            name="profile_icon",
+            description="Profile icon URL",
+            option_type=3, 
+            required=True
+        ),
+        create_option(
+            name="username",
+            description="Your username",
+            option_type=3,
+            required=True
+        ),
+        create_option(
+            name="bio",
+            description="Your bio",
+            option_type=3,
+            required=True
+        )
+    ]
+)
+async def set_profile(ctx: SlashContext, profile_icon: str, username: str, bio: str):
+    user_id = str(ctx.author.id)
+    cursor_profile.execute('SELECT * FROM user_profile WHERE user_id = ?', (user_id,))
+    existing_profile = cursor_profile.fetchone()
+
+    if existing_profile:
+        cursor_profile.execute('''
+            UPDATE user_profile
+            SET profile_icon = ?, username = ?, bio = ?
+            WHERE user_id = ?
+        ''', (profile_icon, username, bio, user_id))
+    else:
+        cursor_profile.execute('''
+            INSERT INTO user_profile (user_id, profile_icon, username, bio)
+            VALUES (?, ?, ?, ?)
+        ''', (user_id, profile_icon, username, bio))
+
+    conn_profile.commit()
+
+    await ctx.send("Your profile has been updated.")
+
+@slash.slash(
+    name="profile",
+    description="View a user's profile",
+    options=[
+        create_option(
+            name="user",
+            description="User to view the profile of",
+            option_type=6,
+            required=False
+        )
+    ]
+)
+async def view_profile(ctx: SlashContext, user: discord.User = None):
+    if user is None:
+        user = ctx.author
+    user_id = str(user.id)
+    cursor_profile.execute('SELECT profile_icon, username, bio FROM user_profile WHERE user_id = ?', (user_id,))
+    profile_data = cursor_profile.fetchone()
+
+    if not profile_data:
+        await ctx.send(f"{user.display_name} hasn't set up a profile yet.")
+        return
+
+    profile_icon, username, bio = profile_data
+    is_bot_owner = user.id == botowner
+    if is_bot_owner:
+        username += " 🛡️"
+
+    cursor.execute('''
+        SELECT shop.name, shop.price, COUNT(user_inventory.item_id)
+        FROM user_inventory
+        INNER JOIN shop ON user_inventory.item_id = shop.id
+        WHERE user_id = ?
+        GROUP BY user_inventory.item_id, shop.name, shop.price
+    ''', (user_id,))
+    items = cursor.fetchall()
+    total_item_count = sum(quantity for (_, _, quantity) in items)
+    total_item_value = sum(price * quantity for (_, price, quantity) in items)
+
+    cursor.execute('SELECT reputation FROM user_reputation WHERE user_id = ?', (user_id,))
+    result = cursor.fetchone()
+
+    if result:
+        balance = result[0]
+    else:
+        balance = 0
+
+    member_since = user.created_at.strftime('%B %d, %Y')
+
+    embed = discord.Embed(
+        title=f"{username} 🌟",
+        description=f"{bio} 📝",
+        color=0x00FF00
+    )
+    embed.set_thumbnail(url=profile_icon)
+    embed.add_field(name="Total Item Count", value=f"{total_item_count} 🛒", inline=True)
+    embed.add_field(name="Total Item Value", value=f"{total_item_value} 💰", inline=True)
+    embed.add_field(name="Balance", value=f"{balance} 💳", inline=True)
+    embed.add_field(name="Member Since", value=f"{member_since} ⌛", inline=False)
+    await ctx.send(embed=embed)
+
+@slash.slash(
+    name="shop",
+    description="List items in the shop"
+)
+async def list_shop(ctx: SlashContext):
+    cursor.execute('SELECT name, description, price FROM shop')
+    items = cursor.fetchall()
+
+    if not items:
+        await ctx.send("The shop is currently empty.")
+        return
+
+    items_per_page = 9
+    total_pages = (len(items) + items_per_page - 1) // items_per_page
+    current_page = 0
+
+    thumbnail_url = "https://cdn0.iconfinder.com/data/icons/shopping-set-3/512/e7-256.png"
+
+    def generate_embed(page):
+        start_idx = page * items_per_page
+        end_idx = (page + 1) * items_per_page
+        page_items = items[start_idx:end_idx]
+
+        embed = discord.Embed(
+            title=f"Shop Items (Page {page + 1}/{total_pages})",
+            color=0x00FF00
+        )
+        embed.set_thumbnail(url=thumbnail_url)
+
+        for (name, description, price) in page_items:
+            embed.add_field(name=name, value=f"{description}\nPrice: {price}", inline=True)
+        return embed
+
+    message = await ctx.send(embed=generate_embed(current_page))
+    await message.add_reaction("⬅️")
+    await message.add_reaction("➡️")
+
+    def check(reaction, user):
+        return user == ctx.author and str(reaction.emoji) in ["⬅️", "➡️"]
+
+    while True:
+        try:
+            reaction, user = await ctx.bot.wait_for("reaction_add", check=check, timeout=60)
+            if str(reaction.emoji) == "➡️" and current_page < total_pages - 1:
+                current_page += 1
+                await message.edit(embed=generate_embed(current_page))
+            elif str(reaction.emoji) == "⬅️" and current_page > 0:
+                current_page -= 1
+                await message.edit(embed=generate_embed(current_page))
+            await message.remove_reaction(reaction, user)
+        except asyncio.TimeoutError:
+            break
+
+@slash.slash(
+    name="pay",
+    description="Pay EggCoins to another user",
+    options=[
+        create_option(
+            name="recipient",
+            description="User to pay",
+            option_type=6,
+            required=True
+        ),
+        create_option(
+            name="amount",
+            description="Amount of EggCoins to pay",
+            option_type=4,
+            required=True
+        )
+    ]
+)
+@commands.cooldown(1, 30, BucketType.user)
+async def pay(ctx: SlashContext, recipient: discord.User, amount: int):
+    user_id = str(ctx.author.id)
+    recipient_id = str(recipient.id)
+    if amount <= 0:
+        await ctx.send("Please enter a valid amount of EggCoins to pay.")
+        return
+    cursor.execute("SELECT reputation FROM user_reputation WHERE user_id = ?", (user_id,))
+    sender_data = cursor.fetchone()
+    if not sender_data:
+        await ctx.send("You don't have any EggCoins to pay.")
+        return
+    sender_balance = sender_data[0]
+    if sender_balance < amount:
+        await ctx.send("You don't have enough EggCoins to make this payment.")
+        return
+    cursor.execute("UPDATE user_reputation SET reputation = reputation - ? WHERE user_id = ?", (amount, user_id))
+    cursor.execute("INSERT OR IGNORE INTO user_reputation (user_id, reputation) VALUES (?, 0)", (recipient_id,))
+    cursor.execute("UPDATE user_reputation SET reputation = reputation + ? WHERE user_id = ?", (amount, recipient_id))
+    conn.commit()
+    recipient_dm = await recipient.create_dm()
+    await recipient_dm.send(f"You've received {amount} EggCoins from {ctx.author.display_name}.")
+    await ctx.send(f"You have paid {amount} EggCoins to {recipient.display_name}. Your new balance is {sender_balance - amount}.")
+
+@pay.error
+async def pay_error(ctx, error):
+    if isinstance(error, CommandOnCooldown):
+        await ctx.send(f"This command is on cooldown. Please try again in {error.retry_after:.0f} seconds.")
+
+
+@slash.slash(
     name="balance",
     description="Check your EggCoins",
 )
@@ -1345,11 +1882,73 @@ async def balance(ctx: commands.Context):
     
     if result:
         reputation = result[0]
-        resp = f"{ctx.author.mention}, your balance is {reputation}."
+        if reputation == 0:
+            cursor.execute("UPDATE user_reputation SET reputation = 1000 WHERE user_id = ?", (user_id,))
+            conn.commit()
+            resp = f"{ctx.author.mention}, Seems you are broke, Here take 1000 EggCoins."
+        else:
+            resp = f"{ctx.author.mention}, your balance is {reputation}."
     else:
         resp = f"{ctx.author.mention}, you don't have any EggCoins yet."
-    
+
     await ctx.send(resp)
+
+@slash.slash(
+    name="remove_balance",
+    description="Remove EggCoins from a user",
+    options=[
+        create_option(
+            name="user",
+            description="User to remove EggCoins from",
+            option_type=6,
+            required=True
+        ),
+        create_option(
+            name="amount",
+            description="Amount of EggCoins to remove",
+            option_type=4,
+            required=True
+        )
+    ]
+)
+async def remove_balance(ctx: SlashContext, user: discord.User, amount: int):
+    if ctx.author.id != botowner:
+        await ctx.send("You do not have permission to remove balance.")
+        return
+
+    user_id = str(user.id)
+    cursor.execute("SELECT reputation FROM user_reputation WHERE user_id = ?", (user_id,))
+    result = cursor.fetchone()
+
+    if result:
+        current_balance = result[0]
+        
+        if current_balance >= amount:
+            new_balance = max(current_balance - amount, 1)
+            cursor.execute("UPDATE user_reputation SET reputation = ? WHERE user_id = ?", (new_balance, user_id))
+            conn.commit()
+            await ctx.send(f"{user.mention} has had {amount} EggCoins removed. Their new balance is {new_balance}.")
+        else:
+            await ctx.send(f"{user.mention} does not have enough EggCoins to remove.")
+    else:
+        await ctx.send(f"{user.mention} does not have any EggCoins to remove.")
+
+@slash.slash(
+    name="seteveryonebalance",
+    description="Set everyone's balance to 1000 EggCoins",
+)
+async def set_everyone_balance(ctx: commands.Context):
+    if ctx.author.id != botowner:
+        await ctx.send("You do not have permission to use this command.")
+        return
+    guild = ctx.guild
+    members = guild.members
+    for member in members:
+        user_id = str(member.id)
+        cursor.execute("INSERT OR REPLACE INTO user_reputation (user_id, reputation) VALUES (?, 1000)", (user_id,))
+
+    conn.commit()
+    await ctx.send("All server members now have 1000 EggCoins.")
 
 @slash.slash(
     name="resetcoins",
@@ -1364,6 +1963,7 @@ async def resetcoins(ctx: commands.Context):
     conn.commit()
     
     await ctx.send("All user coins have been reset to 1000.")
+
 
 
 @slash.slash(
@@ -1732,6 +2332,7 @@ async def Spadec(ctx: SlashContext):
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
+
 @slash.slash(name="deepfry",
              description="Deepfries The Users Profile Picture",
              options=[
@@ -1767,7 +2368,7 @@ def Init():
     try:
         bot.run(bottoken)
     except discord.errors.LoginFailure:
-        input(f"{Fore.RED}[SYSTEM] BOT TOKEN IS INVALID CHECK CONFIG"+Colours.White)
+        input(f"{Fore.RED}[SYSTEM] BOT TOKEN IS INVALID CHECK CONFIG"+Fore.White)
         sys.exit
         python = sys.executable
         os.execl(python, python, * sys.argv)
