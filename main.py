@@ -26,7 +26,6 @@ from bs4 import BeautifulSoup
 import random
 import urllib
 import urllib.request
-import googletrans
 import datetime
 import time
 import typing
@@ -1415,7 +1414,7 @@ symb = ["🍒", "🍊", "🍋", "🍇", "🔔", "💎"]
     name="slot",
     description="Spin a slot",
 )
-async def slot(ctx: commands.Context):
+async def slot(ctx: SlashContext):
     user_id = str(ctx.author.id)
     cursor.execute("SELECT reputation FROM user_reputation WHERE user_id = ?", (user_id,))
     result = cursor.fetchone()
@@ -1426,21 +1425,25 @@ async def slot(ctx: commands.Context):
     if reputation < 10:
         await ctx.send("You need at least 10 EggCoins to play the slot machine.")
         return
+    is_winning = random.random() <= 0.35
     cursor.execute("UPDATE user_reputation SET reputation = reputation - 10 WHERE user_id = ?", (user_id,))
     conn.commit()
-    slot_results = [random.choice(symb) for _ in range(3)]
-    if len(set(slot_results)) == 1:
-        reputation_change = random.randint(5000, 15000)
+    if is_winning:
+        reputation_change = random.randint(1000, 5000)
     else:
         reputation_change = -50
-    cursor.execute("UPDATE user_reputation SET reputation = reputation + ? WHERE user_id = ?", (reputation_change, user_id,))
+
+    cursor.execute("UPDATE user_reputation SET reputation = reputation + ? WHERE user_id = ?", (reputation_change, user_id))
     conn.commit()
+
     resp = f"{ctx.author.mention} spun the slot machine:\n\n"
-    resp += " ".join(slot_results)
-    if reputation_change > 0:
+    resp += " ".join(random.choice(symb) for _ in range(3))
+
+    if is_winning:
         resp += f"\n\nYou Won The Jackpot! 🎉 +{reputation_change} EggCoins"
     else:
         resp += f"\n\nYou failed {reputation_change} EggCoins"
+    
     await ctx.send(resp)
 
 
