@@ -1406,7 +1406,7 @@ async def slot(ctx: SlashContext):
     if reputation < 10:
         await ctx.send("You need at least 10 EggCoins to play the slot machine.")
         return
-    is_winning = random.random() <= 0.35
+    is_winning = random.random() <= 0.25
     cursor.execute("UPDATE user_reputation SET reputation = reputation - 10 WHERE user_id = ?", (user_id,))
     conn.commit()
     if is_winning:
