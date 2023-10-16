@@ -24,6 +24,7 @@ import asyncio
 import requests
 from bs4 import BeautifulSoup
 import random
+from discord_slash.utils import manage_components as components
 import urllib
 import urllib.request
 import datetime
@@ -87,7 +88,6 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS user_reputation (
                   reputation INTEGER DEFAULT 1000
                )''')
 conn.commit()
-
 
 conn2 = sqlite3.connect('shop.db')
 cursor2 = conn.cursor()
@@ -215,7 +215,6 @@ async def clearconsole(ctx):
 
 @slash.slash(name="help", description="Shows this message.")
 async def help(ctx: SlashContext):
-    # Define the list of help pages
     help_pages = [
         {
             "title": "Help Panel 1/2",
@@ -226,7 +225,7 @@ async def help(ctx: SlashContext):
                 {"name": "💥 Fun", "value": "`/coinflip`, `/rps`, `/dice`, `/pp`, `/8ball`", "inline": False},
                 {"name": "🛡️ Moderation", "value": "`/kick`, `/ban`, `/unban`, `/purge`, `/mute`, `/unmute`, `/lock`, `/unlock`, `/slowmode`", "inline": False},
                 {"name": "🤖 Server", "value": "`/role`, `/deleterole`, `/first`, `/spfp`, `/avatar`, `/afk`, `/setup`, `/balance`, `/resetcoins`,, `/supportchan`", "inline": False},
-                {"name": "💰 Economy", "value": "`/slot`, `/additem`, `/buy`, `/deleteitem`, `/remove_balance`, `/profile`, `/setprofile`, `/seteveryonebalance`, `/balance`, `/resetcoins`, `/leaderboard`, `/addcoins`, `/beg`, `/inventory`, `/shop`, `/sell`, `/pay`", "inline": False},
+                {"name": "💰 Economy", "value":"`/daily`, `/bet`, `/slot`, `/additem`, `/buy`, `/deleteitem`, `/remove_balance`, `/profile`, `/setprofile`, `/seteveryonebalance`, `/balance`, `/resetcoins`, `/leaderboard`, `/addcoins`, `/beg`, `/inventory`, `/shop`, `/sell`, `/pay`", "inline": False},
                 {"name": "https://eggbot.site", "value": " ", "inline": True}
             ]
         },
@@ -2316,6 +2315,78 @@ async def Spadec(ctx: SlashContext):
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
+@slash.slash(
+    name="daily",
+    description="Claim your daily reward",
+    options=[]
+)
+@commands.cooldown(1, 86400, commands.BucketType.user)
+async def daily(ctx):
+    user_id = str(ctx.author.id)
+    cursor.execute("SELECT reputation FROM user_reputation WHERE user_id = ?", (user_id,))
+    result = cursor.fetchone()
+
+    if not result:
+        await ctx.send("You don't have any EggCoins yet. Start by using the /balance command.")
+        return
+    now = datetime.datetime.now()
+    next_reset_time = now + datetime.timedelta(seconds=86400)
+    cursor.execute("UPDATE user_reputation SET reputation = reputation + 5000 WHERE user_id = ?", (user_id,))
+    conn.commit()
+    await ctx.send(f"You have received 5000 EggCoins for your daily reward. Your new balance is {result[0] + 5000} EggCoins.")
+    await ctx.send(f"Your next daily reward will be available on {next_reset_time.strftime('%Y-%m-%d %H:%M:%S')} UTC.")
+
+@daily.error
+async def daily_error(ctx, error):
+    if isinstance(error, commands.CommandOnCooldown):
+        await ctx.send(f"This command is on cooldown. Try again in {error.retry_after:.0f} seconds.")
+
+@slash.slash(
+    name="bet",
+    description="Bet on a coin flip",
+    options=[
+        create_option(
+            name="amount",
+            description="Amount of EggCoins to bet",
+            option_type=4,
+            required=True
+        ),
+        create_option(
+            name="choice",
+            description="Choose 'Heads' or 'Tails'",
+            option_type=3,
+            required=True,
+            choices=[
+                create_choice(name="Heads", value="Heads"),
+                create_choice(name="Tails", value="Tails")
+            ]
+        )
+    ]
+)
+async def bet(ctx: SlashContext, amount: int, choice: str):
+    user_id = str(ctx.author.id)
+    cursor.execute("SELECT reputation FROM user_reputation WHERE user_id = ?", (user_id,))
+    result = cursor.fetchone()
+    if not result:
+        await ctx.send("You don't have any EggCoins yet. Start by using the /balance command.")
+        return
+    reputation = result[0]
+    if amount <= 0:
+        await ctx.send("Please enter a valid amount of EggCoins to bet.")
+        return
+    if amount > reputation:
+        await ctx.send("You don't have enough EggCoins to make this bet.")
+        return
+    coin_flip = random.choice(["Heads", "Tails"])
+    if coin_flip == choice:
+        reputation_change = amount
+        result_message = f"You chose {choice} and won! 🎉"
+    else:
+        reputation_change = -amount
+        result_message = f"You chose {choice} and lost! 😞"
+    cursor.execute("UPDATE user_reputation SET reputation = reputation + ? WHERE user_id = ?", (reputation_change, user_id))
+    conn.commit()
+    await ctx.send(f"{ctx.author.mention} bet {amount} EggCoins on the coin flip. The result is {coin_flip}. {result_message} Your new balance is {reputation + reputation_change} EggCoins.")
 
 @slash.slash(name="deepfry",
              description="Deepfries The Users Profile Picture",
