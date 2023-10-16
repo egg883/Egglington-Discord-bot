@@ -1402,8 +1402,8 @@ async def slot(ctx: SlashContext):
         await ctx.send("You don't have any EggCoins yet.")
         return
     reputation = result[0]
-    if reputation < 10:
-        await ctx.send("You need at least 10 EggCoins to play the slot machine.")
+    if reputation < 450:
+        await ctx.send("You need at least 450 EggCoins to play the slot machine.")
         return
     is_winning = random.random() <= 0.23
     cursor.execute("UPDATE user_reputation SET reputation = reputation - 10 WHERE user_id = ?", (user_id,))
@@ -1866,9 +1866,9 @@ async def balance(ctx: commands.Context):
     if result:
         reputation = result[0]
         if reputation == 0:
-            cursor.execute("UPDATE user_reputation SET reputation = 1000 WHERE user_id = ?", (user_id,))
+            cursor.execute("UPDATE user_reputation SET reputation = 10 WHERE user_id = ?", (user_id,))
             conn.commit()
-            resp = f"{ctx.author.mention}, Seems you are broke, Here take 1000 EggCoins."
+            resp = f"{ctx.author.mention}, Seems you are broke, Here take 10 EggCoins."
         else:
             resp = f"{ctx.author.mention}, your balance is {reputation}."
     else:
@@ -2371,9 +2371,10 @@ async def bet(ctx: SlashContext, amount: int, choice: str):
         await ctx.send("You don't have any EggCoins yet. Start by using the /balance command.")
         return
     reputation = result[0]
-    if amount <= 0:
-        await ctx.send("Please enter a valid amount of EggCoins to bet.")
+    if amount < 10:
+        await ctx.send("You need a minimum of 10 EggCoins to place a bet.")
         return
+
     if amount > reputation:
         await ctx.send("You don't have enough EggCoins to make this bet.")
         return
@@ -2386,7 +2387,15 @@ async def bet(ctx: SlashContext, amount: int, choice: str):
         result_message = f"You chose {choice} and lost! 😞"
     cursor.execute("UPDATE user_reputation SET reputation = reputation + ? WHERE user_id = ?", (reputation_change, user_id))
     conn.commit()
-    await ctx.send(f"{ctx.author.mention} bet {amount} EggCoins on the coin flip. The result is {coin_flip}. {result_message} Your new balance is {reputation + reputation_change} EggCoins.")
+    embed = discord.Embed(
+        title="Coin Flip Result",
+        description=f"{ctx.author.mention} bet {amount} EggCoins on the coin flip.",
+        color=0x19AC00
+    )
+    embed.add_field(name="Coin Flip Result", value=f"The result is {coin_flip}. {result_message}", inline=False)
+    embed.add_field(name="New Balance", value=f"Your new balance is {reputation + reputation_change} EggCoins.", inline=False)
+    embed.set_thumbnail(url="https://i.imgur.com/dSMCKNx.gif")
+    await ctx.send(embed=embed)
 
 @slash.slash(name="deepfry",
              description="Deepfries The Users Profile Picture",
