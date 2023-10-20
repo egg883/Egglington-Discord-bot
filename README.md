@@ -31,6 +31,3 @@ https://www.youtube.com/watch?v=oZbzgoXlAuI
 9. Open eggbot.sh then fun happens :)
 
 ## [Discord Server](https://discord.gg/EdfyJ47xYe) | [Website](https://eggbot.site)
-
-<h2><strong> Discord -->  </strong></h2>
-<img width="50%" src=https://lanyard.cnrad.dev/api/281476115397345280 />
