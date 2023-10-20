@@ -12,13 +12,10 @@ from datetime import datetime
 import sys
 from discord_interactions import *
 from discord.ext import commands
-from discord_slash import SlashCommand, SlashContext, ComponentContext, SlashCommandOptionType
-from discord_slash.utils.manage_components import create_button, create_actionrow
-from discord_slash.model import ButtonStyle
+from discord_slash import SlashCommand, SlashContext, SlashCommandOptionType
 from discord_slash.utils.manage_commands import create_option, create_choice
 from discord.ext.commands import CommandOnCooldown
 from discord.ext.commands.cooldowns import BucketType
-from discord_slash.utils.manage_components import create_select, create_select_option
 from roblox import Client
 import asyncio
 import requests
@@ -770,7 +767,7 @@ async def info(ctx):
     embed=discord.Embed(title="Info Panel", color=0x19AC00)
     embed.set_thumbnail(url= "https://i.imgur.com/dSMCKNx.gif")
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
-    embed.add_field(name="About Egglington:", value=f"Egglington is a multi-purpose discord bot developed by Jcxk, It is an open source project on Github that you can easily host yourself. Egglington is a easy to use bot for many things, roblox, minecraft, moderation, memes anything egglington is fun to use with its economy commands for extra fun.", inline=False)
+    embed.add_field(name="About Egglington:", value=f"Egglington is a multi-purpose discord bot developed by Jack (egg883), It is an open source project on Github that you can easily host yourself. Egglington is a easy to use bot for many things, roblox, minecraft, moderation, memes anything egglington is fun to use with its economy commands for extra fun.", inline=False)
     embed.add_field(name="Total Commands:", value=f"{len(slash.commands)}", inline=True)
     embed.add_field(name="Prefix:", value=f"[{prefix}] [/]", inline=True)
     embed.add_field(name="Version:", value=f"{version}", inline=True)
