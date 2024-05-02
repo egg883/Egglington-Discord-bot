@@ -347,6 +347,7 @@ async def purge(ctx: SlashContext, limit: int):
     embed=discord.Embed(title="Purge command", url="https://eggbot.site", color=0x19AC00)
     embed.set_author(name="Egglington", url="https://eggbot.site", icon_url="https://i.imgur.com/qrogvhd.png")
     embed.add_field(name="Purged", value=f"I have purged {limit} messages.")
+    embed.timestamp = datetime.datetime.utcnow()
     await ctx.send(embed=embed,delete_after=config['deletetime'])
 
 afk_users = {}
